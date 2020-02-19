@@ -1,0 +1,17 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+//ollyscript by Darus
+//oep finder for
+//MEW11 SE b1.2
+var OEP
+sto
+sto
+sto
+sto
+sto
+mov OEP, eax
+bphws OEP, "x"
+run
+an eip
+bphwc eip
+
+// [BACK] 

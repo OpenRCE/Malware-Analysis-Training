@@ -1,0 +1,182 @@
+/*
+//////////////////////////////////////////////////
+	Alex Protector 1.0 beta2 script v0.1
+	Author:	loveboom
+	Email : bmd2chen@tom.com
+	OS    : WinXP sp2,Ollydbg 1.1,OllyScript v0.92
+	Date  : 2004-12-15
+        Action: Auto fix IAT,Remove Junk code.
+	Config: Ignore all exceptions
+	Note  : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+var chkdlladdr
+var wiataddr
+var csize
+var cbase
+var count
+var addr			
+var wval1				//write value1
+  
+lblmsg:
+  msgyn "Setting:Ignore all exceptions,Continue?"
+  cmp $RESULT,1
+  je lblstart
+  ret
+  
+lblstart:
+  mov count,2
+  mov chkdlladdr,eip
+  gmi eip,CODEBASE
+  mov cbase,$RESULT
+  gmi eip,CODESIZE
+  mov csize,$RESULT
+  bprm cbase,csize
+  esto
+
+lbl1:
+  bpmc
+  find eip,#61C38038CC7401#
+  cmp $RESULT,0
+  je lblabort
+  bp $RESULT
+  esto
+
+lbl2:
+  bc $RESULT
+  sto
+  sto
+
+loop1:
+  cmp count,0
+  je lbl3
+  dec count
+  findop eip,#FFD2#		//find command 'call edx'
+  cmp $RESULT,0
+  je lblabort
+  bp $RESULT
+  esto
+  bc $RESULT
+  sto
+  jmp loop1
+  
+lbl3:
+  mov count,3
+  mov addr,eip
+  fill chkdlladdr,10,00		//clear ep code
+  
+lblloopcc:				//loop Clear junk code
+  cmp count,0			
+  je lblnext1
+  find addr,#60EB03EB03#		//find junkcode'pushad,jmp xxxx'
+  mov addr,$RESULT
+  fill addr,A5,90		//Clear junk code
+  add addr,A5
+  dec count
+  jmp lblloopcc
+
+lblnext1:
+  find eip,#909057FF95#		//found command 'push edi,call [ebp+xxx]'
+  cmp $RESULT,0
+  je lblabort
+  mov addr,$RESULT
+  mov wval1,addr
+  add wval1,B
+  sub addr,13
+  mov [addr],#EB11#		//asm "jmp eip+13"
+  add addr,3
+  mov [addr],#8305#		//asm 'add [ep],4'
+  add addr,2
+  mov [addr],chkdlladdr		//write ep address
+  add addr,4
+  fill addr,1,4		
+  inc addr
+  mov [addr],#8985#		//asm 'MOV [EBP+xxxx],EAX'
+  add addr,2
+  mov [addr],[wval1]
+  add addr,4
+  fill addr,1,C3		//asm 'retn'
+  mov addr,wval1
+  sub addr,2
+  fill addr,1,E8
+  inc addr
+  mov [addr],#E2FFFFFF#		//asm 'call [eip-19]'
+  add addr,4
+  fill addr,1,90
+  find addr,#E9????????508B0FE8#	//found command 'jmp xxxx;push eax,mov ecx,[edi]'
+  cmp $RESULT,0
+  je lblabort
+  mov addr,$RESULT
+  add addr,20
+  /*
+patch code:
+POP EAX
+PUSH EBX
+MOV EBX,DWORD PTR DS:[EP]
+MOV DWORD PTR DS:[EBX],EAX
+MOV DWORD PTR DS:[ECX],EBX
+ADD DWORD PTR DS:[EP],4
+POP EBX
+*/
+  mov [addr],#58538B1D#
+  add addr,4
+  mov [addr],chkdlladdr
+  add addr,4
+  mov [addr],#890389198305#
+  add addr,6
+  mov [addr],chkdlladdr
+  add addr,4
+  mov [addr],#045B#
+  find addr,#9090890183C704#		//find 'mov [ecx],eax;add edi,4'
+  cmp $RESULT,0
+  je lblabort
+  fill $RESULT,4,90
+  mov addr,$RESULT
+  add addr,9
+  fill addr,1,90			//nop 'pop eax'
+  
+askfixiat:
+  msgyn "Do you want fix iat with yourself?"
+  cmp $RESULT,0
+  je lblAutoFix
+  ask "Please Enter a start address:"  
+  cmp $RESULT,0
+  je lblAutoFix
+  mov wiataddr,$RESULT
+  jmp next2
+  
+lblAutoFix:
+  mov addr,cbase
+  add addr,csize
+  sub addr,600					//start address
+  mov wiataddr,addr
+  
+next2:
+  sub wiataddr,4
+  mov [chkdlladdr],wiataddr
+
+lbl4:
+   findop eip,#FFE0#
+  cmp $RESULT,0
+  je lblabort
+  bp $RESULT
+  esto
+
+lbl5:
+  bc $RESULT
+  sto
+  
+lblend:
+  cmt eip,"Script finished.Stolen code."
+   msg "Script by loveboom[DFCG[FCG][US],Thank you for using my script!"
+   ret
+lblerros:
+   msg "Sorry script require OS:WINDOWS 2x/xp!"
+   ret   
+
+lblabort:
+   msg "Script abort!"
+   ret
+
+
+

@@ -1,0 +1,491 @@
+/* 
+Script written by VolX 
+Debugging options: Tick all items in Debugging Options-Exceptions 
+and add C000001D..C000001E in custom exceptions 
+Test Environment : 1.OllyDbg 1.1b & 1.1C 
+2.OllyScript 0.71, 0.81 . 
+3.OS -- WINXP & WIN2K SP3 
+Thanks : Oleh Yuschuk - author of OllyDbg 
+SHaG - author of OllyScript 
+Release Note : Fix the bug when trying to unpack a target on its first execution 
+Please be noted on some occasions you might need to use a renamed Ollydbg. 
+*/ 
+
+var j 
+var k 
+var l 
+var m 
+var y 
+var z 
+var ori1 
+var ori2 
+var ori3 
+var paddr1 
+var paddr2 
+var paddr3 
+var imgbase 
+var decryptcall 
+var dllimgbase 
+var dll1stend 
+var backstep 
+var relocva 
+var relocstk 
+var min 
+var splitva 
+var codesplit 
+var Elimination 
+var autofill 
+var 1stexec 
+
+mov [ebx],#00000000# 
+gmi eip,MODULEBASE //get imagebase 
+mov imgbase,$RESULT 
+mov k,imgbase 
+add k,3C //40003C 
+mov k,[k] 
+add k,imgbase //j=signature VA 
+add k,f8 //1st section 
+add k,28 //2nd section 
+add k,28 //3rd section 
+add k,28 //4th section 
+add k,28 //5th section 
+add k,28 //6th section 
+mov m,2 
+
+loc11: 
+mov l,[k] 
+cmp l,7461642E //".dat" ? check if it is .data1 section 
+jne loc12 
+add k,4 
+mov l,[k] 
+cmp l,00003161 //"a1 " ? 
+je loc13 
+
+
+loc12: 
+cmp m,0 
+je loc15 //can't find the .data1 section 
+add k,28 
+sub m,1 
+jmp loc11 
+
+loc13: 
+sub k,4 
+add k,8 
+mov j,[k] 
+cmp j,20000 //check if VSize=20000 
+je loc14 
+jmp loc15 
+
+loc14: 
+mov autofill,1 
+add k,4 
+mov m,[k] //get the VOffset 
+add m,imgbase //get the VA 
+add m,10000 
+mov splitva,m 
+
+loc15: 
+gpa "CreateFileMappingA", "kernel32.dll" 
+bphws $RESULT, "x" 
+eoe lab2 
+eob lab2 
+run 
+
+lab2: 
+bphwc $RESULT 
+eob lab21 
+rtr 
+
+lab21: 
+sti 
+mov j,eip 
+and j,0fff0000 
+mov l,2 
+
+lab22: 
+cmp l,0 
+je error 
+mov k,[j] 
+cmp k,00905A4D //e_magic ? 
+je lab23 
+sub j,10000 
+sub l,1 
+jmp lab22 
+
+lab23: 
+mov dllimgbase,j 
+log dllimgbase 
+add j,014AC 
+mov decryptcall,j 
+log decryptcall 
+gpa "time", "msvcrt.dll" 
+mov j, $RESULT 
+bp j 
+gpa "VirtualProtect", "kernel32.dll" 
+bp $RESULT 
+eob lab3 
+eoe lab3 
+esto 
+
+lab3: 
+cmp eip,j //check if it break on time API 
+jne lab31 //jump if not equal which means no code splicing 
+eob lab32 
+rtu 
+
+lab31: 
+bc $RESULT 
+bc j 
+eob lab4 
+rtu 
+
+lab32: 
+mov k, eip 
+sub k, 10 
+mov k, [k] 
+and k, 0ffff 
+cmp k, 000075ff //check if "PUSH DWORD PTR SS:[EBP-??] 
+jne lab33 
+mov 1stexec, 1 
+log 1stexec 
+eob lab3 
+eoe lab3 
+esto 
+
+lab33: 
+bc $RESULT 
+bc j 
+findop eip,#250000FF# 
+cmp $RESULT,0 
+je lab4 //jump if equal which means no code splicing 
+mov codesplit,1 
+
+lab4: 
+log codesplit 
+cmp codesplit,1 //check if code splicing is used 
+jne lab52 //jump if no code splicing 
+findop eip,#250000FF# 
+mov j,$RESULT 
+add j,b 
+mov paddr1,j 
+mov ori1,[j] 
+mov [j],51 
+add j,52 
+bp j 
+eob lab5 
+run 
+
+lab5: 
+log autofill 
+bc j 
+mov [paddr1],ori1 //restore original code 
+cmp autofill,1 //check if auto filling code splicing VA 
+je lab51 
+msg "Edit the EAX to an address for the splicing code and then press resume" 
+pause 
+mov splitva,eax 
+jmp lab52 
+
+lab51: 
+mov eax,splitva 
+
+lab52: 
+gpa "strchr", "msvcrt.dll" 
+bp $RESULT 
+eoe lab6 
+eob lab6 
+esto 
+
+lab6: 
+eob lab7 
+rtr 
+
+lab7: 
+sti 
+bc $RESULT 
+cmp codesplit,1 
+je lab72 
+mov splitva,0 
+
+lab72: 
+findop eip,#8908# //search "MOV DWORD PTR DS:[EAX],ECX" 
+mov z,$RESULT 
+findop eip,#80A5# //search "AND BYTE PTR SS:[EBP-1750],0" 
+mov j,$RESULT 
+add j,9 
+mov j,[j] 
+and j,0ffff 
+add j,ebp 
+sub j,10000 
+mov relocstk,j 
+log relocstk 
+mov j,[j] 
+mov relocva ,j 
+log relocva 
+cmp relocva,0 //check if import table elimination is used 
+je lab101 //jump if not used 
+mov Elimination,1 
+mov j,eip 
+sub j,90 
+findop j,#EBCA# 
+mov backstep,$RESULT 
+add backstep,2 
+log backstep 
+findop eip,#C1E802# //search "SHR EAX,2" 
+mov j,$RESULT 
+add j,5 
+mov ori1,[j] 
+findop z,#8908# //search "MOV DWORD PTR DS:[EAX],ECX" 
+mov y,$RESULT 
+mov j,y 
+sub j,4 
+mov ori2,[j] 
+mov paddr1,j 
+mov [j],ori1 
+sub j,6 
+mov ori3,[j] 
+mov j,y 
+add j,b 
+mov paddr2,j 
+mov k,dllimgbase 
+add k,3C 
+mov k,[k] 
+add k,dllimgbase //j=signature VA 
+add k,f8 //1st section 
+add k,0C 
+mov l,[k] 
+add k,4 
+mov j,[k] 
+add j,dllimgbase 
+add j,l 
+mov dll1stend,j 
+sub j,100 
+mov paddr3,j //store addr for putting patch code 
+mov [j],#8985# 
+add j,2 
+mov [j],ori3 
+add j,4 
+mov [j],#FF85# 
+add j,2 
+mov [j],ori1 
+add j,4 
+mov k,j 
+mov l,paddr2 
+add l,6 
+sub k,l 
+mov m,10000 
+sub m,k 
+sub m,5 
+mov [j],#E9# 
+add j,1 
+mov [j],m 
+add j,2 
+mov [j],#FFFF# 
+mov j,paddr2 
+mov k,paddr3 
+sub k,j 
+sub k,5 
+mov j,paddr2 
+mov [j],#E90000000090# 
+add j,1 
+mov [j],k 
+findop paddr2,#FF15# 
+mov y,$RESULT 
+add y,b 
+bp y 
+eob lab8 
+run 
+
+lab8: 
+bc y 
+mov j,eip 
+add j,18 
+mov eip,j 
+mov [paddr1],ori2 
+mov j,paddr2 
+mov [j],#8985# 
+add j,2 
+mov [j],ori3 
+mov j,paddr3 
+mov [j],#0000000000000000000000000000000000000000# 
+findop eip,#E9# 
+mov j,$RESULT 
+add j,5 
+bp j 
+eob lab9 
+run 
+
+lab9: 
+bc j 
+mov eip,backstep 
+mov [relocstk],00000000 //emulate no import table elimination 
+
+lab91: 
+findop eip,#0FBE00# //look for addr to chk FirstThunk for comparison 
+mov j,$RESULT 
+add j,14 
+mov y,j 
+bp y 
+eob lab10 
+run 
+
+lab10: 
+mov min,eax //store FirstThunk 
+
+lab101: 
+mov ori1,[z] 
+mov [z],#9090# //nop the gabage btw dll filling code 
+findop z, #595940# 
+mov j,$RESULT 
+add j,10 
+mov paddr1,j 
+mov ori2,[j] 
+mov [j],#EB# //patch magic jump 
+findop paddr1,#0F84# 
+bp $RESULT 
+cmp Elimination,0 //check if import table elimination is not used 
+je lab102 //jump if it is not used 
+eob lab12 
+run 
+
+lab102: 
+eob lab131 
+run 
+
+lab12: 
+cmp eip,y 
+je lab121 
+jmp lab13 
+
+lab121: 
+mov j,eax 
+cmp min,j 
+jb less 
+mov min,j 
+less: 
+eob lab12 
+run 
+
+lab13: 
+bc y 
+
+lab131: 
+bc $RESULT 
+//log min 
+mov [z],ori1 //restore original code 
+mov [paddr1],ori2 //restore original code 
+bp decryptcall 
+mov k,3 
+eob lab14 
+run 
+
+lab132: 
+sub k,1 
+eob lab14 
+eoe lab14 
+esto 
+
+lab14: 
+cmp k,0 
+jne lab132 
+eob lab15 
+rtr 
+
+lab15: 
+bc decryptcall 
+sti 
+cmp Elimination,0 //check if import table elimination is used 
+je lab181 //jump if not 
+findop eip,#EBCA# 
+mov j,$RESULT 
+add j,2 
+bp j 
+eob lab16 
+run 
+
+lab16: 
+bc j 
+mov j,relocstk 
+mov [j],relocva 
+findop eip,#0FB685# 
+mov j,$RESULT 
+add j,9 
+bp j 
+eob lab17 
+run 
+
+lab17: 
+bc j 
+cmp !ZF,1 //some Arm program will encrypt the import table section so better check it 
+je lab171 
+msg "Copy the section contains import table then press resume" 
+pause 
+sti 
+msg "Paste the data back to the section contains import table then press resume" 
+pause 
+
+lab171: 
+findop eip,#8908# //search "MOV DWORD PTR DS:[EAX],ECX" 
+mov y,$RESULT 
+add y,7 
+bp y 
+mov j,$RESULT 
+sub j,6 
+mov paddr2,j 
+mov ori2,[paddr2] 
+mov [j],#E90000000090# 
+mov k,paddr3 
+sub k,j 
+sub k,5 
+add j,1 
+mov [j],k 
+mov j,paddr3 
+mov [j],ori2 
+add j,4 
+mov [j],#FFFF5350BB000000008B098D048B8BC8585BE9# 
+add j,5 
+mov k,min 
+add k,imgbase 
+mov [j],k 
+mov l,paddr2 
+add l,6 
+mov k,paddr3 
+add k,16 
+sub k,l 
+mov m,10000 
+sub m,k 
+sub m,5 
+add j,0e 
+mov [j],m 
+add j,2 
+mov [j],#FFFF# 
+eob lab18 
+run 
+
+lab18: 
+bc y 
+
+lab181: 
+findop eip,#2BF9FFD7# 
+mov j, $RESULT 
+add j,2 
+bp j 
+eob lab19 
+run 
+
+lab19: 
+bc j 
+sti 
+msg "OEP arrived! You can dump the file and fix the IAT" 
+log codesplit 
+log splitva 
+log Elimination 
+pause 
+jmp end 
+
+error: 
+msg "error" 
+
+end: 
+ret

@@ -1,0 +1,45 @@
+/* 
+////////////////////////////////////////////////// 
+PESpin v0.3 Stolen Code Finder v0.1 
+( for 'Remove OEP' mode) 
+Author: loveboom 
+Email : bmd2chen@tom.com 
+OS : Win2kADV sp2,OllyDbg 1.1b,OllyScript v0.62 
+Date : 2004-3-28 
+Config: Ignore other exceptions except 'Invalid or privileged instruction' 
+Note : If you have one or more question, email me please,thank you! 
+////////////////////////////////////////////////// 
+*/ 
+var bpaddr //Break point address 
+
+start: //script start 
+run 
+
+lbl1: 
+esto 
+esto 
+gpa "LoadLibraryA","kernel32.dll" //GetProcAddress 
+mov bpaddr,$RESULT 
+bp bpaddr 
+eob lbl2 
+esto 
+
+lbl2: 
+bc bpaddr 
+eob lbl3 
+rtu 
+
+lbl3: 
+mov bpaddr,esp 
+add bpaddr,4 
+bphws bpaddr,"r" 
+eob lbl4 
+run 
+
+lbl4: 
+bphwc bpaddr 
+
+end: 
+cmt eip,"Stolen Code found,here start Stolen program's OEP Code.please patch OEP code and then dumped it!" 
+msg "Script by loveboom[DFCG],Thank you for using my Script!" 
+ret

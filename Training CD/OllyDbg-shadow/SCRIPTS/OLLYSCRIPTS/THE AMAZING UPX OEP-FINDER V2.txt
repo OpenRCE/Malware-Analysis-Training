@@ -1,0 +1,15 @@
+// The amazing UPX OEP finder v2
+// This script will quickly put you at the OEP of an UPX-packed EXE.
+// Just run it!
+// Implemented using hardware breakpoints (just for fun).
+
+eob Break 
+findop eip, #61#
+bphws $RESULT, "x"
+run
+
+Break:
+sto 
+sto
+bphwc $RESULT
+ret

@@ -1,0 +1,141 @@
+/*
+Armadillo script - detach parent from client and unpack (1000 bytes method) - by hipu
+tnx to Ricardo for his complete instructions (im just emulating what the man says...)
+
+MAKE SURE ALL BREAKPOINTS ARE DELETED BEFORE EXECUTING THE SCRIPT!!! 
+
+ALSO: since im using the IsDebuggerPresent plugin, i didnt do IsDebuggerPresent patch.
+do whatever is needed if u dont use the plugin...
+
+*/
+
+var WaitForDebugEvent
+var WriteProcessMemory
+var pDebugEvent
+var pBuffer
+var child_ProcID
+var oep_offset1
+var oep_offset2
+var oep_offset3
+var crypto_proc
+var child_OEP
+var patched_line1
+var imgbase
+var rdata_begin
+
+gmi eip,MODULEBASE
+mov imgbase, $RESULT 
+mov rdata_begin, imgbase
+find rdata_begin, #2E726461746100#  //find ".rdata" string
+mov rdata_begin, $RESULT 
+add rdata_begin, 0c
+mov rdata_begin, [rdata_begin]
+add rdata_begin, imgbase
+log rdata_begin
+
+/*
+another way to get the .rdata_begin - taken from VolX
+gmi eip,MODULEBASE
+mov imgbase, $RESULT 
+mov rdata_begin, imgbase
+add rdata_begin, 3c
+mov rdata_begin, [rdata_begin]
+add rdata_begin, imgbase
+add rdata_begin, 0f8
+add rdata_begin, 28
+add rdata_begin, 0c
+mov rdata_begin, [rdata_begin]
+add rdata_begin, imgbase
+log rdata_begin
+*/
+
+//eob found_WaitForDebugEvent
+gpa "WaitForDebugEvent", "kernel32.dll" 
+mov WaitForDebugEvent, $RESULT
+gpa "WriteProcessMemory", "kernel32.dll" 
+mov WriteProcessMemory, $RESULT
+
+bp WaitForDebugEvent
+run
+bc WaitForDebugEvent
+
+mov pDebugEvent, esp
+add pDebugEvent, 04
+mov pDebugEvent, [pDebugEvent]
+log pDebugEvent
+
+mov oep_offset1, pDebugEvent
+add oep_offset1, 18
+mov oep_offset2, pDebugEvent
+add oep_offset2, 24
+mov oep_offset3, pDebugEvent
+add oep_offset3, 28
+
+bp WriteProcessMemory
+run
+bc WriteProcessMemory
+
+mov child_ProcID, pDebugEvent
+add child_ProcID, 4
+mov child_ProcID, [child_ProcID]
+mov child_OEP, [oep_offset1]
+
+// ******* UGLY WAY TO FIND ENCRYPTOR. USE AT YOUR OWN RISK!
+mov crypto_proc, esp
+add crypto_proc, 128
+mov crypto_proc, [crypto_proc]
+//1st crypto_proc cal...
+//sub crypto_proc, 5
+add crypto_proc, 2d0
+mov [crypto_proc], #9090909090#
+rtr	//ctrl-f9
+sto	//f8
+
+log "crypto_proc was nopped..."
+log "patch OEP of child process to EBFE (using PUPE...)"
+log child_ProcID
+log child_OEP
+log "press script/resume when ready"
+msg "look in the log, and press script/resume when ready"
+
+pause
+
+bp WaitForDebugEvent
+run
+bc WaitForDebugEvent
+
+mov patched_line1, [esp]
+sub patched_line1, 12
+fill patched_line1, 1a, 90
+asm [esp], "CALL 401000"
+asm 401000, "ADD DWORD PTR DS:[0], 1000"
+asm 40100A, "ADD DWORD PTR DS:[0], 1000"
+asm 401014, "ADD DWORD PTR DS:[0], 1000"
+asm 40101E, "CMP DWORD PTR DS:[0], 0"
+asm 401028, "JNZ 401035"
+asm 40102A, "PUSH 0FFFFFFFF"
+asm 40102F, "CALL DebugActiveProcessStop"
+asm 401034, "NOP"
+asm 401035, "RET"
+
+mov [401002], oep_offset1
+mov [40100C], oep_offset2
+mov [401016], oep_offset3
+mov [401020], oep_offset3
+mov [401024], rdata_begin
+mov [40102B], child_ProcID
+
+mov [oep_offset1], 400000
+mov [oep_offset2], 400000
+mov [oep_offset3], 400000
+
+//go [esp]
+mov eip, [esp]
+
+bp 401034
+run
+bc 401034
+
+msg "Close OllyDbg, execute again and attach to your newely created process. Have fun."
+
+ret

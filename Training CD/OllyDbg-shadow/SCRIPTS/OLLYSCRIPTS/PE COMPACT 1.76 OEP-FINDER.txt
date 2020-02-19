@@ -1,0 +1,21 @@
+eob Break 
+findop eip, #60#
+bphws $RESULT, "x"
+run
+
+Break:
+sto 
+bphws esp,"r"
+jmp lab1
+
+lab1:
+eob lab2
+run
+lab2:
+sto
+sto
+sti
+ret
+	
+
+

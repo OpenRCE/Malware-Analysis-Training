@@ -1,0 +1,43 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+//  FileName    :   UPX.oms
+//  Author      :   Luo Cong
+//  Date        :   2004-11-15
+//  Comment     :   Search "POPA" to get the OEP
+//
+///////////////////////////////////////////////////////////////////////////////
+
+EOB Break1
+
+// Method 1:
+push 0x61
+push eip
+FindOpcode
+
+// Method 2:
+// invoke FindOpcode, eip, 0x61
+
+mov reg01, reg00
+
+// Method 1:
+push 1  // mode - "execute"
+push reg01
+bphws
+
+// Method 2:
+// invoke bphws, reg01, 1
+
+run
+halt
+
+Break1:
+
+// Method 1:
+push reg01
+bphwc
+
+// Method 2:
+// invoke bphwc, reg01
+
+stepover
+stepover

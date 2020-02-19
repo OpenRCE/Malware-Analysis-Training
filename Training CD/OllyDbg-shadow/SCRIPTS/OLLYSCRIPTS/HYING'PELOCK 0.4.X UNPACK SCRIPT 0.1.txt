@@ -1,0 +1,158 @@
+/*
+//////////////////////////////////////////////////
+	Hying'pelock unpack script v0.1 
+	Author:	loveboom
+	Email : loveboom#163.com
+	OS    : WinXP sp1,Ollydbg 1.1,OllyScript v0.92
+	Date  : 2005-3-20
+        Action: 修复IAT,停在oep处.只对旧版本有效
+	Config: Ignore all exceptions
+	Note  : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+  var addr
+  var cbase
+  var csize
+  var jmpaddr
+  var jmptovalue
+  var hmem
+  
+start:
+  msgyn "setting:Ignore all exceptions,continue?"
+  cmp $RESULT,0
+  jne lbl1
+  ret
+lbl1:
+  gmi eip,CODEBASE		//获取code段信息
+  mov cbase,$RESULT
+  gmi eip,CODESIZE
+  mov csize,$RESULT
+
+lblrun1:
+  bprm cbase,csize
+  eob lbl2
+  eoe lblabort
+  esto
+  
+lbl2:
+  bpmc
+  cob
+  coe
+  
+lblbpAPI1:
+  gpa "VirtualAlloc","kernel32.dll"
+  bprm $RESULT,2		//在VirtualAlloc的前四个字节下内存访问断点
+  run
+  
+lbl3:
+  bpmc
+  find eip,#C60768897701C64705C383C706#,
+  /*
+  	查找以下语句:
+	C607 68         MOV BYTE PTR DS:[EDI],68
+	8977 01         MOV DWORD PTR DS:[EDI+1],ESI
+	C647 05 C3      MOV BYTE PTR DS:[EDI+5],0C3
+	83C7 06         ADD EDI,6
+  	把api直接变成push api retn的方式
+  */
+  cmp $RESULT,0
+  je lblabort
+  mov jmpaddr,eip
+  fill jmpaddr,1,E9
+  inc jmpaddr
+  mov jmptovalue,$RESULT
+  sub jmptovalue,jmpaddr
+  sub jmptovalue,4
+  mov [jmpaddr],jmptovalue		//跳过抽api代码
+
+lblmsg1:
+  msgyn "Try fix IAT?"				//判断是否要修复api		
+  cmp $RESULT,0
+  je lblgotoOEP
+  gpa "GetModuleHandleA","kernel32.dll"	
+  go $RESULT
+  rtu
+  
+lbl4:
+  find eip,#66C707FF35C7470681342400894702C6470DC3#
+  /*
+  查找以下命令:
+	66:C707 FF35        MOV WORD PTR DS:[EDI],35FF
+	C747 06 81342400    MOV DWORD PTR DS:[EDI+6],243481
+	8947 02             MOV DWORD PTR DS:[EDI+2],EAX
+	C647 0D C3          MOV BYTE PTR DS:[EDI+D],0C3
+  */
+  cmp $RESULT,0
+  je lblabort
+  mov jmpaddr,$RESULT
+  bp jmpaddr
+  eob lbl5
+  eoe lblgotoOEP
+  run
+  
+lbl5:
+  bc jmpaddr
+  cob
+  coe
+  exec
+    pushad
+    push 0FF			//分配空间
+    push 40
+    call GlobalAlloc
+  ende
+  mov jmptovalue,eax
+  mov hmem,eax			//保存申请的空间地址
+  exec
+    popad			//还原现场
+  ende
+  add jmpaddr,0c
+  fill jmpaddr,1,e8
+  sub jmptovalue,jmpaddr
+  sub jmptovalue,5
+  inc jmpaddr
+  mov [jmpaddr],jmptovalue
+  add jmpaddr,4
+  fill jmpaddr,2,90
+  mov [hmem],#894702C7470D83C404C3C3#
+  /*
+  修复成以下方式:
+    push [xx]
+    xor [esp],xorkey
+    add esp,4
+    ret
+  */
+  
+lbl6:
+  gpa "lstrcmpiA","kernel32.dll"
+  mov addr,$RESULT
+  mov [addr],#B8FFFFFFFFC20800#
+
+lblgotoOEP:
+  esto
+  esto
+  
+lbl7:
+  bprm cbase,csize
+  esto
+
+lbl8:
+  bpmc
+  cmp hmem,0
+  je lblend
+  exec
+    pushad
+    push {hmem}
+    call GlobalFree
+    popad
+  ende
+  
+lblend:
+  cmt eip,"OEP"
+  ret
+
+lblabort:
+  msg "Error,script aborted,maybe target is not protect by hying's arm v0.4x or you forgot ignore all exceptions."
+  ret
+
+
+

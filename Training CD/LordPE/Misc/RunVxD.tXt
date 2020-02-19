@@ -1,0 +1,19 @@
+RunVxD 1.0
+----------
+coded by yoda (28 June 2k+1)
+
+This is a little tool to load/unload VxD's and pass control codes to them.
+With this utility you won't have to code always a stupid loader for each VxD.
+
+Command line:
+ RunVxD [OPTIONS]
+ Options:
+ /LOAD="vxd name"    - load VxD (filename with file extension)
+ /UNLOAD             - unload currently loaded VxD
+ /WAIT_UNLOAD        - unload currently loaded VxD after input
+ /DEVICEIO=X         - pass control code X (in hex) to the driver
+
+HaVe PhUn !
+yoda
+
+Visit: y0da.cjb.net

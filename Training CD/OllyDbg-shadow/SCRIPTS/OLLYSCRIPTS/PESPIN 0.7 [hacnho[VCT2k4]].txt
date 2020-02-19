@@ -1,0 +1,46 @@
+/*
+/////////////////////////////////////////////////////////////////////////////////////////////
+// PESpin v0.7 OEP finder
+// Author: hacnho/VCT2k4
+// Email : hacnho@hotmail.com
+// Website: http://nhandan.info/hacnho
+// OS : WinXP Pro, OllyDbg 1.10 Final, OllyScript v0.85
+//You can download my unpackme at http://nhandan.info/hacnho/tuts/unpackme_PESpin_07.zip
+//for test this script.
+//Note: Not work with Delphi (OllyDBG will be crash when loading).
+//////////////////////////////////////////////////////////////////////////////////////////////
+*/
+
+
+MSG "Do not clear memory breakpoint! Thanx for using my script!"
+var temp
+sti
+sti
+findop eip, #61E9#
+bphws esp,"r"
+mov temp,esp
+run
+eob Break1
+
+Break1:
+run
+esto
+esto
+esto
+esto
+eob Break2
+
+Break2:
+esto
+esto
+esto
+esto
+esto
+eob exit
+
+jmp exit
+exit:
+log eip
+cmt eip, "Script by hacnho/VCT2k4"
+MSG "Please press Shift+F9 one times! When you trace to a jump (E9 XXXXXXXX). Press Enter, you'll still on OEP! Ctrl+A for analyze."
+ret

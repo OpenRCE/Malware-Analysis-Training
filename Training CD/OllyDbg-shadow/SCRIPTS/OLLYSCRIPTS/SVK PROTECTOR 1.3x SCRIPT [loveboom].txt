@@ -1,0 +1,128 @@
+/* 
+////////////////////////////////////////////////// 
+SVKP 1.3x -> Pavol Cerven stolen code Finder v0.2 Beta 
+Author: loveboom 
+Email : bmd2chen@tom.com 
+OS : Win2kADV sp2,OllyDbg 1.1b,OllyScript v0.62 
+Date : 2004-4-17 
+Action: Fix target's iat,found stolen code/fix stolen code. 
+Config: Ignore all exceptions.hide your debug. 
+Note : If you have one or more question, email me please,thank you! 
+////////////////////////////////////////////////// 
+*/ 
+var addr 
+var espval //esp 
+var espval1 
+var esptmp 
+var cbase 
+var csize 
+
+gmi eip,CODEBASE 
+mov cbase,$RESULT 
+gmi eip,CODESIZE 
+mov csize,$RESULT 
+mov espval,esp 
+
+start: 
+run 
+
+lbl1: 
+bprm cbase,csize 
+eob lbl2 
+esto 
+
+lbl2: 
+bpmc 
+cmt eip,"Running,please wait!" 
+find eip,#EB02CD2058EB020FE88907# //find iat magic jmp 
+mov addr,$RESULT 
+asm addr,"pop eax" 
+add addr,1 
+mov [addr],#8b44241C# //replace to "mov eax,DS:[ESP+1C]" action:fix import functions 
+
+lblcheck: 
+find eip,#813B706586B1EB03C7848B0F84# //fix API function "GetModuleHandleA" 
+mov addr,$RESULT 
+cmp addr,0 
+jne lblfix0 
+find eip,#813BC5B1662DEB03C784E80F84# //Fix API function "GetCommandLineA" 
+mov addr,$RESULT 
+cmp addr,0 
+jne lblfix0 
+find eip,#813BCC971025EB03C784E90F84# //Fix API function "ExitProcess" 
+mov addr,$RESULT 
+cmp addr,0 
+jne lblfix0 
+find eip,#813BA41A86D0EB03C7849A0F84# //Fix API function "GetCurrentProcess 
+mov addr,$RESULT 
+cmp addr,0 
+jne lblfix0 
+find eip,#813B4A7687DFEB02CD200F84# //Fix API function "GetVersionExA" 
+mov addr,$RESULT 
+cmp addr,0 
+jne lblfix1 
+find eip,#813B0F1ACF4CEB02CD200F84# //Fix API function "GetVersion" 
+mov addr,$RESULT 
+cmp addr,0 
+jne lblfix1 
+mov espval1,esp 
+add espval1,58 
+cmp [espval1],espval 
+jne lblabort 
+bphws espval1,"r" 
+run 
+run 
+
+lbl3: 
+bphwc espval1 
+
+lbl4: 
+find eip,#FF6424FC# //find command JMP DWORD PTR SS:[ESP-4] 
+log $RESULT 
+cmp $RESULT,0 
+je lblabort 
+eob lbl5 
+bp $RESULT 
+run 
+
+lbl5: 
+bc $RESULT 
+sto 
+msgyn "Do you want fix stolen code(for Delphi only)?" 
+cmp $RESULT,1 
+jne lblend 
+mov addr,eip //if select yes then script help you fix stolen code 
+sub addr,b 
+asm addr,"push ebp" 
+add addr,1 
+asm addr,"mov ebp,esp" 
+add addr,2 
+mov [addr],#83EC# 
+mov esptmp,ebp 
+sub esptmp,esp 
+add addr,2 
+mov [addr],esptmp 
+add addr,1 
+mov [addr],#B8# 
+add addr,1 
+mov [addr],eax 
+
+lblend: 
+cmt eip,"Script finished!" 
+msg "Script by loveboom[DFCG][FCG],Thank you for using my script!" 
+ret 
+
+lblfix0: 
+add addr,B 
+mov [addr],#EB04# 
+jmp lblcheck 
+
+lblfix1: 
+mov addr,$RESULT 
+add addr,A 
+mov [addr],#EB04# 
+jmp lblcheck 
+
+lblabort: 
+msg "Error,script abort.Maybe target is not protect by SVKP1.3x or your forgot Ignore all exceptions." 
+ret

@@ -1,0 +1,44 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+// ExeStealth v3.04 and Morphine v2.7 - OEP finder script
+//
+// Works only on Windows XP (because of breakpoint on dll).
+//
+// ExeStealth first pack file with UPX (but that's optional)
+// and then crypt it with Morphine wich uses IsBadReadPtr
+// API to clear any breakpoints (that's the reason for that
+// "Bad or unknown 32-bit ...").
+//
+// If there is something wrong with script please mail me
+// at "dalmatinac_ipo@yahoo.com".
+//
+// written by haggar 29.03.2005
+//
+
+
+msg "Ignore all exceptions. If you get 'Bad or unknown format...' message just click OK. "
+gpa "IsBadReadPtr","kernel32.dll"
+bp $RESULT
+run
+bc eip
+rtu
+rtr
+sti
+findop eip,#FFE0# // Find JMP EAX that leads to OEP
+bp $RESULT
+run
+bc eip
+sti
+find eip,#60BE????????8DBE????????# //Is it packed with UPX too?
+cmp $RESULT,eip
+jne OEP_found
+sti
+var x
+mov x,esp
+bphws x,"r"
+run
+bphwc x
+sti
+OEP_found:
+an eip
+cmt eip,"This is the OEP. Just dump and fix IAT!"
+ret

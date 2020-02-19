@@ -1,0 +1,23 @@
+// CrunchPE Heuristic OEP Finder v0.1
+// by Mr.David        
+// http://www.chinadfcg.com
+
+var addr1
+
+findop eip,#60#     //特征指令
+mov addr1,$RESULT         
+bphws addr1,"x"   //ESP定律
+run
+BPHWC addr1
+
+sto
+mov addr1,esp
+bphws addr1,"r"
+run
+BPHWC addr1
+sto
+sto
+sto
+sto
+
+cmt eip,"OEP To Get,Please dumped it,Enjoy!"

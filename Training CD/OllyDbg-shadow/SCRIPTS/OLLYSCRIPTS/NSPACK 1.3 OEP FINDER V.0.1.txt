@@ -1,0 +1,15 @@
+// NSpack 1.3 OEP Finder v0.1
+// by Mr.David        
+// www.chinadfcg.com
+
+  var addr   
+  sto        
+  sto        
+  mov addr,esp 
+  bphws addr,"r"
+  run
+  sto
+  sto
+  an eip
+  BPHWC addr
+  cmt eip,"OEP To Get,Please dumped it,Enjoy!"

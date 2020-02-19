@@ -1,0 +1,63 @@
+/*
+//////////////////////////////////////////////////
+	EncryptPe 2003.5.18 OEP Finder v0.1
+	Author:	loveboom
+	Email : bmd2chen$tom.com
+	OS    : Winxp sp1,ollyscript 0.92,ollydbg 1.10
+	Date  : 2004-9-2
+	Config: Ignore all Exceptions and ignore also following custom exceptions:"OEEDFADE","C0000008".
+	Note  : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+msgyn "Setting:Ignore all Exceptions and ignore also following custom exceptions:"OEEDFADE","C0000008".Coutinue?"
+cmp $RESULT,1
+je lblstart
+ret
+
+lblstart:
+  var addr
+  var cbase
+  var csize
+  var addr1
+  
+  ask "Please enter EPE0 section's start RVA."
+  cmp $RESULT,0
+  je lblcancel
+  mov cbase,$RESULT
+  ask "Please enter EPE0 section's size"		//If select cancel then exit script
+  cmp $RESULT,0
+  je lblcancel
+  mov csize,$RESULT
+
+
+lbl1:
+  dbh			//Hide Debugger
+  bprm cbase,csize
+  run
+
+lbl2:
+  bpmc
+  gpa "GetProcAddress","kernel32.dll"			//Get API function's Address
+  mov addr,$RESULT
+  bprm addr,8						//Set a memory break point
+  run
+
+lbl3:
+  bpmc
+
+
+lbl4:
+  find eip,#334DFC89088955F8#			//Found commands:"MOV EDX,DWORD PTR SS:[EBP-4],MOV DWORD PTR DS:[EAX],EDX"
+  cmp $RESULT,0
+  je lblabort
+  mov addr,$RESULT
+  mov [addr],#8B4DFC8908909090#
+  ret
+  
+lblabort:
+  msg "Error,Script aborted!,Meybe target is not protect by EnCryptPE 2003.5.18."
+  ret
+
+lblcancel:
+  msg "Script aborted!See you :)"
+  ret

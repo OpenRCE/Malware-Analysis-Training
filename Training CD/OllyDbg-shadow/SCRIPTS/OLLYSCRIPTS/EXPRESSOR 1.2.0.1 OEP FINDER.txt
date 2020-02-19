@@ -1,0 +1,74 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+///////////////////////////////////////////////////////////////////////////
+//
+// Brilliant "eXPressor v1.2.0.1" OEP finder script - by Haggar :-)
+//
+// I think that you need more time to click on Pluggins menu in Olly
+// to use this script, than scroll a litlle bit in CPU window in Olly
+// and find jump that leads to OEP ;-) , but maybe this script will
+// be of use to somebody.
+//
+// Script has two ways (methods) to find OEP (in case that one is not
+// working try other one):
+// 1. way - uses hardware breakpoint,
+// 2. way - calculates address of OEP jmp and puts bp on it.
+//
+///////////////////////////////////////////////////////////////////////////
+
+start:
+ask "Enter 1 or 2 to select search method:"
+cmp $RESULT,1
+je first_method
+cmp $RESULT,2
+je second_method
+cmp $RESULT,0
+je exit
+jmp wrong_input
+
+
+////////////////////////////////////////////////
+first_method:
+sto
+var x
+mov x,esp
+bphws x,"r"
+run
+bphwc x
+sto
+an eip
+cmt eip, "This is OEP! Now dump it and rebuild IAT."
+msg "OEP found with eXPressor 1.2 script by haggar - thanks for using it ;-)!"
+jmp exit
+////////////////////////////////////////////////
+
+////////////////////////////////////////////////
+second_method:
+var x
+mov x,eip
+add x,45
+mov x,[x]
+add x,eip
+add x,59
+bp x
+run
+bc eip
+sto
+an eip
+cmt eip, "This is OEP! Now dump it and rebuild IAT."
+msg "OEP found with eXPressor 1.2 script by haggar - thanks for using it ;-)!"
+jmp exit
+////////////////////////////////////////////////
+
+////////////////////////////////////////////////
+wrong_input:
+msgyn "Wrong input :-( ! Do you want to try again?"
+cmp $RESULT,1
+je start
+ret
+////////////////////////////////////////////////
+
+
+///////////////
+exit:
+ret
+///////////////

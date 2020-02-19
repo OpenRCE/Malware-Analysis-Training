@@ -1,0 +1,87 @@
+-----[ IDA Sync Plugin
+
+Copy the ida_sync.plw file to your IDA plugins directory. Next, Modify the
+plugins.cfg file to include the hotkeys. I recommend the following settings
+which simply adds the 'Alt' key as a modifier to the default hotkeys.
+
+    ; IDA Sync Hotkeys
+        IDA_Sync_-_Indented_Comment         ida_sync  Alt-:        1
+        IDA_Sync_-_Repeatable_Comment       ida_sync  Alt-Shift-R  2
+        IDA_Sync_-_Name                     ida_sync  Alt-N        3
+        IDA_Sync_-_Push_All_Function_Names  ida_sync  Alt-Shift-P  4
+
+The distributed plugin is compiled for IDA v4.7, source code is included if you
+want to compile for other versions. A message similar to the following should
+appear in the log window when IDA starts up:
+
+    [*] ida_sync initialized. Compiled on Mar  1 2005
+
+Hit Alt+Shift+C to launch the ida_sync server connect dialog and
+establish a connection with the server.
+
+-----[ IDA Sync Server
+
+The Sync Server requires Python v2.4 and currently runs on win32 only. The
+requirements on v2.4 and Windows are specific to the Metakit interface that
+I bundled with the package. To run on *nix or with Python 2.3, simply swap the
+following files from the support directory:
+
+    - Mk4py.dll
+    - mk4vc60.dll
+    - metakit.py
+
+Metakit and the related Python binding are available from:
+
+    http://www.equi4.com/metakit.html
+
+The next step is to create the users database as well as a database for any
+projects you wish to synchronize with IDA sync. The users.py script was written
+to manage users:
+
+    $ ./users.py
+    usage: users [add|delete|validate <username>] [list]
+
+To add the user 'pedram' and 'test':
+
+    $ ./users.py add pedram
+    password>
+    realname> pedram amini
+
+    $ ./users.py add test
+    password>
+    realname> test user
+
+    $ ./users.py list
+    pedram, pedram amini
+    test, test user
+
+The file, users.db, should be created in the databases directory if it doesn't
+already exist. The dbs.py script was written to manage projects:
+
+    $ ./dbs.py
+    usage: dbs <module> [list] [<create|drop|dump> <proj>]
+
+The module argument will always be 'ida_sync'. The reason this argument even
+exists is that the server was written in a modular fashion to allow for other
+components. To create a project for the latest Gaobot variant for example:
+
+    $ ./dbs.py ida_sync create gaobot
+    create view: gaobot
+
+    $ ./dbs.py ida_sync list
+    views: gaobot
+
+Once database setup is complete you can now launch the server:
+
+    $ ./ida_sync_server.py
+    Server v1.0 ready.
+
+The server will default to listening on all addresses and binding to port 5041.
+These defaults can be overridden on the command line:
+
+    $ ./ida_sync_server.py 10.10.0.100 1234
+    Server v1.0 ready.
+
+The users 'test' and 'pedram' can now individually connect to the IDA Sync
+server for the Gaobot variant they are analyzing and synchronize their efforts
+in real-time.

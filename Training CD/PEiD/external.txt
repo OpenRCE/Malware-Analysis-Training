@@ -1,0 +1,13 @@
+;The file userdb.txt is used to store the external signatures.
+;External signatures can be modified by the user as and when he requires.
+;The signatures are in the format
+
+[Name of the Packer v1.0]
+signature = 50 E8 ?? ?? ?? ?? 58 25 ?? F0 FF FF 8B C8 83 C1 60 51 83 C0 40 83 EA 06 52 FF 20 9D C3
+ep_only = true
+
+;The ?? in the signature represent wildcard bytes (they are skipped while scanning)
+;ep_only can be either true or false. When true, the signature is scanned for at the EntryPoint only.
+;Else it is scanned throughout the file.
+
+;A '*' in the results of PEiD signifies that the external database was used for scanning the file.

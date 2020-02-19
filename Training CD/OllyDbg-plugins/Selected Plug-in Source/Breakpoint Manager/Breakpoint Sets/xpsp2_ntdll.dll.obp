@@ -1,0 +1,4 @@
+# Olly BP Manager - Example Breakpoint List
+# Pedram Amini
+
+ntdll:000105d4:Edword ptr [esp+c]:size

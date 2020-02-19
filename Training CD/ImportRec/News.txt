@@ -1,0 +1,17 @@
+News:
+-----
+ImpREC is back to public. This version can now support Windows 95 (Thanks to EliCZ,
+Unknown One and ZigD for testing).
+It has also been redesigned to support more import rebuilding schemes (relative calls for
+example). The plugin interface has changed completely (using filemapping) and now supports
+the 'Exact Call' feature. This last one has been linked with the 'Create New IAT'. It will
+be useful for all mangled schemes which annihilate completely or partially the IAT. The
+'AutoTrace' is more stable because it will not use the Tracer Level2 anymore. A built-in
+coloured disassembler/hew-viewer will help you to watch the redirected code. Then you
+should not need the ASProtect plugin because of no more updates but it still is there as
+example. Please take a look at <History.txt> for all details.
+
+I hope you will enjoy this version like i did to make it,
+Regards,
+
+MackT/uCF.

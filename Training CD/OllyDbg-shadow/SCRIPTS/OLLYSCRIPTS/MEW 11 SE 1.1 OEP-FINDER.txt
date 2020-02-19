@@ -1,0 +1,35 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+;----------------------
+/*
+//////////////////////////////////////////////////////////////
+// MEW 11 SE v1.1 -> Northfox [HCC] OEP finder
+// Author: hacnho/VCT2k4
+// Email : hacnho@hotmail.com
+// Website: http://nhandan.info/hacnho
+// OS : WinXP Pro, OllyDbg 1.10 Final, OllyScript v0.85
+////////////////////////////////////////////////////////////
+*/
+
+sti
+sto
+sto
+sto
+sto
+sto
+eob Break
+findop eip, #50AD#
+bphws esp,"r"
+run
+
+Break:
+an eip
+log eip
+cmt eip, "This is the OEP! Found by hacnho/VCT2k4"
+MSG "Dumped and fix IAT now! Thanx for using my Script...!"
+
+ret
+;--------------------------
+
+
+
+// [BACK] 

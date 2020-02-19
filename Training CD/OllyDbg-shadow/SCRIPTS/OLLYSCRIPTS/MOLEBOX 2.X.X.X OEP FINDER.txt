@@ -1,0 +1,26 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+//////////////////////////////////////////////////////////////////////////
+// MoleBox v2.x.x.x OEP finder
+// Author: Newbie Cracker (MS)
+// Email : newbie_cracker_ms@yahoo.com
+// OS : WinXP Pro, OllyDbg 1.10 Final, OllyScript v0.85
+//////////////////////////////////////////////////////////////////////////
+*/
+
+eob Break
+sti
+sti
+sti
+find eip, #61FFE0#
+bphws $RESULT, "x"
+run
+
+Break:
+bphwc $RESULT
+sti
+sti
+log eip
+cmt eip, "This is the OEP found by my sciprt!"
+MSG "Dump and fix IAT now!"
+ret

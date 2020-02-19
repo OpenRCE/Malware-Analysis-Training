@@ -1,0 +1,18 @@
+var k
+var l
+eoe lab3
+eob lab3
+lab3:
+
+mov k,esp
+add k,1c
+mov l,[k]
+
+cmp l,400000
+
+je lab4
+esto
+jmp lab3
+lab4:
+
+ret 

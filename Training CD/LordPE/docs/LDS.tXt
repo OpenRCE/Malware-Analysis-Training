@@ -1,0 +1,121 @@
+              
+              ----------------------------------------------------
+              LordPE Dumper Server - plugin developer's references
+              ----------------------------------------------------
+              
+Prolog
+------
+Since the 'Gathering' version includes LordPE a plugin interface with the name
+LordPE Dumper Server (in a nutshell: LDS) which provides the following features:
+- dump process modules and rebuild them
+- dump process module blocks
+- task tracer which provides module... - pathes
+                                       - ImageBase/ImageSize
+                                       - one can search a PID with an (incomplete)
+                                         path as input
+
+The interface system
+--------------------
+The communication system is relative equal to the one of ProcDump. First one has to
+receive the window handle of LDS by the 'FindWindow' API ("LDS_WND_NAME").
+Afterwards one can interact with LDS by 'SendMessage' calls which have the following
+prototype:
+
+void SendMessage(              - no return value !
+  HWND hWnd,                   - LDS window Handle
+  UINT Msg,                    - WM_LDS_CMD_XXX action command
+  WPARAM wParam,               - Process ID of the plugin
+  LPARAM lParam                - pointer to a LDS_XXX structure
+);
+
+The LDS SDK supports the following programming languages/compilers through the
+fitting include files:
+- C(++)
+- MASM/TASM/NASM
+- Delphi
+- Visual Basic
+
+There's a command line parameter for LordPE.exe ("/LDS%modifiers%") which causes
+that LDS will be lunched directly. Look at 'ReadMe.tXt' or the MASM plugin example
+for more information.
+
+Notes
+-----
+Have a look at the include files or the example plugins (C, Delphi, ASM) for a
+demo on how to use LDS live. All include files are equal commented with the
+exception that 'LDS.h' provides the INput and OUTput tags which sign input and
+output structure elements. All commands/structures should be self explaining.
+
+Some things are commented now...
+
+(1)
+Dumped process module images or memory blocks can either be saved by a save
+dialog of LDS or the output will be saved to a memory buffer being accessible
+by the client, so the plugin can handle the dumped data itself. This concerns the
+following 2 structures for dumping operations:
+
+typedef struct _LDS_FULL_DUMP
+{
+	IN     DWORD         dwStructSize;
+	IN     DWORD         dwFlags;                                  // LDS_DUMP_XXX/LDS_REB_XXX
+	IN     DWORD         dwPID;
+	IN     HMODULE       hModuleBase;                              // NULL - calling module is dumped
+	OUT    BOOL          bDumpSuccessfully;
+	OUT    DWORD         dwSizeOfDumpedImage;
+	OUT    BOOL          bUserSaved;                               // LDS_DUMP_SAVEVIAOFN
+	OUT    char          cSavedTo[MAX_PATH];                       // LDS_DUMP_SAVEVIAOFN
+	OUT    void*         pDumpedImage;                             // !LDS_DUMP_SAVEVIAOFN
+
+	// rebuilding structure elements
+	IN     DWORD         dwRealignType;                            // 0-normal 1-hardcore 2-nice
+	IN     DWORD         dwNewImageBase;                           // format: 0xXXXX0000
+} LDS_FULL_DUMP, *PLDS_FULL_DUMP;
+
+typedef struct _LDS_PARTIAL_DUMP
+{
+	IN     DWORD         dwStructSize;
+	IN     DWORD         dwPID;
+	IN     void*         pBlock;
+	IN     DWORD         dwBlockSize;
+	IN     BOOL          bSaveViaOfn;
+	OUT    BOOL          bDumpSuccessfully;
+	OUT    BOOL          bUserSaved;                               // bSaveViaOfn
+	OUT    char          cSavedTo[MAX_PATH];                       // bSaveViaOfn
+	OUT    void*         pDumpedImage;                             // !bSaveViaOfn
+} LDS_PARTIAL_DUMP, *PLDS_PARTIAL_DUMP;
+
+"STRUCT.bSaveViaOfn"  - Indicates whether the output should be saved by the user through
+                        a LDS save dialog ("STRUCT.bUserSaved" + "STRUCT.cSavedTo"
+                        are valid) or will be saved to a memory buffer ("STRUCT.pDumpedImage"
+                        is valid)
+                        The buffer is freed automatically either when LDS is closed or a
+                        new dump is performed.
+"STRUCT.bUserSaved"   - Indicates whether the user did cancel the save dialog or not. Only
+                        if 'bUserSaved' is TRUE, "STRUCT.cSavedTo" is valid.
+              
+(2)                        
+Due to the fact that LDS doesn't respond directly to commands with a success or an error,
+one has to check the success of the LDS command in a different way. Error checking is not
+always necessary but can be done in the following way:
+
+    (...)
+    LDS_FIND_PID.dwPID = -1;
+    SendMessage(
+        LDSWindowHandle,
+        WM_LDS_CMD_FINDPROCESSID,
+        WParam(ClientPid),
+        LParam(address of LDS_FIND_PID));
+    if (LDS_FIND_PID.dwPID == -1)
+    {
+        // an error occurred
+        (...)
+    }
+    (...)
+
+Near the EOF
+------------
+It would be nice to see some plugins :D
+If you can say of yourself that you did so, then please send your plugin to LordPE@gmx.net.
+
+yoda (23th Feb 2k2)
+

@@ -1,0 +1,90 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+//////////////////////////////////////////////////
+DBPE 2.x OEP finder v0.3
+Author: loveboom
+Email : bmd2chen@tom.com
+OS : Winxp sp1,OllyDbg 1.1,OllyScript v0.85(latest)
+Date : 2004-8-22
+Config: Ignore all Exceptions.
+Note : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+
+var cbase
+var csize
+var addr
+var count
+
+gmi eip,CODEBASE
+mov cbase,$RESULT
+gmi eip,CODESIZE
+mov csize,$RESULT
+
+lblset:
+msgyn "Setting:Ignore all exceptions,require:Ollydbg1.1,ollyscript v0.85(latest),Continue?"
+cmp $RESULT,0
+je end
+
+start:
+mov count,2
+bprm cbase,csize
+run
+
+lbl1:
+bpmc
+
+lblfd:
+find eip, #39BD????????76# //Found 'CMP DWORD PTR SS:[EBP+XXXX],EDI'
+cmp $RESULT,0 //If not found go to abort
+je lblabort
+mov addr,$RESULT
+
+loopfix:
+find addr,#89BD#
+cmp $RESULT,0
+je lblabort
+mov addr,$RESULT
+fill addr,6,90
+dec count
+cmp count,0
+je lbljmpoep
+jmp loopfix
+
+lbljmpoep:
+find eip,#890F# //Found 'MOV DWORD PTR DS:[EDI],ECX'
+mov addr,$RESULT
+mov [addr],#8907# //Replace to 'MOV DWORD PTR DS:[EDI],EAX'
+find eip,#C20C00FFE0# //Found 'jmp eax'
+mov addr,$RESULT
+add addr,3
+bprm addr,FF
+run
+
+lblsto:
+bpmc
+sto
+
+lblask:
+msgyn "FIX IAT(very slow)?"
+cmp $RESULT,0
+je lblend
+
+lblfixapi:
+cmt eip,"Scaning,Please wait!" //Fix IAT
+repl cbase,#FF25??????80#,#FF25??????00#,csize
+repl cbase,#FF15??????80#,#FF15??????00#,csize
+
+lblend:
+cmt eip,"OEP,Please dumped it,Enjoy!"
+msg "Script by loveboom[DFCG],[FCG],Thank you for using my Scripts!"
+jmp end
+
+lblabort:
+msg "Error!Script aborted,Maybe target is not protect by DBPE or you forgot Ignore all Exceptions."
+
+end:
+ret
+
+
+// [BACK] 

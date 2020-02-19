@@ -1,0 +1,12 @@
+// PKLITE32 1.1 OEP V0.1
+// by Mr.David        
+// http://www.chinadfcg.com
+  
+  sto   
+  sto  
+  sto 
+  sto  
+  sto  
+  cmt eip,"OEP To Get,Please dumped it,Enjoy!"
+
+

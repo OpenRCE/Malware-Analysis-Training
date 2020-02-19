@@ -1,0 +1,14 @@
+// PEPack 1.0 OEP finder
+
+eob Break 
+sto
+sto
+findop eip, #FFE0# 
+bphws $RESULT, "x" 
+run 
+
+Break: 
+bphwc $RESULT 
+sto 
+log eip 
+ret

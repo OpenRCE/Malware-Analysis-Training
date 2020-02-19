@@ -1,0 +1,11 @@
+Anonymous
+    - Fixed WINSOCK name resolution in IDAconnector::server_connect so it always works and fixed order of calls to initialize WINSOCK for proper DNS resolution.
+    - Added support for renaming stack variables.
+    - Fixed name hook to use appropriate flags on name change.
+    - Added hook for publishing all function names to the server.
+
+Andrew Hintz
+    - Moved WSAStartup() call above the host name resolution in IDAconnector::server_connect. Was causing issues in some cases.
+
+Stefan Esser
+    - Fixed off-by-one in calls to recv() within IDAconnector::server_connect and connector_pull().

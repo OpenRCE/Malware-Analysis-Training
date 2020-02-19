@@ -1,0 +1,33 @@
+About ss-files:
+~~~~~~~~~~~~~~~
+The API parameter definition used by SoftSnoop are stored in *.ss files.
+SoftSnoop will make use of all ss - files being in a subdirectory named
+"ApiDef".
+The number of ss files is limited to 100.
+If you want to create a ss file for a dll named e.g. "blah" then you've to
+name the ss file "blah.ss" !
+All API Definitions are in the following format:
+
+-APINAME
+[Numbers for parameter types]
+
+APINAME is case sensitive !
+The following parameter types are known by SoftSnoop:
+
+Number   C-Type   Size in byte   Signed?    Notes
+----------------------------------------------------------------------------
+0        BOOL     4              no         if 0 it's FALSE else it's TRUE
+1        DWORD    4              no         alike: HANDLE, PVOID, UINT, ...
+2        WORD     2              no         
+3        BYTE     1              no
+4        PSTR     4              no         alike: CHAR*, LPCTSTR, ...
+5        PDWORD   4              no
+6        PWORD    4              no
+7        PBYTE    4              no
+8        PWSTR    4              no         alike: WCHAR*, LPCWSTR, ...
+
+
+For an example have a look at the ss files which were released with this
+SoftSnoop version.
+If someone had the time to create more complete ss files than I did then
+please mail them to me.

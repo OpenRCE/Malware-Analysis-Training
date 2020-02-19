@@ -1,0 +1,59 @@
+// Y0da Crypter 1.2 OEP Finder v0.1
+// by FEUERRADER [AHTeam]
+// http://ahteam.org
+
+var s
+var k
+
+eob Break 
+mov s, esp
+sub s, 04
+bphws s, "r"
+run
+
+Break:
+eob Break2
+eoe expp
+run
+
+Break2:
+eob B21
+eoe expp
+run
+
+expp:
+esto
+
+B21:
+eoe expp
+bphwc s
+eob B3
+eoe expp1
+mov k, eax
+bp k
+run
+
+expp1:
+esto
+esto
+
+B3:
+bphwc k
+eob Br4
+findop eip, #C1C7#
+bphws $RESULT, "x"
+run
+
+Br4:
+bphwc $RESULT
+sto
+sto
+eob Br5
+mov k, edi
+bp k
+run
+
+Br5:
+bphwc k
+cmt eip, "OEP"
+ret

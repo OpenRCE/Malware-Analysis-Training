@@ -1,0 +1,15 @@
+// Petite 2.3 UnPacking Script By : Magic_h2001
+// magic_h2001@yahoo.com  -  www.zahackers.20m.com
+
+// Please Active "Memory Access violation" 
+// in : Debugging options/Exceptions then run script ;)
+
+var x
+eob L1
+mov x,eip
+bphws x, "x"
+esto
+L1:
+bphwc x
+sti
+msg "Now try to Dump ;)  -  Script By : Magic_h2001"

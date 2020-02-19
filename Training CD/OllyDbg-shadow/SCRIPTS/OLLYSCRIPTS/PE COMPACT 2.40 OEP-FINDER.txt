@@ -1,0 +1,24 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+//---------------------------------//
+// PECompact 2.40 OEP Finder v0.1 //
+// by DWord [dword@nm.ru] //
+// 06.09.2004 //
+//---------------------------------//
+sto
+sto
+sto
+sto
+sto
+sto
+esto
+find eip, #8BC65A5E5F595B5DFFE0#
+add $RESULT,08
+bp $RESULT
+run
+bc $RESULT
+sto
+cmt eip,"This is a OEP!"
+msg "OEP found, Dumped and fix IAT now!"
+ret
+
+// [BACK] 

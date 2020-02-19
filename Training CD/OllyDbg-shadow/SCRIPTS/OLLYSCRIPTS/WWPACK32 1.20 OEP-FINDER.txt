@@ -1,0 +1,12 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+var x
+findop eip, #5B#
+mov x,$RESULT
+inc x
+go x
+cmt eip, "Nice Jump!"
+sto
+an eip
+ret
+
+// [BACK] 

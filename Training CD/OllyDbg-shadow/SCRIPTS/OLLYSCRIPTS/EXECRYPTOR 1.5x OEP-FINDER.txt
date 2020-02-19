@@ -1,0 +1,55 @@
+/* 
+////////////////////////////////////////////////// 
+EXECryptor1.5x OEP Finder v0.1 for 2k/xp 
+Author: loveboom 
+Email : bmd2chen@tom.com 
+OS : Win2kADV sp2,OllyDbg 1.1b,OllyScript v0.62 
+Date : 2004-3-14 
+Config: Check All Exception! 
+Note :Especially Tank tDasm.If you have one or more question 
+email me please,thank you! 
+////////////////////////////////////////////////// 
+*/ 
+var addr 
+var haddr 
+
+run 
+mov [eip],#CC039090# 
+mov haddr,esp 
+add haddr,14 
+log haddr 
+bphws haddr,"r" 
+gpa "VirtualProtect","kernel32.dll" 
+mov addr,$RESULT 
+add addr,1 
+bphws addr,"x" 
+esto 
+eob lbl1 
+rtu 
+
+lbl1: 
+bphwc addr 
+mov addr,eip 
+add addr,7A 
+bphws addr,"x" 
+eob lbl2 
+run 
+
+lbl2: 
+bphwc addr 
+sti 
+sti 
+sti 
+sti 
+sti 
+mov addr,edx 
+bphws addr,"x" 
+eob lbl3 
+run 
+
+lbl3: 
+bphwc addr 
+bphwc haddr 
+cmt eip,"OEP Found!please dumped it!" 
+msg "Script by loveboom[DFCG],Thank you for using my Script!" 
+ret

@@ -1,0 +1,52 @@
+The loader allows you to rip any wrapped code, reinject it in your dump and do
+relocs/import_rebuilding for trying to get a working code. The reloc job is very hard to
+implement so do not expect a miracle from it but it will do its best.
+This feature will fit for packers/protectors which emulate API or remove the whole IAT and
+redirect all calls to this IAT.
+
+
+This is an irc log about the purpose of the Loader: (Greetings to LaBBa)
+------------------------------------------------------------------------
+(it was slightly modified to correct english faults :-))
+
+<L> do u have an answer about how to manage fake api of aspr?
+<L> i mean that after the file was rebuilt by imprec the file still crashes
+    because it calls an api that aspr owns
+<M> try to use the loader. do you know the address of these apis? if yes, add them
+    into your imports and switch the loader on them. Then fix the dump.
+<M> imprec will try to rip the code and reinject it into your dump
+<M> ... the loader is experimental, i can't ensure you it will work 100%
+<L> how do i load them into the imports? (i need to dump another file?)
+<M> no, imprec can do that automatically (it's a feature nobody uses except ZigD
+    and me at the moment)
+<M> you just have to know what addresses miss into your dump and add them into the
+    tree (to add them : enter the RVA and a Size of 4 in the IAT editboxes infos
+    and click on <Get Imports>)
+<M> (it will be ADDED into your current imports (your current imports WILL NOT be
+    removed))
+<M> ok let's explain in details how the loader works:
+<M> when you <*Switch Loader*> on a slot, you will see the tag "*Loader*" near the
+    whole module (the module can stay invalid, it's not a problem)
+<M> so for your case, SUPPOSE the aspr api is a call at address 402000 (in VA) like
+    this: call [402000] (where at 402000, you have a pointer 'Y' to the faked api)
+<M> now we suppose you already have your imports which are complete and good
+<M> moreover, you know in your dump, you will miss that api at 402000
+<M> then add it to your current imports : enter 2000 in the IAT and 4 for the size
+    (we suppose the imagebase is 400000)
+<M> (another way to get it, is to use the <Get API Calls> command (right click on the tree))
+<M> you should get an invalid module w/o name + a function with the invalid pointer 'Y'
+<M> right click on that function and select <*Switch Loader*>
+<M> now fix your dump (let that pointer invalid, it's IMPORTANT)
+<M> when fixing the dump, imprec will see that invalid pointer and know it will be for
+    the loader so it will rip the region(s) which contains the code at address <Y>,
+    and inject it into your dump (you will see a dialogbox which will show you the ripped
+    region(s) just after browsing your dump)
+<M> it will also add a loader which will modify at entrypoint, the pointer <Y> to
+    point to the ripped code
+<L> cool!
+<M> so when your proggy will call that aspr api, it will call the ripped code
+<M> unfort, it does not work 100% yet because of problems on relocs (the current
+    relocs analyzer is pure heuristics... and it will stay for a long moment :-))
+<L> it will be gr8 if in the next version u will add a full explainations about that
+    (just copy all that u told me to a file...... ;)
+<M> good idea :-)

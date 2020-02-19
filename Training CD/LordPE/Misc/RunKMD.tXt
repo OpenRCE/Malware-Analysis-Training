@@ -1,0 +1,24 @@
+RunKMD 1.1
+----------
+coded by yoda (30th Apr 2k+1)
+
+This is just another of these KMD (Kernel Mode Driver) installers. You can use
+this little tool to register, start, stop and unregsiter KMD's under NT/2k. (just
+tested on 2k).
+I coded it to get familiar with this stuff and so that I can use my own proggy for
+these purposes ;)
+
+Command line:
+ RunKMD <driver name> (driver path) [OPTIONS]
+ Options:
+ /REG           - register driver, driver path must be specified
+ /UNREG         - unregister driver
+ /RUN           - start driver
+ /STOP          - stop driver
+ /DEVICEIO=X    - pass control code X (in hex) to the driver
+ Quotes are allowed and options must be interrupted by spaces.
+
+HaVe PhUn !
+yoda
+
+Visit: y0da.cjb.net

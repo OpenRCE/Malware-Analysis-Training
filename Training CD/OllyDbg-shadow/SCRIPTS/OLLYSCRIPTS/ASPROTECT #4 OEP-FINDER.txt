@@ -1,0 +1,80 @@
+var k
+var l
+var x
+var y
+var m
+
+sti
+bphws esp,"r"
+run
+sti
+eoe lab3
+eob lab3
+bphws esp,"r"
+esto
+
+
+
+lab3:
+
+mov k,esp
+add k,1c
+mov l,[k]
+cmp l,400000
+je lab4
+esto
+jmp lab3
+
+lab4:
+
+eob lab5
+mov k,eip
+add k,3d
+bp k
+mov l,0
+esto
+
+lab5:
+
+
+eob loop6
+esto
+
+
+
+
+
+
+loop6:
+
+sti
+mov y,eip
+mov x,400000
+shr x,14
+shr y,14
+sub y,x
+mov m,4
+
+loop4:
+
+cmp y,0
+sub y,1
+je end
+sub m,1
+cmp m,0
+je test
+jmp loop4
+
+test:
+
+cmp y,0
+jne loop6
+MSG " Please click on k at toolbar,if is not empty double click on the last address within the code section that you see at the bottom,and please rmove analysis if analysis has been done. Thank you!;BriteDream "
+ret
+
+
+
+end:
+
+MSG " Please click on k at toolbar,if is not empty double click on the last address within the code section that you see at the bottom,and please rmove analysis if analysis has been  done. Thank you!;BriteDream "
+ret 

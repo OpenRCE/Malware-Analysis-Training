@@ -1,0 +1,110 @@
+/*
+This script finds OEP for programs packed with PEShield v0.25 (I havn't tested for other versions)
+IMPORTANT!
+You have to hide OllyDbg from IsDebuggerPresent manually BEFORE you run this script (There is plugins that do that.)
+You have to let OllyDbg handle all exceptions (options --> Debugging Options --> Exceptions --> Uncheck all except KERNEL32)
+When the script is finished, dump and rebuild IAT for unpacked program.
+
+If you find any bugs in my script, please let me know. You can reach me on Efnet (IRC) with nickname Harding
+
+Have fun!
+*/
+
+msg "Have you read the IMPORTANT part in peshield.osc? If not, do so BEFORE you run peshield.osc.  -Harding"
+ 
+//Variables
+var codeSize
+var codeBase
+var codeBaseAddCodeSize
+var tempEIP
+var i
+
+//Execute on breakpoint (and exception)
+eob breakHandler
+eoe breakHandler
+
+//Gets information about a module to which the specified address belongs.
+//"info" can be MODULEBASE, MODULESIZE, CODEBASE or CODESIZE (if you want other info in the future versions plz tell me).
+//Sets the reserved $RESULT variable (0 if data not found).
+GMI eip, CODEBASE
+mov codeBase, $RESULT
+
+//Gets information about a module to which the specified address belongs.
+//"info" can be MODULEBASE, MODULESIZE, CODEBASE or CODESIZE (if you want other info in the future versions plz tell me).
+//Sets the reserved $RESULT variable (0 if data not found).
+GMI eip, CODESIZE
+mov codeSize, $RESULT
+
+//Fix codeBaseAddCodeSize 
+mov codeBaseAddCodeSize, codeBase
+add codeBaseAddCodeSize, codeSize
+
+//Shift F9
+esto
+
+first:
+//Shift F9
+esto
+
+second:
+//Set memory breakpoint on write. Size is size of memory in bytes.
+bpwm codeBase, codeSize
+//Shift F9
+esto
+
+third:
+//Shift F9
+esto
+
+fourth:
+//Clear memory breakpoint.
+bpmc
+//Save current EIP
+mov tempEIP,eip
+//Set breakpoint on address addr with condition cond.
+bpcnd eip,"ECX==1"
+//Shift F9
+esto
+
+fifth:
+//Clear unconditional breakpoint at addr. (And conditional)
+bc tempEIP
+//Set memory breakpoint on read. Size is size of memory in bytes.
+bprm codeBase, codeSize
+
+lastBreakHandler:
+//Are we in CODE section? If yes, then we're at OEP, if not then Shift F9
+cmp eip,codeBaseAddCodeSize
+jb finish
+esto
+
+breakHandler:
+add i,1
+cmp i,1
+je first
+
+cmp i,2
+je second
+
+cmp i,3
+je third
+
+cmp i,4
+je fourth
+
+cmp i,5
+je fifth
+
+jmp lastBreakHandler
+
+finish:
+//Clear memory breakpoint.
+bpmc
+
+//Exit script
+ret
+
+
+
+
+//Written by Harding

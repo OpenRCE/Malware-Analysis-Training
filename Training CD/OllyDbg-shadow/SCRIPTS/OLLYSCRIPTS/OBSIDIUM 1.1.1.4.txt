@@ -1,0 +1,145 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+//////////////////////////////////////////////////
+Obsidium 1.1.1.4 Unpack script v0.1(not for VB)
+Author: loveboom
+Email : bmd2chen@tom.com
+OS : WinXP sp1,Ollydbg 1.1,OllyScript v0.85
+Date : 2004-7-16
+Action: Auto fix IAT,Remove Junk code,Found stolen code
+Config: Ignore other exceptions except 'Memory access violation'
+Note : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+
+var espval
+var bbase
+var addr
+var bsize
+var goaddr
+var goaddr1
+
+Start:
+msgyn "Setting:Ignore other exceptions except'Memory access violation'(not for vb),Continue?"
+cmp $RESULT,0
+jne lbl1
+ret
+
+lbl1:
+dbh
+sti
+sti
+mov espval,esp
+run
+esto
+esto
+
+lbl2:
+gpa "VirtualAllocEx","kernel32.dll"
+cmp $RESULT,0
+je lblerros
+bp $RESULT
+esto
+
+
+lbl3:
+bc $RESULT
+mov bsize,edx //Get VirtualAlloc size
+rtu
+mov bbase,eax //Get VirtualAlloc Base
+run
+
+
+lblbp:
+esto
+esto
+esto
+esto
+bprm bbase,bsize //Set a Memory break point
+esto
+
+lbl4:
+bpmc
+rtr
+sto
+
+lblfind:
+find eip,#66F706200074# //found 'test word ptr [esi],20]'
+cmp $RESULT,0
+je lblabort
+mov addr,$RESULT
+mov [addr],#66F706080075# //Replace to 'test word ptr [esi],08'
+find addr,#83C60883C704# //found 'add esi,8,add edi,4'
+cmp $RESULT,0
+je lblabort
+mov goaddr,$RESULT
+mov goaddr1,goaddr
+find addr,#FF50??85C074# //found 'CALL DWORD PTR DS:[EAX+4C]'
+cmp $RESULT,0
+je lblabort
+mov addr,$RESULT
+add addr,6
+sub goaddr,addr
+dec goaddr
+mov [addr],goaddr
+add addr,1
+fill addr,3,90
+find addr,#FF50??85C074#
+cmp $RESULT,0
+je lblabort
+mov addr,$RESULT
+add addr,6
+sub goaddr1,addr
+dec goaddr1
+mov [addr],goaddr1
+add addr,1
+fill addr,3,90
+run
+esto
+
+lblesto:
+findop eip,#FFE1# //Found command 'JMP ECX'
+bp $RESULT
+eob lbl5
+esto
+
+lbl5:
+bc $RESULT
+bphws espval,"r"
+run
+
+lblClearJunkCode: //Clear Junk code
+bphwc espval
+repl eip,#EB01??#,#909090#,FF
+repl eip,#EB02????#,#90909090#,FF
+repl eip,#EB03??????#,#9090909090#,FF
+repl eip,#EB04????????#,#909090909090#,FF
+
+
+lblLogCode:
+find eip,#9C#
+bp $RESULT
+eob lbl6
+ti
+
+lbl6:
+bc $RESULT
+bprm bbase,bsize
+run
+
+lbl7:
+dbs
+cmt eip,"Now,press ALT+V+N open trace window,you will found stolen code!"
+
+lblend:
+msg "Script by loveboom[DFCG[FCG],Thank you for using my script!"
+ret
+lblerros:
+msg "Sorry script require OS:WINDOWS 2x/xp!"
+ret
+
+lblabort:
+msg "Error,Script aborted!,Meybe target is not protect by OBSIDIUM 1.1.1.4 or Target is a vb program."
+ret
+
+// [BACK] 

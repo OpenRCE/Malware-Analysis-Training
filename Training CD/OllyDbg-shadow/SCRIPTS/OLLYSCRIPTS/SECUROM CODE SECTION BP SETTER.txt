@@ -1,0 +1,42 @@
+/*
+ SECUROM Code section bp setter
+ By Nukacola
+ This script is really simple it set a bp on every call in the format "Call dword ptr [securom]"
+ this is the most common way securom use to call itself for resolving the imports. Remeber there are often
+ some Calls like "Call securom" this won't bp by this script. You have to watch them yourself.
+ I also discovered that the imports solved by different part of code (different resolver). So you Can now 
+ watch yourself on how securom handles this calls.
+ I guess it's working with Securom from ??? up to 4.84.75
+ 
+*/
+
+var addr
+var counts
+
+mov counts,0
+jmp start
+
+finish:
+eval "The script found {counts} possible doggy calls check them out by yourself"
+msg $RESULT
+ret
+
+start:
+inc counts
+// findop 401000, #FF15????????#
+findop eip, #FF15????????#
+log $RESULT
+bp $RESULT
+mov addr,$RESULT
+loc11:
+findop addr, #FF15????????#
+inc counts
+cmp $RESULT,0
+je finish
+mov addr,$RESULT
+bp $RESULT
+log $RESULT
+
+jmp loc11
+
+ret

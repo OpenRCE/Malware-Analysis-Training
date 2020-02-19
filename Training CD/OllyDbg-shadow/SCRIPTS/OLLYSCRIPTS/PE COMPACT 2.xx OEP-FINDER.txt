@@ -1,0 +1,60 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+;--------------
+/*
+//////////////////////////////////////////////////////////////
+// PECompact 2.xx (Support all ver) OEP finder
+// Author: hacnho/VCT2k4
+// Email : hacnho@hotmail.com
+// Website: http://nhandan.info/hacnho
+// OS : WinXP Pro, OllyDbg 1.10 Final, OllyScript v0.85
+// Date ReLeAsE: 14 July 2004
+/////////////////////////////////////////////////////////////
+*/
+
+var CS
+var CB
+var Temp
+
+sto
+findop eax, #C3#
+bp $RESULT
+esto
+esto
+
+gmi eip, CODEBASE
+mov CB, $RESULT
+log CB
+
+gmi eip, CODESIZE
+mov CS, $RESULT
+log CS
+
+bpwm CB, CS
+esto
+sto
+bpmc
+findop eip, #FFE0#
+mov Temp, $RESULT
+bp $RESULT
+esto
+jmp exit
+
+
+Return:
+esto
+jmp exit
+
+exit:
+cmp eip, Temp
+jne Return
+sto
+log eip
+cmt eip, "This is the OEP! Found by hacnho/VCT2k4"
+MSG "Dumped and fix IAT now! Thanx for using my Script...!"
+ret
+
+;---
+
+
+
+// [BACK] 

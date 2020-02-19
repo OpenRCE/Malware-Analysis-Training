@@ -1,0 +1,17 @@
+// PC Shrinker 0.71 OEP V0.1
+// by Mr.David        
+// http://www.chinadfcg.com
+  
+  var addr
+  sto   
+  sto     
+  mov addr,esp 
+  bphws addr,"r"
+  run
+  sto
+  sto
+  sto
+  BPHWC addr
+  cmt eip,"OEP To Get,Please dumped it,Enjoy!"
+
+

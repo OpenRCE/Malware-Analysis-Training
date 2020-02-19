@@ -1,0 +1,57 @@
+License agreement
+
+This License Agreement ("Agreement") accompanies the OllyDbg version 1.10,
+OllyDbg Plugin Development Kit version 1.10 and related files ("Software").
+By using the Software, you agree to be bound by all of the terms and
+conditions of the Agreement. 
+
+The Software is distributed "as is", without warranty of any kind, expressed
+or implied, including, but not limited to warranty of fitness for any
+particular purpose. In no event will the Author be liable to you for any
+special, incidental, indirect, consequential or any other damages caused by
+the use, misuse, or the inability to use of the Software, including any lost
+profits or lost savings, even if Author has been advised of the possibility
+of such damages.
+
+The Software is owned by Oleh Yuschuk ("Author") and is Copyright (c) 2000-
+2004 Oleh Yuschuk. To use this Software on a permanent basis or for commercial
+purposes, you must register it by filling the supplied registration form and
+sending it to the Author. You don't need to register Software if you use it
+exclusively with Randall Hyde's High Level Assembly. If you are already a
+registered OllyDbg user, you don't need to re-register the Software again.
+If the Software is registered to a company or organization, any person within
+the company or organization has the right to use it at work. You may install
+the registered Software on any number of storage devices, like hard disks,
+floppy disks etc. and are allowed to make any number of backup copies of this
+Software.
+
+You are not allowed to modify, decompile, disassemble or reverse engineer
+the Software except and only to the extent that such activity is expressly
+permitted by applicable law. You are not allowed to distribute or use any
+parts of the Software separately. You may make and distribute copies of this
+Software provided that a) the copy contains all files from the original
+distribution and these files remain unchanged; b) if you distribute any
+other files (for example, plugins) together with the Software, they must be
+clearly marked as such and the conditions of their use cannot be more
+restrictive than conditions of this Agreement; and c) you collect no fee
+(except for transport media, like CD or diskette), even if your distribution
+contains additional files.
+
+You are allowed to develop and distribute your own plugins -- Dynamic Link
+Libraries that connect to the Software and make use of the functions
+implemented in the Software -- free of charge provided that a) your plugins
+contain no features that persuade or force user to register them, or limit
+functionality of unregistered plugins; b) you allow free distribution of your
+plugins on the conditions similar to that of the Software; and c) you collect
+no fee (except for transport media, like CD or diskette). If you want to
+develop commercial plugin, please contact Author for a special Agreement.
+
+The distribution includes files PSAPI.DLL and DBGHELP.DLL that are the
+Microsoft(R) Redistributable files. These files should be installed only in
+the directory where the Software resides. You should use supplied PSAPI.DLL
+only on Windows NT(R) 4.0. You are not allowed to distribute PSAPI.DLL or
+DBGHELP.DLL separately from the Software.
+
+This Agreement covers only the actual version 1.10 of the OllyDbg and
+version 1.10 of the OllyDbg Plugin Development Kit. All other versions are
+covered by separate License Agreements.

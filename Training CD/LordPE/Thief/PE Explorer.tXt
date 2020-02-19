@@ -1,0 +1,7 @@
+
+Seems like the developer(s) of PE Explorer found LordPE's
+TimeDateStampConverter pretty nice :)
+Have a look at its "TDS Adjuster" tool. Nearly the same but
+with colourful pictures...
+
+yoda (6th Aug 2k2)

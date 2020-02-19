@@ -1,0 +1,13 @@
+//////////////////UPX-Scrambler RC1.x//////////////////
+// This script easely finds OEP for UPX-Scrambler RC1.x 
+// Made by Sebby
+eob Break
+findop eip,#60E9#
+bp $RESULT
+run
+
+Break:
+sto
+sto
+MSG "All done.Just dump the proces or press Ctrl+A to analyze the code."
+ret

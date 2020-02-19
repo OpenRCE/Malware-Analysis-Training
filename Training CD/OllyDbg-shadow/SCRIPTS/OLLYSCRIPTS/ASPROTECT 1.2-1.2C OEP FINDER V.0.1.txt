@@ -1,0 +1,16 @@
+// ASProtect 1.2-1.2c OEP Finder v0.1
+// by Mr.David        
+// http://www.chinadfcg.com
+
+msg "请设置OD忽略全部，然后从菜单处继续运行脚本"
+pause
+  var addr   
+  sto   
+  sto
+  sto  
+  mov addr,esp 
+  bphws addr,"r"
+  run
+  sto
+  BPHWC addr
+  cmt eip,"OEP To Get,Please dumped it,Enjoy!"

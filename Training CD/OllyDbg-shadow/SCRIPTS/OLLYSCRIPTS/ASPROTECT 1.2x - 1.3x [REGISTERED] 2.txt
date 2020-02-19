@@ -1,0 +1,92 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+//////////////////////////////////////////////////
+Author : ~Hellsp@wN~
+Email : alt-fox@mail.ru
+OS : OllyDbg 1.10 with OllyScript plugin v0.92
+System : Windows ME
+Date : 09.01.2005
+Version: 1.1
+
+1) Find OEP
+2) Hide Olly !
+
+Support with:
+ASProtect 1.2x - 1.3x [Registered]
+
+important:
+check ignore ... in KERNEL32
+check Memory access violation
+uncheck any others
+(in Exception)
+//////////////////////////////////////////////////
+*/
+MSG "Please see script for details !"
+
+var cbase
+var csize
+var eip_
+var check
+
+gmi eip, CODEBASE
+mov cbase, $RESULT
+log cbase
+gmi eip, CODESIZE
+mov csize, $RESULT
+log csize
+
+eob lab1
+esto
+
+lab1:
+mov check,0
+sto
+log "Find anti Debugger call:"
+trace:
+inc check
+log check
+cmp check,20
+je error
+sto
+mov eip_,[eip]
+log eip_
+cmp eip_,C084D0FF
+jne trace
+cmt eip,"[ IsDebuggerPresent ]"
+log "call eax is found"
+FIND eip,#74#
+cmp $RESULT,0
+je error
+eob lab4
+log $RESULT
+bp $RESULT
+esto
+
+lab4:
+cmt eip,"[ Anti Olly ]"
+mov eip_,[eip]
+log eip_
+log "Change flag !ZF"
+mov !ZF,1
+eob end1
+bc $RESULT
+esto
+
+end1:
+bprm cbase, csize
+eob end2
+esto
+
+end2:
+eob end
+esto
+
+end:
+cmt eip," :::[ OEP ]:::"
+bpmc
+ret
+
+error:
+log "Not found"
+MSG "Error"
+ret

@@ -1,0 +1,444 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+////////////////////////////////////////////////////
+// ASProtect 2.0 RC 06.2X import & scrambled code recovery (only Delphi & Imagebase = 400000)
+// Author: Mario555
+// Email : Mario555@pisem.net
+// OS : WinXP SP1, OllyDbg 1.10, OllyScript v0.92
+// Note : Olly must be hide (IsDebuggerPresent)
+// !!! This script not fix Initialization Table (call eax), you must fix it manually.
+// !!! some emulated api not determined by script, addresses of jmp [emul api] see at log (red letters).
+// usually this api = GetProcAddress, but I am not sure that always GetProcAddress ;)
+////////////////////////////////////////////////////
+*/
+
+
+var cbase
+gmi eip, CODEBASE
+mov cbase, $RESULT
+log cbase
+var csize
+gmi eip, CODESIZE
+mov csize, $RESULT
+log csize
+
+var k
+var l
+var c
+var b
+var function
+var first
+var a1
+var a2
+var a3
+var a4
+var a5
+var a6
+var iat_addr
+var wr_addr
+var mhandle
+var mhandle_old
+var iat_addr_old
+var last
+var mem_check2
+var DllBase
+var imbase
+var asec
+var temp
+var temp2
+var redirect
+var ap
+var paddr
+var savevar
+var CmpEmul
+var CmpEmulProc
+var t
+var EmulProc
+var CodeRedirect
+var credirproc
+
+mov b,0
+mov c,0
+mov mhandle_old,0
+mov first,0
+mov iat_addr, 400000
+mov imbase, 400000
+add iat_addr, [40027c]
+log iat_addr
+mov temp, 4002f4
+
+asecn:
+add temp, 28
+mov temp2, [temp]
+add temp2, imbase
+mov temp2,[temp2]
+cmp temp2, 03e86090
+je asecf
+cmp temp2, imbase
+je asecnf
+jmp asecn
+
+asecnf:
+msg "AsprSection not found"
+ret
+
+asecf:
+mov asec, [temp]
+add asec, imbase
+log asec
+add temp, 28
+mov CodeRedirect, [temp]
+add CodeRedirect, imbase
+log CodeRedirect
+
+gpa "VirtualAlloc", "kernel32.dll"
+bp $RESULT
+eoe lab_DllBase
+eob lab_DllBase
+run
+
+
+lab_DllBase:
+inc b
+cmp b, 2
+jne loc_DBn
+bc $RESULT
+cob
+coe
+rtu
+mov DllBase, eax
+log DllBase
+eoe lab_first
+eob lab_first
+mov b, 0
+
+loc_DBn:
+esto
+
+
+lab_first:
+find DllBase, #C700CA00000033C0#
+mov redirect, $RESULT
+find redirect, #8D43088B4B04#
+mov redirect, $RESULT
+sub redirect, 6
+bp redirect
+eoe lab1
+eob lab1
+esto
+
+lab1:
+cmp eip, last
+je lab_last
+cmp eip, mem_check2
+je lab_mem_check2
+cmp eip, redirect
+je loc_redirect
+cmp eip, savevar
+je loc_savevar
+cmp eip, CmpEmul
+je loc_CmpEmul
+cmp eip, credirproc
+je loc_coderedirect
+cmp c,0a
+je lab_Breaks
+add c,1
+esto
+
+loc_redirect:
+bc redirect
+add redirect,2
+mov redirect, [redirect]
+mov ap, asec
+add ap, 7000
+mov [redirect], ap
+log "-=-=-=-=-=-"
+log "redirected to"
+log ap
+log "-=-=-=-=-=-"
+mov temp, esp
+sub temp, 30
+mov temp, [temp]
+log temp
+log "-=-=-=-=-=-"
+add ap, temp
+mov [ap], #608B74242083C4EC33C08BE88944240C90909090908B068944240483C6048B168BC280EA080F92C280FA0175118BC88D5C243090E8C00000008BE890909083C6048B06894424089083C6048B168BC280EA080F92C280FA0175118BC88D5C243090E8930000008944240C90036C24048B4424080344240C89442410909083C6048B0683F800741283F801741583F802741F83F8037426EB3B908B6D00EB359090908B4424108B0089442410EB2690909033C08A45008BE8EB1A9090908B4424100FB60089442410EB0A909090909090909090908B5424108BC5E82500000083C4146183042414FF7424C49DC390909090909090909090909090C1E0022BD88B03C390902BD09C58C3#
+log ap
+mov EmulProc, ap
+add ap, 109
+esto
+
+loc_savevar:
+bc savevar
+mov savevar, [401000]
+mov [401000], ap
+esto
+
+lab_Breaks:
+log "breaks"
+mov c, 0b
+var addr
+mov addr, DllBase
+find addr, #68C8000000E8????????0143085E5BC3#
+mov temp, $RESULT
+sub temp, 5
+mov [temp], #3bc090#
+log temp
+find addr, #837C24200074448B44240C8B542420#
+mov temp, $RESULT
+sub temp, 10
+log temp
+mov a1,temp
+bp temp
+add temp, 125
+mov a2,temp
+bp temp
+add temp, 0a9
+mov a3,temp
+bp temp
+add temp, 52
+mov a4,temp
+bp temp
+sub temp, 4f
+mov a5, temp
+bp a5
+find addr, #5E5B5DC21800#
+mov a6, $RESULT
+bp a6
+add temp, 0d3
+bpl temp, "esi"
+find addr, #0F857AFFFFFF8B45FC5F5E5B#
+mov mem_check2, $RESULT
+add mem_check2, 0f
+bp mem_check2
+log mem_check2
+find addr, #8B45FC8B0085C0752B#
+mov last, $RESULT
+add last, 0f
+log last
+find addr, #8BF003731C03736C8B53208BC6#
+mov paddr, $RESULT
+add paddr, 8
+mov savevar, paddr
+sub savevar, 3
+log savevar
+bp savevar
+mov [paddr], #8BCF908BC3E8A3FCFFFF#
+find addr, #2C0272127443FEC80F848F000000#
+mov paddr, $RESULT
+add paddr, 8
+log paddr
+mov [paddr],#EB3F90909090E9EB0000009090908B45F88B406C03F8897DF0837DF0FF75110345F48B55F803420C8945F0E9CE0000008B45F88B401C0145F0E9C000000090909033C08A43048B55F88B5482448BC6FFD28B1D001040008BCB66C7030F8043000343894DF08B45F88B401C0345F48B55F803426C2BC383E80489038B45F803781C8B45F803786C83C304C603E9432BFB83EF04893B8305001040000B909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909033C05A5959648910EB1790909090909090909090909090909090909090909090909090908B45F0908B742404C606E92BC683E8059090909090909090909090909090909090905F5E5B8BE55DC3#
+mov CmpEmul, paddr
+sub CmpEmul, 2
+bp CmpEmul
+find addr, #5356575583C4EC8BF98914248BD8#
+mov CmpEmulProc, $RESULT
+mov [CmpEmulProc], #5356575583C4EC8BF98914248BD88D732833ED33C08944240C90909033C08A46078B5483448BC7FFD28944240433C08A46058B5483448BC7FFD2BA001040008B12538B5C2408891A5B83C204890283C2048305001040000833C08A46088B5483448BC7FFD28944240833C08A46068B5483448BC7FFD2BA001040008B12538B5C240C891A5B83C204890283C2048305001040000890909090909090909090909090909090909090909033C08A46098B5483448BC7FFD2BA001040008B1289028305001040000483C4145D5F5E5B9033C08A43048B55F88B5482448BC6FFD28B1D001040008BCB66C7030F804300034383E919894DF0C3#
+find addr, #8B008B388B5D088B4304#
+mov credirproc, $RESULT
+add credirproc, 0f
+bp credirproc
+eob lab2
+eoe lab2
+esto
+
+loc_CmpEmul:
+mov t, [401000]
+mov [t], 0e8
+mov temp, EmulProc
+sub temp, t
+sub temp, 5
+inc t
+mov [t], temp
+add [401000], 5
+mov ecx, esi
+mov t, ebp
+add t, 0c
+mov edx, [t]
+sub t, 14
+mov eax, [t]
+sub esp, 4
+add eip, 67
+mov [esp], eip
+mov eip, CmpEmulProc
+esto
+
+loc_coderedirect:
+mov eax, CodeRedirect
+mov temp, ebx
+add temp, 4
+add CodeRedirect, [temp]
+add CodeRedirect, 10
+sub temp, 4
+mov temp, [temp]
+add temp, imbase
+log "----------------------"
+log "coderedirect address:"
+log temp
+log "----------------------"
+esto
+
+
+lab2:
+cmp eip, a1
+je loc_imp
+cmp eip, a2
+je loc_imp
+cmp eip, a4
+je loc_imp
+cmp eip, a3
+je loc_imp2
+cmp eip, a5
+je loc_imp21
+cmp eip, a6
+je loc_imp_ord
+jmp lab1
+
+
+
+loc_imp:
+mov k, esp
+add k, 14
+mov mhandle, [k]
+cmp mhandle, mhandle_old
+je loc1
+mov mhandle_old, mhandle
+add iat_addr, 4
+
+loc1:
+cmp first,0
+mov first,1
+je loc3
+
+loc2:
+sub wr_addr,2
+mov [wr_addr], #ff25#
+add wr_addr,2
+mov [wr_addr], iat_addr_old
+mov [iat_addr_old], function
+
+loc3:
+mov wr_addr, esi
+mov function, eax
+mov iat_addr_old, iat_addr
+add iat_addr, 4
+run
+
+loc_imp2:
+mov mhandle, eax
+cmp mhandle, mhandle_old
+je loc22
+mov mhandle_old, mhandle
+add iat_addr, 4
+
+loc22:
+sub wr_addr,2
+mov [wr_addr], #ff25#
+add wr_addr,2
+mov [wr_addr], iat_addr_old
+mov [iat_addr_old], function
+mov k, esp
+add k, 0c
+mov k, [k]
+run
+
+loc_imp21:
+mov l, esp
+sub l, 14
+mov l, [l]
+add k, l
+add k, 400000
+mov wr_addr, k
+mov k, esp
+sub k, 24
+mov k, [k]
+mov function, k
+mov iat_addr_old, iat_addr
+add iat_addr, 4
+// log function
+// log wr_addr
+run
+
+loc_imp_ord:
+mov k, esp
+sub k, 8
+mov mhandle, [k]
+cmp mhandle, mhandle_old
+je loc_imp_ord_2
+mov mhandle_old, mhandle
+add iat_addr, 4
+
+loc_imp_ord_2:
+sub wr_addr,2
+mov [wr_addr], #ff25#
+add wr_addr,2
+mov [wr_addr], iat_addr_old
+mov [iat_addr_old], function
+mov wr_addr, eax
+sub k, 10
+mov function, [k]
+mov iat_addr_old, iat_addr
+add iat_addr, 4
+run
+
+lab_mem_check2:
+log "mem_check2"
+inc b
+cmp b, 2
+je loc_check2
+esto
+
+loc_check2:
+bp last
+esto
+
+lab_last:
+log "last"
+sub wr_addr,2
+mov [wr_addr], #ff25#
+add wr_addr,2
+mov [wr_addr], iat_addr_old
+mov [iat_addr_old], function
+mov [401000], savevar
+cmp ecx, 0
+jne loc_stolen
+
+bprm cbase, csize
+eob loc_end
+eoe loc_end
+esto
+
+loc_end:
+Msg "OEP finded"
+bpmc
+jmp loc_clear
+
+loc_stolen:
+sti
+sti
+sti
+sti
+sti
+Msg "Scrambler(VM) removed, dump and set EP here"
+
+
+loc_clear:
+bc a1
+bc a2
+bc a3
+bc a4
+bc a5
+bc a6
+bc last
+bc mem_check2
+log "-=-=-=-=-=-=-=-=-=-"
+log "+ script finished +"
+log "+ Mario555 +"
+log "-=-=-=-=-=-=-=-=-=-"
+ret
+
+
+
+
+// [BACK] 

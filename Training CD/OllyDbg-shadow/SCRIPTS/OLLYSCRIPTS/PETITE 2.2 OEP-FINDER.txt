@@ -1,0 +1,32 @@
+// Petite2.2 eop finder 
+// By R@dier 2004
+// 
+MSG "please tick Memory Access Violation in options-> exceptions"
+eoe here
+var a
+var b
+var c
+findop eip, #60#
+bphws $RESULT, "x"
+mov a,$RESULT
+run
+bphwc a
+sti
+bphws esp, "r"
+mov b, esp
+run
+here:
+esto
+bphwc b
+eob exit
+
+jmp exit
+exit:
+
+sti
+sti
+log eip
+cmt eip, "This is the entry point"
+MSG "Arrived at entry point dump anytime and get imports"
+ret
+

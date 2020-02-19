@@ -1,0 +1,94 @@
+// Mr.David yoda's Crypter V1.2 OEP and Patch IAT  v0.1
+// This script will quickly put you at the OEP of an yoda's Crypter V1.2 EXE.
+// Just run it!
+
+msg "请设置OD异常设置除了内存异常外全部忽略，然后从菜单处继续运行脚本"
+pause
+
+dbh  //隐藏调试器
+
+var cbase
+
+gmi eip, CODEBASE
+mov cbase, $RESULT    
+log cbase            //将源操作数输出到OllyDbg的记录窗口[log window]中,调试用
+
+var csize           //获得指定地址所在模块的相关信息,内存镜像断点
+
+gmi eip, CODESIZE
+mov csize, $RESULT
+log csize
+
+var addr1
+
+var addr2
+
+gpa "CloseHandle","kernel32.dll"
+mov addr1,$RESULT                    //捷径 API断点CloseHandle
+bp addr1
+run
+
+bc addr1    //Clear break point  //取消断点
+rtu        //Alt+F9
+
+
+findop eip,#8932#    //特征指令
+mov addr1,$RESULT         
+bphws addr1,"x"     //硬件断点兼容VB程序
+run
+repl eip, #8932#, #8902#, 10       //有病治病，无病强身
+BPHWC addr1
+
+findop eip,#33C3#    //特征指令
+cmp $RESULT, 0
+je lblabel1
+mov addr2,$RESULT 
+bphws addr2,"x"     //硬件断点兼容VB程序
+run               //运行
+
+repl eip, #33c3#, #33c0#, 10    //有病治病，无病强身
+
+BPHWC addr2
+
+esto
+
+findop eip,#33DB#    //特征指令
+cmp $RESULT, 0
+je lblabel2
+
+esto
+bprm cbase, csize //内存镜像断点
+
+esto
+
+bpmc
+           
+cmt eip,"OEP Or Next Shell To Get,Please dumped it,Enjoy!" //Yoda全部Anti选项路线
+
+ret
+
+lblabel2:
+
+bprm cbase, csize //内存镜像断点
+
+esto
+
+bpmc
+           
+cmt eip,"OEP Or Next Shell To Get,Please dumped it,Enjoy!" //没选检查Softice的异常少一次，如果他什么Anti选项都不选，那么脚本无法正确运行，这真是千个师傅千个法，脚本只能是对壳默认选项正确执行的。
+
+ret
+
+lblabel1:  //For VB程序
+
+esto
+
+bprm cbase, csize //内存镜像断点
+
+esto
+
+bpmc
+           
+cmt eip,"VBOEP Or Next Shell To Get,Please dumped it,Enjoy!"
+
+ret

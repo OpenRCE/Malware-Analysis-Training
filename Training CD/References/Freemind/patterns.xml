@@ -1,0 +1,119 @@
+<!-- Default patterns supplied with FreeMind -->
+<!-- If you want to change them, take care that Freemind searches
+     in you user home directory, 
+     i.e. C:/My Documents/<username>/Freemind/patterns.xml. 
+     -->
+<patterns>
+   <pattern name="Default">
+      <node icon="none">
+         <font/>
+      </node>
+      <edge/>
+   </pattern>
+   <pattern name="Normal">
+      <node color="#000000"/>
+   </pattern>
+   <!-- task -->
+   <pattern name="OK">
+      <node color="#338800"/>
+   </pattern>
+   <pattern name="Needs action">
+      <node color="#990000"/>
+   </pattern>
+   <pattern name="Hot">
+      <node color="#ff0000"/>
+   </pattern>
+   <!-- document -->
+   <pattern name="Detail">
+      <node color="#999999">
+         <font size="10"/>
+      </node>
+   </pattern>
+   <pattern name="Folder">
+      <node color="#006699"/>
+   </pattern>
+   <pattern name="Topic">
+      <node color="#669900"/>
+   </pattern>
+   <pattern name="Larger Topic">
+      <node color="#006633"/>
+   </pattern>
+   <pattern name="Waiting Topic">
+      <node color="#B3B95C"/>
+   </pattern>
+   <pattern name="Object / Keyword">
+      <node color="#996600"/>
+   </pattern>
+   <pattern name="Object of Code">
+      <!-- that is function name, database table name, class name etc.-->
+      <node color="#CC6600"/>
+   </pattern>
+   <pattern name="Question">
+      <node color="#999900"/>
+   </pattern>
+   <pattern name="Open Question">
+      <node color="#CC3300"/>
+   </pattern>
+   <pattern name="Bad">
+      <node color="#990099"/>
+   </pattern>
+   <pattern name="Blue">
+      <node color="#0033FF"/>
+   </pattern>
+   <pattern name="Pink">
+      <node color="#FF6666"/>
+   </pattern>
+   <pattern name="Cyan">
+      <node color="#009999"/>
+   </pattern>
+
+   <!-- Mind map styles -->
+   <!-- Experimental. 
+        If you want to try them, apply AutomaticMindMapRoot 
+        to the root of a mindmap. Take care, the whole map changes it colors -->
+   <!--        
+   <pattern name="MindMapDefault">
+      <node color="#111111"/>
+      <edge color="#111111" width="thin"/>
+      <child pattern="MindMapDefault"/>
+   </pattern>
+
+   <pattern name="MindMap3">
+      <node color="#990000"/>
+      <edge color="#990000" width="1"/>
+      <child pattern="MindMapDefault"/>
+   </pattern>
+
+   <pattern name="MindMap2">
+      <node color="#00b439"/>
+      <edge color="#00b439" width="2"/>
+      <child pattern="MindMap3"/>
+   </pattern>
+   
+   <pattern name="MindMap1">
+      <node color="#0033FF"/>
+      <edge color="#0033FF" width="4"/>
+      <child pattern="MindMap2"/>
+   </pattern>
+
+   <pattern name="AutomaticMindMapRoot">
+      <node color="#000000"/>
+      <edge color="#000000" width="8"/>
+      <child pattern="MindMap1"/>
+   </pattern>
+   -->
+
+   <!-- These two examples are not really meant for serious use -->
+   <!-- example of edges -->
+   <pattern name="Blue with edges">
+      <node color="#000099"/>
+      <edge color="#009999" width="4"/>
+   </pattern>
+   <!-- example with text and icon -->
+   <!-- <pattern name="Program with icon">
+      <node color="#996600" italic="true" text="Program" icon="stop">
+         <font size="16" italic="true"/>
+      </node>
+   </pattern>
+   -->
+</patterns>

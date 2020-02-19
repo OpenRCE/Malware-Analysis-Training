@@ -1,0 +1,114 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+// Second Version of Haldir's Flexlm Seedfinder Script for Ollydbg
+// Supported should be every Flexlm version >=7.2
+// Remove all BP in the code before running this script
+// Codebase is usually 00401000 for .exe or 10001000 for .dll
+// In more recent Flexlm versions you need a faked license (like Feature f1 1.000 permanent uncounted HOSTID=ANY SIGN=12345678)
+// otherwise it might not work
+
+var jobstruct
+var codebase
+
+// start
+msgyn "Did you remove all BPs?"
+cmp $RESULT,1
+je setup
+ret
+
+
+setup:
+ask "Enter Codebase of the Flexlm Module"
+cmp $RESULT, 0
+je cancel
+mov codebase, $RESULT
+jmp findlsg
+
+cancel:
+msg "Please enter Codebase"
+ret
+
+// It searches for a cmp with 0x87654321, which is located below a call to l_sg
+// Then we calculate the offset for the call and execute to it
+findlsg:
+
+var pos
+var callpos
+find codebase, #81BD????????21436587#
+mov pos, $RESULT
+cmp pos, 0
+je error
+mov callpos, pos
+sub callpos, 07
+sub pos, 03
+add pos,[callpos]
+eval "l_sg is at: 0x{pos}"
+msg $RESULT
+go pos
+jmp lsg
+
+error:
+msg "An unknown error occured"
+
+
+// The call to l_n36_buff is a call dword ptr, so we calc its offset again and execute to it
+lsg:
+
+var pos
+var n36pos
+mov pos, eip
+find pos, #FF15????????#
+mov pos, $RESULT
+add pos,2
+mov n36pos, [pos]
+mov pos, [n36pos]
+eval "l_n36_buff is at: 0x{pos}"
+msg $RESULT
+go pos
+jmp n36buff
+
+// We patch the Jobstruct at the EB05 jmp shortly above the vendor name loop
+n36buff:
+
+var pos
+mov pos, eip
+find pos, #EB05#
+mov pos, $RESULT
+go pos
+jmp findjobstruct
+
+// We check the registers to find the job struct (we check only edx and ecx (haven't seen anything else yet))
+findjobstruct:
+
+var check
+mov check, [edx]
+cmp check, 66
+mov jobstruct, edx
+je found
+mov check, [ecx]
+cmp check, 66
+mov jobstruct, ecx
+je found
+jmp error
+
+// Now we delete the rand() values in the job struct and execute to the end and fish the seeds from there
+found:
+
+add jobstruct, 04
+fill jobstruct,10,00
+rtr
+var seed1
+var seed2
+var struct
+var tempstruct
+mov struct, ebp
+add struct, 10
+mov tempstruct, [struct]
+add tempstruct,4
+mov seed1, [tempstruct]
+add tempstruct,4
+mov seed2, [tempstruct]
+eval "Your seeds are Seed1: 0x{seed1} and Seed2: 0x{seed2}"
+msg $RESULT
+ret
+
+// [BACK] 

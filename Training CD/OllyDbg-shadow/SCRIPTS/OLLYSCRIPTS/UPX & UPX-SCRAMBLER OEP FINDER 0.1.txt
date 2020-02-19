@@ -1,0 +1,35 @@
+/*
+//////////////////////////////////////////////////
+	Upx/UPX-Scrambler OEP finder v0.1
+	Author:	loveboom
+	Email : bmd2chen@tom.com
+	OS    : Winxp sp1,OllyDbg 1.1,OllyScript v0.85(latest)
+	Date  : 2004-6-4
+	Config: N/A
+	Note  : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+var goaddr                           
+
+start:
+  find eip,#61E9??????FF#                //find 'popad jmp addr'
+  cmp $RESULT,0
+  jne lblupx
+  find eip,#60E9??????FF#                  //find 'pushad jmp addr'
+  cmp $RESULT,0
+  jne lblupx
+
+lblerr:
+  msg "Error,Script abort!Maybe target is not pracked by upx or UPX-Scrambler.more information contact me."
+  ret
+
+lblupx:
+  mov goaddr,$RESULT
+  add goaddr,1
+  go goaddr
+  sto
+  
+end:
+  cmt eip,":),OEP"
+  msg "Script by loveboom[DFCG][FCG],Thank you for using my script!"
+  ret

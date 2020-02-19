@@ -1,0 +1,70 @@
+/*
+//////////////////////////////////////////////////
+	ASProtect 1.0 Unpacking script v0.1(for win2k/xp only)
+	Author:	loveboom
+	Email : loveboom%163.com
+	OS    : WinXP sp2,Ollydbg 1.1,OllyScript v0.92
+	Date  : 2004-12-25
+        Action: Find OEP
+	Config: Ignore all exceptions
+	Note  : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+
+var espval
+var count
+var addr
+
+lblset:
+  msgyn "Setting:Ignore all exceptions."
+  cmp $RESULT,1
+  je start
+  ret
+
+start:
+  mov count,2
+  mov espval,esp
+  sub espval,4
+  gpa "LocalAlloc","kernel32.dll"		//Get API function 'LocalAlloc'
+  cmp $RESULT,0
+  je lblabort
+  bp $RESULT
+
+lbl1:
+  run
+
+lbl2:
+  cmp count,0
+  je lbl3
+  dec count
+  jmp lbl1
+
+lbl3:
+  mov addr,esp
+  add addr,4
+  mov [addr],40
+  bc $RESULT
+  bphws espval,"r"
+
+lblesto:
+  esto
+  esto
+  esto
+  esto
+
+lbl4:
+  bphwc espval
+  findop eip,#C3#		//Find command 'RETN'
+  cmp $RESULT,0
+  je lblabort
+  go $RESULT
+  sto
+
+lbloep:
+  cmt eip,"oep"
+  msg "Script by loveboom[DFCG[FCG][US],Thank you for using my script!"
+  ret
+
+lblabort:
+  msg "Script abort!Maybe target is not protect by Asprotect 1.0."
+  ret

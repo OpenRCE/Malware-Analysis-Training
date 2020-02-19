@@ -1,0 +1,58 @@
+/*
+    -==================================================================-
+    |                       .:[CracksLatinoS]:.                        |
+    |    Script realizado por : +NCR/CRC! [ReVeRsEr]                   |
+    |    Script para : PolyCrypt                                       |
+    |    Configuracion: WinXPPro SP1 - OllyDbg v1.10 - OllyScript 0.92 |
+    |    Fecha : 13/06/2005                                            |
+    |                -=[ OEP Finder ]=-                                |
+    |                                                                  |
+    |                                                                  | 
+    |                                                                  |
+    |                                                                  |
+    -==================================================================-
+*/
+
+sto
+findop eip, #C3#
+bphws $RESULT, "x"
+eob break
+run
+
+break:
+bphwc $RESULT
+sti
+findop eip, #90#
+bphws $RESULT, "x"
+eob tag1
+run
+
+tag1:
+cmp eip, $RESULT
+jne final
+bphwc $RESULT
+find eip, #61??????????????C3#
+bphws $RESULT, "x"
+eob break2
+run
+
+break2:
+bphwc $RESULT
+sti
+sto
+sti
+msg "OEP ENCONTRADO"
+msg "Ahora dumpea con OllyDump"
+msg "Y repara la IAT"
+msg "Script by +NCR/CRC! [ReVeRsEr] .:CracksLatinoS! 2005:."
+ret
+
+final:
+msg "OEP NO ENCONTRADO"
+ret
+
+
+
+
+
+

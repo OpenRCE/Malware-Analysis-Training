@@ -1,0 +1,345 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+-------------------------------------------------------------------
+MEPHiST0s - ARMADiLLO DETECTiVE v1.00 for olly script
+-------------------------------------------------------------------
+tested on Olly Debug v1.1.0, and Olly Script v0.92 on WinXP
+-------------------------------------------------------------------
+- DETECTS Original Entry Point of most ARMADILLO v3.xx
+- DETECTS and REPAIRS Code Splicing.
+- DETECTS and REPAIRS Magic IAT jump.
+- DETECTS Import Elimination...
+- DETECTS Most Armadillo Version infos.
+- Allows 1 execution for full working dump file in most cases.
+___________________________________________________________________
+[DEBUGGING OPTIONS]:
+REMOVE ALL Hardware Breakpoints on the Target
+Select ALL items in Debugging Options-Exceptions:
+ALSO: aDD C000001D(ILLEGAL ISTRUCTION) aND C0000005(ACCESS ViO)
+aND C000001E(INVALID LOCK SEQUENCE) in custom exceptions
+___________________________________________________________________
+*/
+var adata
+var rdata
+var Armadillo_Version
+var called
+var codesplice
+var crcfix
+var dbcheck
+var debugblock
+var Magic_Jump_Location
+var impelim
+var impelimmem
+var impelimmem0
+var mem
+var mem0
+var mem1
+var mem2
+var Original_Entry_Point
+var strcheck
+var time
+var temp
+var VirtualAlloc
+
+gmi eip,MODULEBASE
+find $RESULT,#2E6164617461#
+mov adata,$RESULT
+add adata,0c
+mov adata,[adata]
+gmi eip,MODULEBASE
+add adata,$RESULT
+log adata
+gmi eip,MODULEBASE
+find $RESULT,#2E7264617461#
+mov rdata,$RESULT
+add rdata,0c
+mov rdata,[rdata]
+gmi eip,MODULEBASE
+add rdata,$RESULT
+log rdata
+dbh
+gpa "OpenMutexA", "kernel32.dll"
+mov mem,$RESULT
+bp mem
+esto
+esto
+rtr
+sti
+bc mem
+gpa "time", "MSVCRT.dll"
+mov time,$RESULT
+bp time
+mov dbcheck,[eip]
+and dbcheck,0000FFFF
+cmp dbcheck,0000C085 //checking for debug blocker
+je db
+jmp csbreak
+
+db:
+msg "This File is protected with Armadillo's Debug Blocker Feature or CopyMEM2."
+mov debugblock,1
+mov eax,1
+jmp csbreak
+
+csbreak:
+gpa "strchr", "MSVCRT.dll"
+mov mem0,$RESULT
+bp mem0
+esto
+cmp mem0,eip
+jne lblerror
+cmp time,eip // checking for code splicing
+je cs
+esto
+cmp time,eip
+je cs
+cmp mem0,eip
+je iatj
+esto
+cmp mem0,eip
+jne lblerror
+jmp iatj
+
+cs:
+rtr
+sti
+find eip,#6A406800100000#
+find $RESULT,#8985????????83BD????????0074??#
+bp $RESULT
+esto
+bc $RESULT
+cmp $RESULT,eip
+jne iatj
+mov codesplice,1
+msg "This File is protected with Armadillo's Code Splicing Feature."
+mov eax,adata
+jmp iat1
+
+iat1:
+bp mem0
+esto
+cmp mem0,eip
+jne lblerror
+bc mem0
+rtr
+sti
+jmp iatmain
+
+iatj:
+cmp time,eip
+je cs
+rtr
+sti
+mov strcheck,[eip]
+and strcheck,00FFFFFF
+cmp strcheck,00405959
+je iatmain
+jmp iatm
+
+iatm:
+esto
+jmp iatj
+
+iatmain:
+bc mem0
+mov mem2,eip
+find mem2,#FF15????????595985C07511#
+mov Magic_Jump_Location,$RESULT
+find Magic_Jump_Location,#7511#
+mov Magic_Jump_Location,$RESULT
+repl Magic_Jump_Location, #7511#, #EB13#, 4
+find Magic_Jump_Location,#0F8598000000#
+mov temp,$RESULT
+repl temp, #0F8598000000#, #90E998000000#, 14
+find temp,#83BD????????0074??8B85??#
+mov crcfix,$RESULT
+bp crcfix
+esto
+bc crcfix
+repl Magic_Jump_Location, #EB13#, #7511#, 4
+repl temp, #90E998000000#, #0F8598000000#, 14
+find eip,#FFD78BD85F8BC35E5BC3# //find call edi
+mov called,$RESULT
+gpa "VirtualProtect", "kernel32.dll"
+mov impelimmem,$RESULT
+bp impelimmem
+esto
+rtr
+sti
+find eip,#A1????????8A80????????8885#
+mov impelimmem0,$RESULT
+bc impelimmem
+cmp impelimmem0,eip
+je elimination
+cmp debugblock,1
+je elimloop
+jmp na
+
+elimloop:
+gpa "VirtualProtect", "kernel32.dll"
+mov impelimmem,$RESULT
+bp impelimmem
+bp called
+bc time
+esto
+cmp called,eip
+je finish
+esto
+rtr
+sti
+find eip,#A1????????8A80????????8885# //elimination signature
+mov impelimmem0,$RESULT
+cmp impelimmem0,eip
+je elimination
+esto
+rtr
+sti
+find eip,#A1????????8A80????????8885#
+mov impelimmem0,$RESULT
+cmp impelimmem0,eip
+je elimination
+cmp called,eip
+je finish
+esto
+rtr
+sti
+find eip,#A1????????8A80????????8885#
+mov impelimmem0,$RESULT
+cmp impelimmem0,eip
+je elimination
+cmp called,eip
+je finish
+esto
+rtr
+sti
+find eip,#A1????????8A80????????8885#
+mov impelimmem0,$RESULT
+cmp impelimmem0,eip
+je elimination
+cmp called,eip
+je finish
+esto
+rtr
+sti
+find eip,#A1????????8A80????????8885#
+mov impelimmem0,$RESULT
+cmp impelimmem0,eip
+je elimination
+cmp called,eip
+je finish
+esto
+rtr
+sti
+find eip,#A1????????8A80????????8885#
+mov impelimmem0,$RESULT
+cmp impelimmem0,eip
+je elimination
+bc impelimmem
+jmp na
+
+elimination:
+msg "This File might be Protected with Armadillo's Import Elimination Feature"
+bc impelimmem
+mov impelim,1
+jmp na
+
+na:
+find eip,#FFD78BD85F8BC35E5BC3#
+mov called,$RESULT
+bp called
+cmp called,eip
+je finish
+esto
+cmp called,eip
+je finish
+esto
+cmp called,eip
+je finish
+esto
+cmp called,eip
+je finish
+esto
+cmp called,eip
+je finish
+jne lblerror
+
+finish:
+bc impelimmem
+bc called
+find called,#61726D56657273696F6E3E??????????????????????????????????????#
+find called,#332E??????????????#
+mov Armadillo_Version,$RESULT
+sti
+mov mem,[eip]
+and mem,0000FFFF
+cmp mem,0000D7FF
+je finish
+jmp tagx
+
+tagx:
+log " "
+log " M E P H i S T 0"
+log " "
+log " ARMADiLLO DETECTiVE v1.00 - FOR olly SCRiPT"
+log " "
+cmp debugblock,1
+je log_db
+cmp codesplice,1
+je log_cs
+cmp impelim,1
+je log_impelim
+jmp tag1
+
+tag1:
+mov Original_Entry_Point,eip
+cmt Original_Entry_Point," = Original Entry Point"
+log " "
+log Original_Entry_Point
+jmp tagmain
+
+tagmain:
+log " "
+log Magic_Jump_Location
+log " "
+log Armadillo_Version
+log " "
+log "File is Ready for dumping - Magic Jump Patched - IAT is ready for Rebuilding"
+bc mem0
+bc mem1
+bc mem2
+bc time
+jmp lblw00t
+
+log_cs:
+log " "
+log " -= ARMADiLLO Code Splicing has BEEN DETECTED - AND REPAIRED =- "
+log " "
+cmp impelim,1
+je log_impelim
+jmp tag1
+
+log_impelim:
+log " "
+log " -= ARMADiLLO Import Elimination has BEEN DETECTED =- "
+log " "
+jmp tag1
+
+log_db:
+log " "
+log " -= ARMADiLLO Debug Blocker has BEEN DETECTED - AND REPAIRED =- "
+log " "
+cmp codesplice,1
+je log_cs
+cmp impelim,1
+je log_impelim
+jmp tag1
+
+lblw00t:
+msg "Found the OEP - You can now DUMP the target file - IAT Magic JUMP is Patched: IAT is READY for REBUILDING: Please Check the LOG Window"
+ret
+
+lblerror:
+msg "Errors Have Occured, Please Check LOG. the File might be protected with Copymem2, or hardware breakpoints may exsist"
+ret
+
+// [BACK]

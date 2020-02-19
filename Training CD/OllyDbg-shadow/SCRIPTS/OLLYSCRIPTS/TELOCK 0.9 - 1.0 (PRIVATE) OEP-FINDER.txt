@@ -1,0 +1,42 @@
+/* 
+////////////////////////////////////////////////// 
+tElock 0.9 - 1.0 (private) -> tE! OEP Finder v0.1 
+Author: loveboom 
+Email : bmd2chen@tom.com 
+OS : Win2kADV sp2,OllyDbg 1.1b,OllyScript v0.62 
+Date : 2004-3-29 
+Config: uncheck all the boxes on the Exceptions tab 
+in Debugging Options except the topmost one.Rename 'OLLYDBG.EXE' 
+Modify Classname 'OLLYDBG',I can email you a file patch(Only 1.1b) if you want. 
+Note : If you have one or more question, email me please,thank you! 
+////////////////////////////////////////////////// 
+*/ 
+
+var count //Declare variant 
+var cbase 
+var csize 
+
+start: 
+gmi eip,CODEBASE 
+mov cbase,$RESULT 
+gmi eip,CODESIZE 
+mov csize,$RESULT 
+mov count,f 
+run 
+
+lbl1: 
+cmp count,0 
+je lbl2 
+sub count,1 
+esto 
+jmp lbl1 
+
+lbl2: 
+bprm cbase,csize 
+esto 
+
+lblend: 
+bpmc 
+cmt eip,"OEP found!please dumped it!" 
+msg "Script by loveboom[DFCG],Thank you for using my script!" 
+ret

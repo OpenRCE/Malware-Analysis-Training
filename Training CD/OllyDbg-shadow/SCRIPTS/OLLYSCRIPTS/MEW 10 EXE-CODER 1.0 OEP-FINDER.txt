@@ -1,0 +1,30 @@
+/*
+// OEP FINDER FOR: Mew 10 exe-coder 1.0 by Northfox
+// AUTHOR        : SMoKE (smoke@freenet.am)
+// OS            : WinXP SP1, OllyDbg v1.10c, OllyScript v0.8
+// INFOZ         : dump at OEP and simply fix import table by ImpRec
+*/
+
+
+var X
+gpa "LoadLibraryA", "kernel32.dll"
+bphws $RESULT, "x"
+eob label1
+run
+label1:
+bphwc $RESULT
+mov X, [esp]
+bp X
+eob label2
+run
+label2:
+bc X
+findop eip, #C3#
+bp $RESULT
+eob label3
+run
+label3:
+bc $RESULT
+sto
+cmt eip, "OEP Reached !"
+ret

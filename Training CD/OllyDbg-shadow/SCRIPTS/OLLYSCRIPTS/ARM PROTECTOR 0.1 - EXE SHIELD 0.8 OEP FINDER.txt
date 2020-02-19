@@ -1,0 +1,28 @@
+/*
+11h21 PM Monday 10 January 2005
+ARM Protector 0.1 OEP Finder - EXE Shield 0.8 OEP Finder
+Author : dqtln
+Email : dqtlncrk@gmail.com
+OS : WinXP Pro SP1 , OllyDbg 1.10 , OllyScript 0.92
+Website : www.phudu.com
+For opinions & bugreport send me a email
+Thank you very much
+*/
+
+var x
+var y
+gmi eip,CODEBASE
+mov x,$RESULT
+gmi eip,CODESIZE
+mov y,$RESULT
+run
+esto
+bprm x,y
+esti
+run
+bpmc
+msg "Please press No if have a question"
+an eip
+cmt eip,"This is the OEP - Found by dqtln"
+msg "Dump and fix IAT now - Good day"
+ret

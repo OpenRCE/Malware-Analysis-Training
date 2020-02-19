@@ -1,0 +1,44 @@
+/*
+11h11 AM Webnesday 12 January 2005
+PESpin 1.0 OEP Finder without Method "Remove OEP"
+Author : dqtln
+Email : dqtlncrk@gmail.com
+OS : WinXP Pro SP1 , OllyDbg 1.10 , OllyScript 0.92
+Website : www.phudu.com
+For opinions & bugreport send me a email
+Thank you very much
+*/
+
+msgyn "Please check Options/Exceptions/INT3 breaks"
+cmp $RESULT,0
+je dqtln3
+var x
+sto
+sto
+bphws esp,"r"
+mov x,esp
+run
+
+dqtln1:
+esto
+cmp eax,FF
+jne dqtln1
+je dqtln2
+
+dqtln2:
+esto
+bphwc x
+ask "See E9???????? code - Jump to OEP - Enter new EIP"
+cmp $RESULT,0
+je dqtln3
+mov eip,$RESULT
+sto
+msg "Please press No if have a question"
+an eip
+cmt eip,"This is the OEP - Found by dqtln"
+msg "Dump and fix IAT now - Good day"
+ret
+
+dqtln3:
+msg "Script Abort"
+ret

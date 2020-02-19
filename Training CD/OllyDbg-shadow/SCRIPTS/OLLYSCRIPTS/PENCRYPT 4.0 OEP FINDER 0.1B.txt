@@ -1,0 +1,41 @@
+// PEncrypt 4.0 Find Oep 0.1b
+// This script will quickly put you at the OEP of an PEncrypt 4.0 EXE.
+// Just run it!
+
+var a
+
+msg "请设置OD异常设置不要忽略内存异常和单步异常，然后从菜单处继续运行脚本"
+
+pause
+
+var cbase
+
+gmi eip, CODEBASE
+mov cbase, $RESULT    
+log cbase            //将源操作数输出到OllyDbg的记录窗口[log window]中,调试用
+
+var csize           //获得指定地址所在模块的相关信息,内存镜像断点
+
+gmi eip, CODESIZE
+mov csize, $RESULT
+log csize
+
+dbh  //隐藏调试器
+
+run 
+
+esto     //忽略两次Seh异常
+
+find eip,#00000000#  //查找很多00000000一起的语句
+mov a,$RESULT
+sub a,2
+bp a
+esto           //Shift+F9直达指定断点
+bc a
+
+bprm cbase, csize //内存镜像断点
+
+run
+bpmc
+cmt eip,"OEP To Get,Please dumped it,Enjoy!"
+

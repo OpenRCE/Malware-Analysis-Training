@@ -1,0 +1,17 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+var a
+findop eip, #FFE0#
+go $RESULT
+cmt eip, "Jmp To OEP"
+sto
+an eip
+MSGYN "Do u wanna to Unpack it ?"
+cmp $RESULT,0
+je he_refuze
+mov a,"c:\D_file_unpacked.exe"
+dpe a,eip
+MSG a
+he_refuze:
+ret
+
+// [BACK] 

@@ -1,0 +1,59 @@
+Put your DLLs here and they will appear in the popup menu when right-clicking on the
+imports tree.
+
+This is the way you have to follow:
+-----------------------------------
+
+	- Export a function named "Trace" which takes 5 parameters (5 DWORDs).
+
+	  Its C Prototype is:
+
+		- DWORD Trace(DWORD hFileMap, DWORD dwSizeMap, DWORD dwTimeOut,
+		              DWORD dwToTrace, DWORD dwExactCall);
+
+		where:
+			- hFileMap      : HANDLE of the file mapped by ImportREC
+			- dwSizeMap     : Size of the mapped file
+			- dwTimeOut     : TimeOut in ImportREC Options
+			- dwToTrace     : The pointer to trace (in VA)
+			- dwExactCall   : The EIP of the 'Exact Call' (in VA)
+			                  (this value is 0 when it is not an 'Exact Call')
+
+	- Error returned codes should be greater or equals to 200. They will be shown in
+	  ImportREC when it is finished to call it
+
+	- Create a Map View with the handle <hFileMap> provided (API: MapViewOfFile) to
+	  get a pointer to the mapped file (Thanks to EliCZ for advices)
+
+		* Do not forget to Unmap the view and close the handle <hFileMap> when
+		  finished
+	
+	- When you find the real API, write in the mapped file (at offset 0) the address
+	  of the API (in VA)
+
+
+Notes:
+------
+	
+	- All you do in your DLL will be executed in the context of your target.
+
+	- If <dwExactCall> is not null, it is the address in VA of the call to the API in
+	  the code.
+
+	  Example:
+
+		You trace a slot at an RVA 1000 with 'Exact Call' enabled and in the
+                code of the target, you have: 402000 CALL [1000+image_base]
+
+		Then your "Trace" function will be called with a <dwExactCall> equals
+		to 402000. If you find the real API, ImportREC will fix the code later
+	        to point it to the good IAT place.
+	
+	- If you manage to write a ring0/3 tracer, you will have to jump into the pointer
+          to trace and manage all exceptions by yourself. I advise you to create a thread
+	  before tracing in it.
+
+	- Greetings to tE! ;-)
+
+	- You are not allowed to modify and redistribute this document without my
+	  permission (except for translations only).

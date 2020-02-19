@@ -1,0 +1,79 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+//////////////////////////////////////////////////
+Author : ~Hellsp@wN~
+Email : alt-fox@mail.ru
+OS : OllyDbg 1.10 with OllyScript plugin v0.7
+Date : 24.07.2004
+Version: 1.1
+
+1) Find OEP
+2) Find Stolen Bytes
+
+Support with:
+ASProtect 1.22 - 1.23 Beta 21
+//////////////////////////////////////////////////
+*/
+
+var op
+mov op,esp
+sub op,4
+
+var k
+var l
+var Stolen Bytes
+var OEP
+var toep
+
+eoe lab1
+eob lab1
+run
+
+lab1:
+mov k,esp
+add k,1C
+mov l,[k]
+cmp l,400000
+je lab2
+esto
+
+lab2:
+eob lab3
+eoe lab4
+bphws op,"r"
+esto
+
+lab3:
+bphwc op
+mov OEP,eax
+mov Stolen Bytes,ebx
+mov toep,eip
+mov k,eax
+mov l,eip
+cmp l,k
+je OE
+eval "OEP: {OEP} and stolen bytes: {Stolen Bytes}"
+cmt toep,$RESULT
+sto
+sto
+findop toep, #55#
+cmp $RESULT,0
+je end
+cmp $RESULT,toep
+jb end
+bp $RESULT
+cmt $RESULT, "This is first stolen byte (may be)"
+end:
+ret
+
+OE:
+cmt eip, "This is OEP"
+ret
+
+lab4:
+bphwc op
+bphws op,"r"
+esto
+
+
+// [BACK] 

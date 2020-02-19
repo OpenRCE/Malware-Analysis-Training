@@ -1,0 +1,20 @@
+/*
+12h15 PM Sunday January 02 2005
+Ezip 1.0 OEP Finder
+Author : dqtln
+Email : dqtlncrk@gmail.com
+OS : WinXP Pro SP1 , OllyDbg 1.10 , OllyScript 0.85
+Website : www.phudu.com
+For opinions, bugreport and new features send me a email
+Thank you very much
+*/
+
+sto
+findop eip,#FFE0#
+bp $RESULT
+run
+bc eip
+sto
+cmt eip,"This is the OEP - Found by dqtln"
+msg "Dump and fix IAT now - Good day"
+ret

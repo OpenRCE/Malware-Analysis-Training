@@ -1,0 +1,46 @@
+// PEbundle V2.3 oep finder+patch IAT //壳超过两层以上就不准了
+// by Mr.David        
+// www.chinadfcg.com
+
+var addr2
+
+findop eip,#60#    //特征指令
+mov addr2,$RESULT         
+bp addr2   
+run
+BC addr2
+sto
+mov addr2,esp
+bphws addr2,"r"
+var addr1
+
+gpa "GetModuleHandleA","kernel32.dll"
+mov addr1,$RESULT                    //捷径 API断点GetModuleHandleA
+bp addr1
+run
+
+bc addr1    //Clear break point  //取消断点
+rtu        //Alt+F9
+
+
+findop eip,#85C0#    //特征指令
+mov addr1,$RESULT         
+bp addr1   
+run
+BC addr1
+
+
+findop eip,#85C0#    //特征指令
+mov addr1,$RESULT         
+bp addr1   
+run
+BC addr1
+repl eip, #85C0#, #33C0#, 2     //修复IAT
+
+run
+bphwc addr2
+sto
+sto
+sto
+
+cmt eip,"OEP1 Or Next Shell To Get,Please dumped it,Enjoy!" 

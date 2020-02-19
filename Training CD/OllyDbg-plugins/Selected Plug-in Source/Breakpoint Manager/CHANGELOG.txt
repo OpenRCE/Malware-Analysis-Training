@@ -1,0 +1,5 @@
+07.13.2005
+    - Improved module queue handling to address the situation where the target module must load dependencies therefore preventing the base address of the target module from being resolvable until a later time.
+
+04.05.2005
+    - Initial public release.

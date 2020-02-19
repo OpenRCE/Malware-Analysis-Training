@@ -1,0 +1,2 @@
+- Change the communication protocol to use XML instead of field separators.
+- Different comment types on top of one another don't get refreshed. May want to address this "feature".

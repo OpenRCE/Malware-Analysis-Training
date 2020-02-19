@@ -1,0 +1,121 @@
+LordPE Deluxe - 1.4 (13th August 2002)
+-------------------------------------
+- the first GUI PE editor in the world supporting the new PE32+ (64bit)
+  format ?! (only editing support - no rebuilding, dumping, comparing etc.)
+- New plugin interface added! You can develop LordPE Dump Engines (LDE) now.
+  Look at \Docs\LDE.tXt for more information.
+- Added LDE: IntelliDump which can dump .NET CLR processes
+- added structure lister for SectionHeaderTable, PE headers and
+  DataDirectories (the "L" buttons)
+- added hex edit buttons (the "H" buttons) in the DataDirectoryTable
+  viewer
+- added PE.OptionalHeader.Magic and PE.OptionalHeader.NumberOfRvaAndSizes
+  to the PE editor
+- TLSTable DataDirectory is now editable
+- possibility to increment/decrement the number of DataDirectories added
+- added button ("?") to correct the SizeOfHeaders in the PE editor
+- completed the flags from some PE elements
+- from now on you can dump regions by double clicking them
+- new Task Viewer option: rebuild the image after dumping it
+- added missing 16th DataDirectory in DirectoryTable viewer
+- added missing points at the end of menu item labels
+- added "Clear list" button in LDS window
+- PE editor asks now whether it can wipe the readonly flag from files having
+  it set 
+- Process list of main dialog is updatable via F5, now
+- deluxer icon added (thx Matias921)
+- added 2 new LDS examples (Delphi and C#)
+- added LDS C# include file in \SDK
+- added LDS client in \LDS_Clients: CoolDump (thx SnowPanther)
+- tools residing in the package now:
+	- MetaPuck (.NET CLR MetaData sniffer)
+	- LordElf (ELF executable format dumper)
+	- PESnoop (PE32/PE32+, OBJ, LIB file dumper)
+	- SoftSnoop (win 32bit debugger/API sniffer)
+	- RunKMD (KernelModedDriver registration/execution tool)
+	- RunVxD (VxD execution tool)
+	- yPER (loader for the realign.dll APIs)
+	- 16Edit.exe (loader for the 16Edit hex editor)
+- bugfix: - LDS's LDS_CMD_DUMPPROCESSMODULE service didn't work for non-calling
+            process modules (thx aSL)
+          - LordPE enlarged the PE header also when the first section began
+            already at 0x1000 ! Fixed...jubby.
+          - unallowed main dialog sizing operations are handled better now (thx jm)
+- added psapi.dll in the package because procs.dll refused to load on NT4
+  otherwise (thx Unknown One)
+
+
+LordPE RoyalTS - 1.31 (25th March 2002)
+---------------------------------------
+- LordPE is now freeware
+- LDS 0.2: - LDS_FULL_DUMP_EX structure added
+- added file icons in task viewer
+- bugfixes: - no endless loop for 0-item relocation blocks anymore
+
+
+LordPE Gathering - 1.3 (24th February 2002)
+-------------------------------------------
+- plugin interface added
+- Region Dumper (idea brutally stolen from MackT, sorry :-)
+- BoundImport viewer added
+- Debug Directory viewer added
+- Relocation viewer shows much more information
+- ImportTable rebuilder can handle forwarded imports by Ordinal or API Name now
+- new rebuilding options: - Bind Imports
+                          - Change ImageBase
+- new options: - Full dump: force RAW mode
+- now using 16Edit FX and Realign.dll 1.5
+- bugfixes: - section truncation didn't work at least on NT5
+            - section name handling recoded/improved slightly at many locations
+            - ImportTable viewer: status line should be set always now
+            - routine which fixes the section table of dumped PE images does now
+              update the FileAlignment and SizeOfHeaders, too
+            - links in the about dialog should work properly again
+- minor modifications
+
+
+LordPE Armageddon - 1.2 (26th December 2001)
+--------------------------------------------
+- GUI updated (-> fat flat style)
+- HexEditor added (in SectionTable Viewer + FLC + Resource Directory Viewer)
+- Subsystem decoder added
+- TimeDateStamp converter added (TimeDateStamp <-> time/date)
+- Process prioritiy modifiable
+- Splitter slightly modifed and bugfixes (thx MackT)
+- STR+Z shortcut for Hex Editboxes added
+- compatibility of the header enlarger increased
+- minor bugfixes
+- the price for the full version was increased to $25
+- documentation updated
+
+
+LordPE FX b - 1.11 (18th September 2001)
+----------------------------------------
+- Bugfix: "paste header from disk" works now correctly for modules, too...nice
+- Bugfix: Demo doesn't show "Thank you vey much for purchasing this product !" any
+          longer in the About-box ;P...ups...
+- minor bugfixes
+
+
+LordPE FX - 1.1 (18th June 2001)
+--------------------------------
+- ExportTable viewer: - edit Export Table
+                      - edit Exported items
+- ImportTable viewer: - edit thunks of ImageImportDescriptors
+                      - refresh thunks
+- Compare PE files
+- ImportTable rebuilder
+- Split/Unsplit
+- Relocation viewer
+- Enlarge header
+- Rebuilder: - status window
+- SizeOfOptionalHeader editable
+- New option: - Always on top
+              - Restore last directory on startup
+- Hex Editboxes support now copy, cut and paste actions
+- Bugfixes: offset to section table is now calculated dynamically
+
+
+LordPE 1.0 (26th April 2001)
+----------------------------
+- first release

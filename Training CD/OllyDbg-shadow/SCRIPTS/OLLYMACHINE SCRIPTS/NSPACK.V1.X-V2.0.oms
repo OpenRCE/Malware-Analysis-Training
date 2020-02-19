@@ -1,0 +1,44 @@
+//////////////////////////////////////////////
+//
+//  FileName :   nSpack.V1.X-V2.0.oms
+//  Author   :   fly
+//  Date     :   2005-05-26 24:00
+//  Comment  :   UnPacK For nSpack V1.X-V2.0
+//
+//////////////////////////////////////////////
+
+EOB Break1
+invoke msg, "UnPacK.For.nSpack.V1.X-V2.0.By:  fly \n  2005.05.26     Debug Environment:\nWinXP OllyDbg.V1.10 OllyMachine.V2.0 "
+
+invoke GetProcAddress, "VirtualProtect", "KERNEL32.dll"
+MOV reg01, reg00
+invoke BP, reg01
+
+ESTO
+
+Break1:
+RunToUserCode
+invoke BC, reg01
+
+
+EOB Break2
+invoke Find, eip, "619DE9"
+cmp reg00,-1
+je NoFind
+
+MOV reg01, reg00
+invoke BP, reg01
+
+run
+halt
+
+NoFind:
+invoke BC, reg01
+invoke msg,"      Error!\nMaybe it isn't nSpack"
+halt
+
+Break2:
+invoke BC, reg01
+invoke StepOverS, 3
+
+invoke msg, "    Just : OEP !\n  Dump and Fix IAT  \n ¡î  Good Lucky  ¡î  "

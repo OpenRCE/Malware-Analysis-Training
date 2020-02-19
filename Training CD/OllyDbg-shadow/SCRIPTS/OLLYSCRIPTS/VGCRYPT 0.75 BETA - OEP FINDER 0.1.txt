@@ -1,0 +1,37 @@
+/*
+Find target's OEP [ VGCrypt PE Encryptor v0.75 Beta] v0.1
+---------------------------------------
+Author: DeAtH HaS cOMe #eCh!2004 .:[ CracksLatinos ]:.
+Email : death@ech2004.net
+OS : Win XP SP1,OllyDbg 1.10,OllyScript v0.92
+Date : 04.01.2005
+Config: -
+Note : Any bug or comments, please report at death@ech2004.net
+That's all folks!
+Un saludo para todo CracksLatinoS, maravillosos listeros, y para mi enana Aurënya :P
+*/
+
+findop eip, #E9E4#
+bp $RESULT
+run
+bc $RESULT
+
+findop eip, #E2F2#
+add $RESULT,2
+bp $RESULT
+run
+bc $RESULT
+sto
+
+findop eip, #FFE3#
+go $RESULT
+
+sto
+log "El OEP del programa es:"
+log eip
+log "Dumpealo ahora y repara la IAT automaticamente con el IREC"
+log "Script CracksLatinos by DeAtH #eCh!2004"
+log "@: death@ech2004.net WWW: http://www.ech2004.net"
+msg "Script finalizado correctamente. Ahora esta parado en el OEP, dumpealo y arregla la IAT :D"
+
+ret

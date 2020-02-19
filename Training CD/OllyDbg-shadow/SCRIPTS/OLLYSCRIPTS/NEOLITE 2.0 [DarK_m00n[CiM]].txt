@@ -1,0 +1,9 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+findop eip, #FFE0#
+go $RESULT
+cmt eip, "Jmp To OEP"
+sto
+an eip
+ret
+
+// [BACK] 

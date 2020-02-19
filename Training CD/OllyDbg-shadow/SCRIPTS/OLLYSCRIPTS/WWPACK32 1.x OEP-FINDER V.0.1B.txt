@@ -1,0 +1,37 @@
+// WWPack32 1.x OEP V0.1b
+// by Mr.David        
+// http://www.chinadfcg.com
+  
+  bphws 12ffa0,"r"
+  run
+  run
+  findop eip, #60#  //根据API断点找到这个特征语句
+  cmp $RESULT, 0
+  je c11
+
+run      //主程序或特殊程序要多运行两次
+run
+  sto
+  sto
+  sto
+  sto
+  sto
+  sto
+  sto
+  bphwc 12ffa0
+  cmt eip,"OEP To Get,Please dumped it,Enjoy!"
+  ret
+
+c11:
+
+
+  sto
+  sto
+  sto
+  sto
+  sto
+  sto
+  sto
+  bphwc 12ffa0
+  cmt eip,"OEP To Get,Please dumped it,Enjoy!"
+  ret

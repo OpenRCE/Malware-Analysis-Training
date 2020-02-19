@@ -1,0 +1,107 @@
+
+/*
+.:TEAM RESURRECTiON:.
+Armadillo Standard+Strategic Code Splicing Script by AvAtAr
+Tested on WinXP Pro SP2, OllyDbg v1.10, OllyScript v0.92
+NOTES:
+- Remove all hardware breakpoints before run the script.
+- Add the following custom exceptions on OllyDbg:
+C0000005(ACCESS VIOLATION), C000001D(ILLEGAL INSTRUCTION)
+C000001E(INVALID LOCK SEQUENCE), C0000096(PRIVILEGED INSTRUCTION)
+*/
+
+var CreateMutexA
+var CreateThread
+var GetModuleHandleA
+var OpenMutexA
+var VirtualAlloc
+var JumpLocation
+var JumpLength
+var adata
+var regESP
+var OEP
+
+gpa "CreateMutexA", "kernel32.dll"
+mov CreateMutexA, $RESULT
+gpa "CreateThread", "kernel32.dll"
+mov CreateThread, $RESULT
+gpa "GetModuleHandleA", "kernel32.dll"
+mov GetModuleHandleA, $RESULT
+gpa "OpenMutexA", "kernel32.dll"
+mov OpenMutexA, $RESULT
+gpa "VirtualAlloc", "kernel32.dll"
+mov VirtualAlloc, $RESULT
+
+gmi eip,MODULEBASE
+find $RESULT,#2E6164617461#
+mov adata,$RESULT
+add adata,0c
+mov adata,[adata]
+gmi eip,MODULEBASE
+add adata,$RESULT
+
+bp OpenMutexA
+esto
+exec
+PUSH EDX
+PUSH 0
+PUSH 0
+CALL CreateMutexA
+JMP OpenMutexA
+ende
+bc OpenMutexA
+
+bphws GetModuleHandleA, "x"
+label1:
+esto
+rtu
+find eip, #0F84????????????????????74??????????EB??#
+cmp $RESULT,0
+je label1
+bphwc GetModuleHandleA
+
+mov JumpLocation, $RESULT
+mov JumpLength, JumpLocation
+add JumpLength, 2
+mov JumpLength, [JumpLength]
+inc JumpLength
+mov [JumpLocation], 0E9
+inc JumpLocation
+mov [JumpLocation], JumpLength
+
+msgyn "Resolve Strategic Code Splicing?"
+cmp $RESULT,0
+je label3
+bphws VirtualAlloc, "x"
+label2:
+esto
+mov regESP,esp
+add regESP,0C
+cmp [regESP],1000
+jne label2
+add regESP,4
+cmp [regESP],40
+jne label2
+rtu
+mov eax,adata
+bphwc VirtualAlloc
+label3:
+
+bp CreateThread
+run
+cob
+bc CreateThread
+rtu
+rtr
+sti
+
+find eip, #2B??FF??8?#
+mov OEP, $RESULT
+add OEP, 2
+bp OEP
+run
+bc OEP
+sti
+cmt eip, "<- OEP"
+msg "You're at the OEP, now dump with LordPE and fix the IAT with ImpRec. =)"
+ret

@@ -1,0 +1,15 @@
+// PE Diminisher 0.1 OEP Finder
+// by FEUERRADER [AHTeam]
+// http://ahteam.org
+
+eob Break 
+findop eip, #5BFFE0#
+bphws $RESULT, "x"
+run
+
+Break:
+sto 
+sto
+bphwc $RESULT
+cmt eip, "OEP"
+ret

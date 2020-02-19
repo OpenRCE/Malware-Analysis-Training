@@ -1,0 +1,49 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+* =========================================================
+* ASProtect 2.0 OEP-finder script (under Windows XP)
+* Author: bi0w0rM[AHT]
+*
+* note: ignore all exceptions and clear all breakpoints
+* =========================================================
+*/
+
+var v1
+var VirtualFree
+gpa "VirtualFree","kernel32.dll"
+mov VirtualFree, $RESULT
+findret:
+cmp [VirtualFree],000CC25D
+je ret_found
+inc VirtualFree
+jmp findret
+ret_found:
+add VirtualFree,1
+bp VirtualFree
+lol_loop:
+esto
+mov v1,[esp]
+find v1,#C3#
+cmp v1,$RESULT
+jne lol_loop
+sto
+sto
+find eip,#5BC3#
+cmp eip,$RESULT
+jne lol_loop
+jmp lol_loop2
+jmp lol_loop
+lol_loop2:
+log eip
+sto
+find eip, #FF35#
+cmp eip, $RESULT
+je exit
+jmp lol_loop2
+exit:
+sto
+sto
+cmt eip, "OEP found with bi0w0rM's ASProtect 2.0 script"
+ret
+
+// [BACK] 

@@ -1,0 +1,340 @@
+////////////////////////////////////////////////////////////////////// 
+// generic (I hope) a s p r oep finder and import recovery 
+// Author: Orion 
+// Email: oriontrooper@yahoo.com 
+// OS : WinXP SP1, OllyDbg 1.10, OllyScript 0.85 
+// Note: ignore all exception but memory access and invalid op 
+// Usage: 
+// 1. run the script 
+// at first pause, most import entry are recovered, import table 
+// location is shown in log. verify it. 
+// 2. resume 
+// this will decrypt almost all the remaining entry. 
+// 3. if you think there are entries outside of the range shown in log, 
+// enter start and end address in eax & edx, otherwise don't do anything 
+// 4. resume the script. 
+// 5. repeat 3 and 4 if nessesary 
+////////////////////////////////////////////////////////////////////// / 
+
+dbh 
+
+// this the number of exceptions to wait after 
+// import table is fixed. After this memory range 
+// breakpoint is set to find oep. 
+// Adjust it for better performance. 
+// Too large will miss the oep, 
+// Too small will create extra delay when a s p r does 
+// CRC check on code segment (it will still work, but slow) 
+var memdelay 
+mov memdelay, 2 
+
+gmi eip, MODULEBASE 
+var mbase 
+mov mbase, $RESULT 
+
+gmi eip, CODEBASE 
+var cbase 
+mov cbase, $RESULT 
+
+gmi eip, CODESIZE 
+var csize 
+mov csize, $RESULT 
+
+var pe 
+mov pe, mbase 
+add pe, 3c 
+mov pe, [pe] 
+add pe, mbase 
+
+
+log mbase 
+log cbase 
+log csize 
+log pe 
+
+var gp 
+gpa "GetProcAddress", "kernel32.dll" 
+mov gp, $RESULT 
+log gp 
+
+
+var iat 
+var iat_value 
+var stk 
+var arg 
+var foundCount 
+var first_iat 
+var last_iat 
+var lastBlock 
+var iatCount 
+
+// dummy initial value that will not change. 
+mov iat, mbase 
+mov iat_value, [iat] 
+mov first_iat, FFFFFFFF 
+mov last_iat, 00000000 
+
+var count 
+mov count, 0 
+
+
+// time to set memory range breakpoint 
+var memcount 
+mov memcount, 100 //large value 
+
+eoe onException 
+run 
+
+
+onException: 
+
+add count, 1 
+log count 
+
+cmp count, 1 
+je lab_gp 
+
+cmp count, memcount 
+jne loc_1 
+
+log "set mem breakpoint" 
+bc gp 
+bprm cbase, csize 
+eob onException 
+esto 
+
+loc_1: 
+cmp count, memcount 
+jb loc_2 
+
+// are we in original program code? 
+GMI eip, MODULEBASE 
+cmp $RESULT, mbase 
+je lab_last 
+
+esto 
+
+loc_2: 
+esto 
+
+
+// set bp on kernel32.GetProcAddress 
+lab_gp: 
+bp gp 
+eob onGPA 
+esto 
+
+
+onGPA: 
+
+mov memcount, count 
+add memcount, memdelay 
+
+// saved values from last breakpoint 
+cmp [iat], iat_value 
+je goodBoy 
+
+//log "nauty! stolen code, will restore" 
+//log iat 
+//log iat_value 
+//log [iat] 
+mov [iat], iat_value 
+
+goodBoy: 
+
+var stk 
+mov stk, esp 
+add stk, 8 
+// arg is pointer to function name or ord number 
+mov arg, [stk] 
+add stk, 20 
+
+mov foundCount, 0 
+
+
+findloop: 
+add stk, 4 
+cmp [stk], arg 
+je foundArg 
+cmp [stk], mbase 
+jne findloop 
+
+log "stack search failed" 
+ret 
+
+// find import address table entry using stack pattern 
+// may be more stable then code search. 
+foundArg: 
+add stk, 0c 
+mov stk, [stk] 
+mov iat, [stk] 
+
+cmp first_iat, iat 
+jb loc_3 
+mov first_iat, iat 
+loc_3: 
+cmp last_iat, iat 
+ja loc_4 
+mov last_iat, iat 
+loc_4: 
+
+rtr 
+// can not write to [iat] now - a s p r will change it later 
+// save it 
+mov iat_value, eax 
+run 
+
+
+lab_last: 
+log "got oep" 
+bc gp 
+log first_iat 
+log last_iat 
+
+cmp [iat], iat_value 
+je last2 
+log "fix last iat" 
+mov [iat], iat_value 
+
+last2: 
+bpmc 
+jmp step2 
+
+
+step2: 
+msg "To decode encrypted iat, resume this script" 
+pause 
+
+// find out what each encryprted entry really points to 
+// by calling them and intercept calls to "GetProcAddress" 
+
+bp gp 
+
+var saveeip 
+var breakreturn 
+var saveesp 
+var saveop 
+
+mov saveeip, eip 
+mov breakreturn, eip 
+add breakreturn, 3 
+
+mov saveop, [eip] 
+mov [eip], #60# // pushad 
+sti // save registers 
+dec eip 
+mov [eip], #33c0c390# // xor ax, ax; ret; nop 
+
+sub esp, 100 
+mov saveesp, esp 
+log saveop 
+
+bp breakreturn 
+
+var repairstart 
+var repairend 
+
+mov repairstart, first_iat 
+mov repairend, last_iat 
+
+mov iat, repairstart 
+eob onBreak 
+
+process_iat: 
+cmp [iat], 0 
+je nextiat 
+
+// if iat points to a dll function already, 
+// gmi will return the modulebase of that 
+// library, which is not zero 
+gmi [iat], MODULEBASE 
+cmp $RESULT, 0 
+// already points to dlls 
+jne nextiat 
+
+mov eip, [iat] 
+mov esp, saveesp 
+mov [esp], cbase //this is an invlid arg to GetProcAddress 
+sub esp, 4 
+mov [esp], 0 
+sub esp, 4 
+mov [esp], breakreturn 
+
+// call this iat 
+run 
+
+nextiat: 
+add iat, 4 
+cmp iat, repairend 
+ja iatfinish 
+jmp process_iat 
+
+onBreak: 
+cmp eip, gp 
+je hitGP 
+
+// returned to breakreturn 
+cmp eax, mbase 
+// if you call GetModuleHandleA with 0, 
+// current modulebase is returned 
+je api_gmh 
+
+//pause 
+jmp nextiat 
+
+api_gmh: 
+GPA "GetModuleHandleA", "kernel32.dll" 
+mov [iat], $Result 
+log [iat] 
+jmp nextiat 
+
+hitGP: 
+rtr 
+cmp eax, 0 
+// if GetProcAddress fails, and none of the dlls are missing 
+// (make sure your program runs first!). The only possibility is 
+// it is directly called from this script with wrong argument. 
+// which means this iat entry jump to GetProcAddress directly 
+// instead of call it to get a pointer. 
+je api_gpa 
+
+mov [iat], eax 
+log [iat] 
+// change address to our dummy library function 
+mov eax, saveeip 
+run 
+
+api_gpa: 
+// GetProcAddress 
+mov [iat], gp 
+run 
+
+iatfinish: 
+mov eax, 0 
+msg "Put start address in EAX, End address in EDX to manually decode, or leave it at 0" 
+pause 
+cmp eax, 0 
+je goodnight 
+
+mov repairstart, eax 
+mov repairend, edx 
+mov iat, repairstart 
+jmp process_iat 
+
+goodnight: 
+bc gp 
+bc breakreturn 
+
+mov esp, saveesp 
+add esp, 100 
+mov eip, saveeip 
+mov [eip], #61# //popd 
+sti 
+dec eip 
+mov [eip], saveop 
+
+
+cmt eip,"!!!!!!!!!!!!!!!!!!" 
+an eip 
+dbs 
+ret

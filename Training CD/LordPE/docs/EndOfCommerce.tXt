@@ -1,0 +1,20 @@
+
+LordPE is FREEWARE since its birthday (25th March 2002). Analog
+to WinAMP it switched from commercial to non-commercial software.
+THANKS TO ALL THE PEOPLE WHO PAID FOR IT!
+You kept me up coding new versions in spite of a lack of time.
+
+I also knew that the shareware principle works nowhere worse than
+in the reverse engineering scene. It was actually an idea by a
+very good real-life-friend who hasn't got much to do with PCs.
+I collected nice experiences by that but all in all it was a stupid
+action.
+
+While coding the first version of LordPE, my plan was even to make
+it freeware + open source. Today the situation looks different.
+LordPE is grown since his first release and I don't like the idea
+of making more than 21.000 lines of code accessible for everyone.
+
+Tout est bien qui fini bien :)
+
+yoda (17th March 2k2)

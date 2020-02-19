@@ -1,0 +1,21 @@
+/*
+///////////////////////////////////////////////////////////
+// EXE Shield v0.5-->0.8 (ARM Protector v0.1)  OEP finder
+// Author: hacnho/VCT2k4
+// Email : hacnho@hotmail.com
+// Website: http://nhandan.info/hacnho
+// OS : WinXP Pro, OllyDbg 1.10 Final, OllyScript v0.85
+/////////////////////////////////////////////////////////
+*/
+sti
+sti
+eob Break
+esto
+Break:
+run
+esto
+an eip
+log eip
+cmt eip, "This is the OEP!!!"
+MSG "Dumped and fix IAT now! Thanx for using my Script...!"
+ret

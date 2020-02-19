@@ -1,0 +1,36 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+OEP Seeker Script [ PePack v1.0 ] v0.1
+---------------------------------------
+Author: DeAtH HaS cOMe #eCh!2004 .:[ CracksLatinos ]:.
+Email : death_ech@phreaker.net
+OS : Win XP SP1,OllyDbg 1.10,OllyScript v0.91
+Date : 07.18.2004
+Config: No BreakPoints sets
+Note : Any bug or comments, please report at death_ech@phreaker.net
+That's all folks!
+Un saludo para todo CracksLatinoS, maravillosos listeros, y para mi enana Aurënya :P
+*/
+
+sto
+sto
+eob Rompe
+findop eip, #8944241C#
+bphws $RESULT, "x"
+run
+
+Rompe:
+bphwc $RESULT
+sto
+sto
+sto
+log "El OEP del programa es:"
+log eip
+log "Dumpealo ahora y repara la IAT automaticamente con el IREC"
+log "Script CracksLatinos by DeAtH #eCh!2004"
+log "@: death_ech@phreaker.net WWW: http://www.ech2004.tk"
+msg "Script finalizado correctamente. Ahora esta parado en el OEP, dumpealo y arregla la IAT :D"
+
+ret
+
+// [BACK] 

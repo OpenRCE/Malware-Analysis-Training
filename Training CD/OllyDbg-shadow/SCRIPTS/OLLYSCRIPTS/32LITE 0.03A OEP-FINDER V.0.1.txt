@@ -1,0 +1,13 @@
+// 32Lite 0.03a OEP V0.1
+// by Mr.David        
+// http://www.chinadfcg.com
+  
+  var addr
+  sto   
+  mov addr,esp 
+  bphws addr,"r"
+  run
+  sto
+  BPHWC addr
+  cmt eip,"OEP To Get,Please dumped it,Enjoy!"
+

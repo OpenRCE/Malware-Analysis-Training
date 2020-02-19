@@ -1,0 +1,35 @@
+/*
+1h54 AM Sunday 23 January 2005
+yoda's Protector 1.02 OEP Finder
+Author : dqtln
+Email : dqtlncrk@gmail.com
+OS : WinXP Pro SP1 , OllyDbg 1.10 , OllyScript 0.92
+Website : www.phudu.com
+For opinions & bugreport send me a email
+Thank you very much
+*/
+
+msgyn "Please check Options/Debugging options/Exceptions/INT3 breaks"
+cmp $RESULT,0
+je dqtln
+var x
+var y
+gmi eip,CODEBASE
+mov x,$RESULT
+gmi eip,CODESIZE
+mov y,$RESULT
+dbh
+run
+bprm x,y
+esto
+dbs
+bpmc
+msg "Please press No if have a question"
+an eip
+cmt eip,"This is the OEP - Found by dqtln"
+msg "Dump and fix IAT now - Good day"
+ret
+
+dqtln:
+msg "Script Abort"
+ret

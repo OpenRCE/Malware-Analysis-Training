@@ -1,0 +1,49 @@
+/*
+2h21 AM Wednesday January 05 2005
+exe32pack 1.42 OEP Finder
+Author : dqtln
+Email : dqtlncrk@gmail.com
+OS : WinXP Pro SP1 , OllyDbg 1.10 , OllyScript 0.92
+Website : www.phudu.com
+For opinions & bugreport send me a email
+Thank you very much
+*/
+
+
+findop eip,#8F85#
+bp $RESULT
+run
+bc eip
+
+dqtln:
+findop eip,#7402#
+bp $RESULT
+run
+bc eip
+cmp eax,ebx
+jne dqtln
+
+sto
+sto
+
+findop eip,#AA#
+bp $RESULT
+run
+bc eip
+
+findop eip,#7401#
+bp $RESULT
+run
+bc eip
+findop eip,#7401#
+bp $RESULT
+run
+bc eip
+
+sto
+sto
+
+an eip
+cmt eip,"This is the OEP - Found by dqtln"
+msg "Dump and fix IAT now - Good day"
+ret

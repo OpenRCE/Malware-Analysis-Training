@@ -1,0 +1,125 @@
+/*
+//////////////////////////////////////////////////
+	PESpin v1.1 Stolen Code Finder v0.1 
+	Author:	loveboom
+	Email : loveboom#163.com
+	OS    : WinXP sp1,Ollydbg 1.1,OllyScript v0.92
+	Date  : 2005-3-9
+        Action: 修复IAT，停在stolen code处.
+	Config: Ignore all exceptions
+	Note  : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+
+var addr
+var addr1
+  
+start:
+   Msgyn "Config:Ignore all exceptions,continue?"
+   cmp $RESULT,1
+   je lbl1
+   ret
+lbl1:
+  gpa "LoadLibraryA","kernel32.dll"		//在LoadLibrarya+B处下断
+  mov addr,$RESULT
+  add addr,B
+  bp addr
+  esto
+  
+lbl2:
+  cmp eip,addr
+  jne lblabort
+  bc addr
+  mov addr,esp
+  add addr,c
+  mov addr,[addr]
+  bp addr
+  esto
+  bc addr
+  
+lbl3:
+  find eip,#0FBA67FF07#		//find command 'bt [edi-1],7'
+  cmp $RESULT,0
+  je lblabort
+  mov addr,$RESULT
+  fill addr,1,F8		//修改为clc清除CF
+  inc addr
+  mov [addr],90909090
+
+lblnext1:
+  find addr,#0F31#		//find command 'RDTSC'
+  cmp $RESULT,0
+  je lblabort
+  find $RESULT,#FF6424FC#		//find command 'JMP DWORD PTR SS:[ESP-4]'
+  cmp $RESULT,0
+  je lblabort
+  mov addr1,$RESULT
+  bp addr1
+
+lblfind1:
+  find addr,#FF6424FC#		//find command 'JMP DWORD PTR SS:[ESP-4]'
+  cmp $RESULT,0
+  je lblabort
+  go $RESULT
+  sto
+  sti
+
+lblfind2:
+  find eip,#807FFFEA#		//find command'CMP BYTE PTR DS:[EDI-1],0EA'
+  cmp $RESULT,0
+  je lblabort
+  find $RESULT,#FE4FFF83C7042BC78947FC#
+  
+/*
+find commands:
+	FE4F FF         DEC BYTE PTR DS:[EDI-1]
+	83C7 04         ADD EDI,4
+	2BC7            SUB EAX,EDI
+	8947 FC         MOV DWORD PTR DS:[EDI-4],EAX
+*/
+  cmp $RESULT,0
+  je lblabort
+  fill $RESULT,b,90
+  mov addr,$RESULT
+  bp addr
+  
+
+lblloop1:
+  run
+  
+lblcheck:
+  cmp eip,addr
+  jne lbl4
+  exec				//fix iat
+    mov word ptr [edi-1],25FF
+    mov [edi+1],edx
+    mov [edx],eax
+  ende
+  jmp lblloop1
+  
+lbl4:
+  bc addr
+  bc addr1
+  find eip,#E801000000??83C404#		//find commands:'call $+1 add esp,4'
+  cmp $RESULT,0
+  je lblerrver
+  go $RESULT
+  find $RESULT,#61#
+  cmp $RESULT,0
+  je lblerrver
+  go $RESULT
+  sto
+  cmt eip,"Stolen code."
+  
+lblend:
+  msg "Script finished,script by loveboom[DFCG][FCG][US].Thank you for using my script!"
+  ret
+lblabort:
+  msg "Error,script aborted.Maybe target is not protect by pespin 1.1 or you forgot ignore all exceptions."
+  ret
+
+lblerrver:
+  msg "目标程序可能是用pespin 1.0或更低版本保护的!"
+  ret
+
+

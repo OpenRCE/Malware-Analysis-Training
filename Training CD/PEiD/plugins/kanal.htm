@@ -1,0 +1,96 @@
+<html>
+<head>
+<title>KANAL - Krypto Analyzer for PEiD</title>
+</head>
+
+<body>
+<h2><i>KANAL</i> - Krypto Analyzer for PEiD</h2>
+<h3>Version 2.90</h3>
+
+<p>
+This plugin searches for known crypto algorithms, functions and libraries inside
+of the specified module.
+</p>
+
+<p>
+<h4>Usage:</h4>
+Load the file into PEiD and select &quot;Krypto ANALyzer&quot; from the
+plugins menu. A new dialog will open and the detected crypto algorithms,
+constants, functions and libraries will be listed. The offset of the signature
+is displayed for every item; if the analyzed file is a PE executable, also
+the virtual address of the signature is displayed.
+So, the results look like
+<pre>Crypto name :: File offset :: Virtual address</pre>
+</p>
+
+<p>
+For PE executable files, <i>KANAL</i> searches for &quot;reasonable&quot; references
+of the detected piece of code or data. If, for example, some kind of crypto
+substitution table is detected, <i>KANAL</i> attempts to find the address
+where the table is referenced from. The references are displayed as subitems
+of the detected crypto item (so, you have to expand the item to see it).
+If no reference of the detected signature is found
+(e.g. because it's not a piece of data, but rather a constant contained inside
+of an assembly instruction), the text &quot;The reference is above&quot;
+is displayed.
+</p>
+
+<p>
+<h4>User interface:</h4>
+<ul>
+<li>Using the <b>Export</b> button, you can save the results to a file,
+or copy them to clipboard. The possible output formats are:
+  <ul>
+  <li><b>List of Items</b> - text file containing the list of detected crypto algorithms
+    with the corresponding addresses (i.e. what you see in the results window,
+    unexpanded items).</li>
+  <li><b>List of Items with References</b> - text file containing the list of detected
+    crypto algorithms with the corresponding addresses and references (i.e. what you see
+    in the results window, expanded items).</li>
+  <li><b>IDC Script - Bookmarks</b> - IDC script for IDA Pro; when executed,
+    it creates a list of bookmarks corresponding to the detected results.</li>
+  <li><b>IDC Script - Comments</b> - IDC script for IDA Pro; when executed,
+    it sets the comments (containing detected crypto algorithms and their description)
+    for the corresponding addresses.</li>
+  <li><b>IDC Script - Bookmarks &amp; Comments</b> - IDC script for IDA Pro;
+    when executed, it sets both the bookmarks of detected results and their comments.</li>
+  </ul>
+<li>When you <b>right click</b> on any line of the results, the corresponding address is
+copied into the clipboard (both for the crypto itself and for the references).</li>
+<li>When you <b>select</b> an item from the list, a simple description, corresponding
+to the crypto item, will be displayed in the bottom part of the window.</li>
+</ul>
+</p>
+
+<p>
+<h4>Limitations:</h4>
+<ul>
+<li>The detection of crypto algorithms is limited to those possible to identify
+by a specific signature (such as fixed s-boxes, permutation tables,
+initialization values, etc). Simple mathematical algorithms, such as RSA,
+cannot be detected in a generic way.</li>
+<li>Some functions (even RSA) can be detected according to their implementation
+in specific crypto libraries. This kind of detection, however, depends on the
+compiler used, its optimization settings, etc - so it won't work in all cases.</li>
+<li>A few of the algorithms are detected by a single DWORD - so, they are
+susceptible to occasional false alarms.</li>
+<li>Some crypto algorithm share a common initialization code - so if multiple
+crypto algorithms are present in the file, they may be &quot;mixed up&quot;
+sometimes. The plugin tries to filter the results somehow (to guess which
+algorithm it actually is, using the &quot;shared&quot; code),
+but it may not be 100% accurate, of course.</li>
+</ul>
+</p>
+
+<hr>
+
+<p>
+<h4>Credits:</h4>
+<b>igNorAMUS</b> - maintaining the source and all the detections at the moment<br>
+<b>snaker</b> - the original coding and detections<br>
+<b>Maxx</b> - detection of various functions from common crypto libraries<br>
+<b>pusher</b> - testing and bug reports<br>
+</p>
+
+</body>
+</html>

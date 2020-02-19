@@ -1,0 +1,54 @@
+             Registration form for OllyDbg v1.10
+
+
+To use OllyDbg, you must agree with  all  of  the  terms  and
+conditions of the accompanying License  Agreement. All  other
+answers are optional.
+
+Name      ___________________________________________________
+
+Title     ___________________________________________________
+
+Company   ___________________________________________________
+
+City,state___________________________________________________
+
+Country   ___________________________________________________
+
+Where did you find OllyDbg __________________________________
+
+          ___________________________________________________
+
+Are you going to write your own plugins
+
+          (____) Yes    (____) No    (____) Don't know
+
+I agree with all the terms and condition of the  accompanying
+License Agreement (Very important! Please mark!)
+
+          (____) Yes    (____) No
+
+Date of registration ________________________________________
+
+If you want to  receive  notifications when  OllyDbg 2.00 and
+subsequent versions will be  ready, please  enter your  email
+address here:
+
+_____________________________________________________________ 
+
+
+Thank you. If you have ideas how to improve OllyDbg and  make
+it easier in use, or want to have some  new  features, please
+let me know. Your opinion helps me a lot! 
+
+Your first idea: ____________________________________________
+
+_____________________________________________________________
+
+Your second idea: ___________________________________________
+
+_____________________________________________________________
+
+Your third idea: ____________________________________________
+
+_____________________________________________________________

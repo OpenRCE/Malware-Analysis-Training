@@ -1,0 +1,67 @@
+var k
+var m
+var y
+var x
+sti
+bphws esp, "r"
+eoe lab1
+eob toep
+
+run
+lab1:
+esti
+rtr
+
+
+toep:
+esti
+bp eax
+
+mov k,esp
+sub k,20
+bphwc k
+
+
+eob loop2
+
+run
+
+
+
+
+
+
+loop2:
+
+sti
+mov y,eip
+mov x,400000
+shr x,14
+shr y,14
+sub y,x
+mov m,4
+
+loop3:
+
+cmp y,0
+sub y,1
+log y
+je end
+sub m,1
+cmp m,0
+je test
+jmp loop3
+
+test:
+
+cmp y,0
+jne loop2
+MSG " The oep and place for the stolen are right above where you are, Thank you for using my script! "
+ret
+
+
+
+end:
+
+MSG " The oep and place for the stolen are right above where you are, Thank you for using my script! "
+ret

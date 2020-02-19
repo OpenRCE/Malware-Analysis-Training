@@ -1,0 +1,26 @@
+// PE-SHiELD V0.25 Oep Find v0.1
+// This script will quickly put you at the OEP of an PE-SHiELD V0.25 EXE.
+// Just run it!
+
+msg "请设置OD异常设置除了错误的或者有特权的指令异常全部忽略，然后从菜单处继续运行脚本"
+pause
+
+var addr1
+
+dbh  //隐藏调试器
+
+run
+
+esto
+
+findop eip,#FFE0#    //特征指令
+mov addr1,$RESULT         
+bp addr1
+
+
+esto
+Bc addr1
+
+sto
+
+cmt eip,"OEP Or Next Shell To Get,Please dumped it,Enjoy!" 

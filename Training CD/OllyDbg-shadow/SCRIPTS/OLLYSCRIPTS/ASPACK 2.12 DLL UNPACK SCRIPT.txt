@@ -1,0 +1,91 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+//////////////////////////////////////////////////
+Aspack 2.12 Dll Unpack Finder v0.1
+Author: loveboom
+Email : bmd2chen@tom.com
+OS : WinXP sp1,Ollydbg 1.1,OllyScript v0.92
+Date : 2004-8-13
+Action: Found Relocate table
+Config: N/A
+Note : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+var RelStart
+var RelEnd
+var RelLen
+var addr
+var base //Module base
+
+CheckVer: //Check OllyScript's version
+cmp $VERSION,"0.9"
+ja start
+msg "This script for aspack require OllyScript v.92"
+ret
+start:
+gmi eip,MODULEBASE
+mov base,$RESULT
+find eip,#2BD074# //Found command "sub edx,eax je xxxx"
+cmp $RESULT,0
+je lblabort
+go $RESULT
+
+lbl1:
+cmp edx,eax
+jne lbl2
+mov addr,eip
+add addr,2
+mov [addr],#75#
+
+lbl2:
+sto
+sto
+sto
+sto
+sto
+sto
+mov RelStart,esi
+cmp addr,0
+je lbl3
+mov [addr],#74#
+
+lbl3:
+find eip,#eb00# //Found command "OR WORD PTR DS:[ESI],0FFFF"
+cmp $RESULT,0
+je lblabort
+mov addr,$RESULT
+add addr,2
+fill addr,4,90 //Nop Crypt code
+find addr,#EB??8B95#
+cmp $RESULT,0
+je lblabort
+mov addr,$RESULT
+add addr,2
+go addr
+mov RelEnd,esi //Get Relocate table size
+sub RelEnd,base
+mov RelLen,RelEnd
+sub RelLen,RelStart
+
+lbl4:
+findop eip,#C3# //jump to oep
+cmp $RESULT,0
+je lblabort
+go $RESULT
+sto
+
+lbl5: //Record Relocate information
+eval "Relocate table start address is: {RelStart}.Length is: {RelLen}."
+log $RESULT
+cmt eip,$RESULT
+
+lblend:
+msg "Script by loveboom[DFCG[FCG][US],Thank you for using my script!"
+ret
+
+lblabort:
+msg "Error,Script aborted,Meybe target is not packed by aspacke 2.12.:-("
+ret
+
+
+// [BACK] 

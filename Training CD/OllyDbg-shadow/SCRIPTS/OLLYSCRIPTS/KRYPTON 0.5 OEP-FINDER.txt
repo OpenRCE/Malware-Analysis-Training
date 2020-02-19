@@ -1,0 +1,37 @@
+/* 
+//////////////////////////////////////////// 
+Krypton v0.5 OEP Finder v0.1(Default mode) 
+
+Author:loveboom 
+Email :bmd2chen@tom.com 
+OS :Win2k ADV sp2?OllyDbg1.1B.OllyScript v0.6 
+Date :2004-2-27 
+Config:Uncheck"Memory access violation" 
+Other :If you have one or more question 
+email me please,Thank you! 
+///////////////////////////////////////////// 
+*/ 
+var cbase 
+var csize 
+gmi eip,CODEBASE 
+mov cbase,$RESULT 
+gmi eip,CODESIZE 
+mov bsize,$RESULT 
+eob lbl1 
+eoe lbl1 
+run 
+
+lbl1: 
+eob lbl2 
+esto 
+
+lbl2: 
+eoe lbl3 
+bprm cbase,csize 
+esto 
+
+lbl3: 
+bpmc 
+cmt eip,"OEP,please dump it" 
+msg "Script by loveboom[DFCG],Thank you for using my script!" 
+ret

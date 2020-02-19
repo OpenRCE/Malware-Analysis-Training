@@ -1,0 +1,62 @@
+
+                      -=[ SoftSnoop 1.3 by yoda/FReAK2FReAK ]=-
+                               for Windows 9x/ME/NT/2K
+
+
+Intro:
+------
+SoftSnoop is a single process, multi-thread debugger for executable PE files
+which is able to spy API calls and uses the Debug API's to show the common debug events.
+SoftSnoop is freeware !
+It's full written with VC++6 using ANSI C (about 8700 lines).
+
+Limitations:
+------------
+SoftSnoop doesn't trap any Api calls of MFC - dlls and of MSVCRT.dll
+because this causes problems ! Imports of non dlls will be ignored, too.
+
+Important notes:
+----------------
+- Try to disable/enable "Set Exceptions handled" (in the option menu) if a program
+  stops in a loop of the same exception. This works in most cases.
+- The breakpoints in the Int3-breakpoint list are set before the entrypoint of
+  the debuggee is reached or if you click on "Set BP's".
+- You can't stop at the DEBUG BREAK and set then a breakpoint with "Set BP's" at the
+  entrypoint because this process memory is already modified by forcelibrary.dll,
+  so you've to write the breakpoint in the breakpoint list before you start the
+  debuggee or simply use the "Stop at EntryPoint" Option.
+- The button/menu item to modify API parameters is only enabled after you set a
+  breakpoint on the target API and SoftSnoop breaks on its execution.
+- You can't set BPM's on win2k (NT4 dunno) at the DEBUG BREAK because at this 
+  time the main thread has a pseudo context. Use the option to stop at the EntryPoint
+  to set BPM's in that case.
+- You can add default API names in SoftSnoop's ini file. The ordinal is interpreted as
+  decimal !
+- "Don't trap Imports of the following dlls" in the option menu is for the following
+  purpose: If the Debuggee imports functions of dlls which aren't loaded into shared memory
+  SS crashes sometimes after trapping these imports, so you simply can prevent SS from
+  processing the imports of these dlls.
+- Option: "Show TID of events"
+  Api return events aren't sorted by TID !
+- To modify the return value of APIs either use the "Modify API return value" dialog or use
+  this trick:
+  First put a breakpoint on any API and break on it. Find out the current return address of
+  the API call via the "Modify API Stack" dialog. Set a BPX on execution at this address.
+  This is the address of SoftSnoop's handler for API calls returning. Enable this BPM if you
+  want to break at the moment the next API call returns. If you break then simply open the
+  "View registers" dialog and modify EAX to what ever you want and save the changes. You've 
+  to disable the BPM to continue execution...
+
+...I hope the rest is self explaining.
+
+Disclaimer:
+-----------
+I'm NOT responsible for any damage caused by SoftSnoop.
+
+
+For any bugs/comments/suggestions mail please to: yoda_f2f@gmx.net.
+I'm waiting for comments for the plugin interface.
+
+Have fun, yoda
+
+Check: y0da.cjb.net

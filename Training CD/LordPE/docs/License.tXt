@@ -1,0 +1,7 @@
+
+This software is provided as-is, without warranty of ANY KIND,
+either expressed or implied, including but not limited to the implied
+warranties of merchantability and/or fitness for a particular purpose.
+The author shall NOT be held liable for ANY damage to you, your
+computer, or to anyone or anything else, that may result from its use,
+or misuse. Basically, you use it at YOUR OWN RISK.

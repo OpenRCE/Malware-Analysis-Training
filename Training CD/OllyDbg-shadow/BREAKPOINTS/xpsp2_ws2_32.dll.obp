@@ -1,0 +1,7 @@
+# Olly BP Manager - Example Breakpoint List
+# Pedram Amini
+
+WS2_32:00002d0f:Q:recvfrom
+WS2_32:00004318:Q:WSARecv
+WS2_32:0000615a:Q:recv
+WS2_32:0000f652:Q:WSARecvFrom

@@ -1,0 +1,113 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+//////////////////////////////////////////////////
+PELock 1.0x -> Bartosz Wojcik Unpack script v0.1
+Author: loveboom
+Email : bmd2chen@tom.com
+OS : WinXP sp1,Ollydbg 1.1,OllyScript v0.85
+Date : 2004-7-19
+Action: Auto fix IAT,Remove Junk code,Found stolen code
+Config: Ignore other exceptions except 'Memory access violation'
+Note : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+
+
+start:
+msgyn "Setting:Ignore other exceptions except 'Memory access violation',Continue?"
+cmp $RESULT,0
+jne lbl1
+ret
+
+lbl1:
+//Declare
+var count
+var espval //Esp value
+var addr //address
+var addr1
+
+mov count,9
+dbh //Hide debugger
+run
+
+lblloop:
+cmp count,0
+je lbl2
+dec count
+esto
+jmp lblloop
+
+lbl2:
+find eip,#EB02#
+bp $RESULT
+esto
+
+lbl3:
+bc $RESULT
+find eip,#F6C180# //Found 'Test cl,80'
+cmp $RESULT,0
+je lblabort
+mov addr,$RESULT
+cmt addr,"Running!please wait......!"
+bphws addr,"x"
+
+lbl4:
+eoe lbl5
+run
+mov ecx,80
+jmp lbl4
+
+lbl5:
+bphwc addr
+find eip,#EB01??EB02#
+mov addr,$RESULT
+bp addr
+esto
+
+lbl6:
+bc addr
+mov addr,esp
+bphws addr,"r"
+run
+bphwc addr
+
+lblClearJunkCode:
+repl eip,#E801000000??#,#E80100000090#,1000
+repl eip,#EB01??#,#909090#,1000
+repl eip,#EB02????#,#90909090#,1000
+repl eip,#EB03??????#,#9090909090#,1000
+repl eip,#EB04????????#,#909090909090#,1000
+repl eip,#C1??00#,#909090#,1000
+repl eip,#72037301??#,#9090909090#,1000
+repl eip,#7C037D01??#,#9090909090#,1000
+msg "Junkcode has been removed!"
+
+lbl7:
+find eip,#5D#
+go $RESULT
+sto
+
+lbllogcode:
+find eip,#C3#
+bp $RESULT
+eob lblgoOEP
+ti
+
+lblgoOEP:
+bc $RESULT
+sto
+an eip
+dbs
+cmt eip,"Now,press ALT+V+N open trace window,you will find stolen code!"
+
+lblend:
+msg "Script by loveboom[DFCG[FCG],Thank you for using my script!"
+ret
+
+lblabort:
+msg "Error,Script aborted!,Meybe target is not protect by PELock 1.0x -> Bartosz."
+ret
+
+
+
+// [BACK] 

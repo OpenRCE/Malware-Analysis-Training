@@ -1,0 +1,366 @@
+v1.6 FINAL (PUBLIC VERSION)
+---------------------------
+
+- Misc
+
+	- Finally fixed the bug in the check for adding section (Thanks to Christoph)
+
+
+v1.6 beta *PRIVATE*
+-------------------
+- Tracers
+	- Tracer Level3
+		- Added EIP Log
+- Misc
+	- Finally, support relative calls rebuild (not with the loader yet)
+	- Added a disassembler window for redirected code
+		- Added colour to all known imports (Thanks to Jeff Schering)
+		- Added a hex viewer (built with the disassembler)
+		- Fixed blink in RichEdit control
+		- Checkbox "OpCodes" is enable/disable depending on "Hex View"
+		  (Thanks to Muffin)
+		- Removed the useless '/' when there's no name (ordinal only)
+		- Disassembler is allowed on valid slot too now
+		- Fixed HexView to show all printable chars
+		- Added disasm comment for <CALL X> where <X = JMP [API]>
+		- Added Right Click function on disasm code to ease the life (TRY IT!)
+	- Added 'Get Imports Filter' in 'Advanced Commands' (Greetings to Titi)
+	- Tooltips added in Options
+	- Fixed bug in "Fix dump" renaming (with the char '_' before the ext)
+	- Added Original First Thunks rebuilder (in Options)
+	- Fixed bug on disabled editboxes (you could edit them.... erm)
+	- Added checks in PEFile.cpp for invalid executables (Thanks to Snacker!)
+	- Fixed some possible problems on sscanf and ordinals ("%X" with WORD type)
+
+v1.5.1 beta2 *PRIVATE*
+----------------------
+- Tracers
+	- Error codes updated for the Tracers Level2 and 3
+- Misc
+	- Fixed bug from the 1.5.1 beta1 in the Import Editor (a string bug)
+	- Fixed bug on validation check for the 'Congratulations' text (Thanks to LordByte)
+	- Fixed bug in the <IAT AutoSearch> (Thanks to LordByte)
+	- New imports scheme added (NOT COMPLETE SO DO NOT USE IT)
+		- Support relative calls rebuild => visible with a (R) tag in imports
+	- Fixed a bug with "Create New IAT". It can now manage a thunk which has several
+	  apis of different module (Thanks to EOD)
+	- Added 'Load PE Header'. It could be useful to force ImportREC to use your own
+	  PE Header (Thanks to EOD)
+
+v1.5.1 beta1 *PRIVATE*
+----------------------
+- Tracers
+	- Tracer Level3
+		- New approach (Thanks to EliCZ)
+			- Support SEH chain
+			- No more FS instructions emulation
+		- Dumb Mode (YES, it could be useful for redirected scheme which copies the
+		  start code of an API and jump later. It has the behaviour of the Tracer
+		  Level1 but it really executes the code)
+- Misc
+	- Added 'Get API Calls' dialogbox to set addresses filter and heuristics
+	- Added 'Mode Cloak' (for anti-imprec tricks)
+
+v1.5 *PRIVATE*
+--------------
+- Loader
+	- Clean up code (the injected loader)
+	- Added an IRC log to explain how to use it (Greetings to LaBBa)
+- Tracers
+	- Error codes updated for the Tracers Level2 and 3
+	- Plugin Tracer
+		- Redesigned interface for good reasons (See <Plugin.txt>)
+		- All examples have been updated for the new interface
+		- Support 'Exact Call' feature
+		- GUI switched into a Submenu (ala WorkerBee#2 by ZigD)
+- Misc
+	- 'AutoTrace' will not use the Tracer Level2 anymore (play CAREFULLY with the TL2
+	  because it's a global hook)
+	- Windows 95 Support (Thanks to EliCZ, Unknown One and ZigD for testing)
+	- Tested under NT4 (Thanks to Unknown One)
+	- The Import Editor (double click on a function) will look for the nearest valid
+	  function in the thunk and will get its module name. => Much faster when editing
+	  each function by hand.
+	- Improved 'Exact Call' (It will not retrace all exact calls from a slot if they
+	  have already been resolved)
+	- New Module Loader (It should be faster)
+	- Support function names which have more than 256 characters. ImportREC left when
+	  clicking on <Get Imports> (Thanks to ToyBomB and shandi for reports)
+	- <Save Log> added (Right click on the Log listbox)
+	- Fixed Import Editor to look for the name first before looking for the ordinal
+	- Added 'Skip Main Slot' in Options. It will allow you to trace *ONLY* on all
+	  Exact Calls. The main slot will be skipped by the tracer.
+	- <Control+F12> will stop any tracers (except 'Plugin' if you did not manage it)
+	  even when you have selected several slots to trace
+	- ApiHooks Updated (Greetings to EliCZ)
+	- Added an Exact Calls window (right click on the tree)
+		- Added Remove buttons
+		- Sort datas by column when clicking on it (Yop G-RoM! ;p)
+	- <Fix Dump> will set the IAT RVA and Size in the PE Directories to 0 (Thanks to
+	  Crusader)
+	- *ALL* docs have been updated
+
+v1.4.2+
+-------
+- Misc
+	- Fixed wrong image base/size usage when disabling "Use PE Header From Disk" AGAIN!
+
+v1.4.2
+------
+- Loader
+	- Finally fixed the bug when rebuilding imports of ripped layers (sometimes, it
+	  produced an invalid PE file)
+- Tracers
+	- Tracer Level3
+		- A little bit faster
+		- Fixed wrong opcodes (Damn copy&paste! Erm)... (Thanks to necrotoad for his
+		  target so i could find that bug)
+		  => Should work for latest SD2
+		  => The target should not quit anymore under XP
+- Misc
+	- Added a filter to "Get API Calls" to get valid addresses only
+	- Fixed wrong image base usage when disabling "Use PE Header From Disk" for
+	  reloc'ed target for example (Thanks to Thigo)
+
+v1.4.1a
+-------
+- Tracers
+	- Tracer Level1
+		- Fixed a little bug added from the previous version (It could trace into
+		  k32.dll... D'oh myself!)
+
+v1.4.1
+------
+- Loader
+	- Can handle Kernel32 Ordinal
+- Tracers
+	- Tracer Level1
+		- It will not be fooled anymore by latest ASProtect Emulated API
+- Misc
+	- Erratum: "Fix Damaged PDB" is for Win9x/ME only!
+	- "Create New IAT" feature
+	- "Select Code Section(s)" to precise where is the code in the target
+	- Fixed bug when loading imports file which contains Exact Call with ordinal
+	- Debug stub scheme added (for getting API from an executable which was compiled
+	  in debug mode)
+	- Full Dump (can dump EXE & DLL and it should work for antidumping tricks)
+
+v1.4
+----
+- Tracers
+	- Tracer Level1
+		- Fixed a small bug on the stack emulator (D'oh! Tamus! :p)
+	- Tracer Level3
+		- Recoded from scratch (Thanks a lot to G-RoM for his precious help and
+		  patience)
+	- Plugin
+		- Asprotect v1.2x Emulated API Plugin (Thanks to ZigD)
+- Misc
+	- Use PE Header informations from dump or disk (in Options)
+	- Debug privilege is now managed and damaged PDB can be repaired (Thanks to EliCZ)
+	- Renormalized exports (for Win9x/ME only)
+	- Fixed a GPF when using the wheel mouse (or arrows keys) just after selecting a
+	  process
+	- "Stick" current imports with new added ones correctly (when you do GetImports
+	  with several contigous regions)
+	- "Get API Calls" feature
+	- "Exact Call" for Safecast/Safedisc 2 redirections
+	- Load & Save "Exact Call" Imports
+	- Updated to APIHooks 5.6
+
+v1.3
+----
+- Import Editor
+	- An editbox for entering the name of the API (MSDN-like when using Index)
+- Loader
+	- Layers Auto Finder (with recursion)
+	- Layers editor (add/modify/remove)
+	- Improved relocations
+	- Multiple modules can cohabit in a same thunk
+	- Direct calls/jumps to any imports in all layers, are rebuilt (for portability)
+- Tracers
+	- Tracer Level1
+		- A little stack emulator was implemented (very basic though)
+	- Plugin Tracer
+	- TRACERS LEVEL 2 AND 3 ARE STILL NOT COMPLETE AND THERE JUST FOR EXPERIMENTATION.
+	  THEY ARE LAME so use them if YOU ARE BORED AND NOT AFRAID TO CRASH your computer,
+	  YOU ARE WARNED.
+- Misc
+	- Improved IAT scanner + Bug fixed on the invalid IAT size (negative) found by it
+	- DLL's names are now based on their filename and not on their header structure
+	- New ApiHooks and as usual it still is impressive how it gains speed each time!
+	  (Thanks to EliCZ again)
+	- Check on overlapped IAT by new imports (when not adding a new section)
+
+v1.2 *Final*
+------------
+- Fixed a little bug when there is only one invalid pointer and loader is activated, the
+  dialogbox for entering interval of ripped data/code didn't appear.
+- Fixed a bug in showing new import size when it is empty (0x100 instead of 0)
+- Added error managing in the loader if it can't find a dll or an api. (So its size has
+  grown up a little bit)
+- Fixed a bug on wrong section table location when loading PE files (YODAAAAA!!!!!! ;-))
+  (and for all my PE related code too...)
+- ApiHooks updated again!! Thanks to EliCZ, it's really faster than before... Wow! ;-)
+- Autotrace (do not expect a miracle from its part). Moreover prepare to crash if you
+  manage to use it because it uses the tracer level2... you are warned!! :-)
+- Improved Ripper analyzer
+
+v1.2 RC1 PRE Release
+--------------------
+- Added a loader against faked APIs in thunks.
+- Fixed a little bug when loading a tree for the last parameter if it has only one
+  character
+- Get the invalid pointers in the running process when reloading a tree which contains some
+- Added a flag for loader in tree text files (still is compatible with v1.2b3 version
+  though)
+- ApiHooks updated
+- You can rebuild DLL now by clicking on "Pick DLL" button
+- I decided to retire my Tracer L3 for the moment because it's too buggy
+
+v1.2b3
+------
+- Useless but funny, changed icon... thanks to Avl!s :-)
+- Function is correctly selected when double clicking on it for Editing.
+- Oops! Where was the <ucf2000.nfo> and <file_id.diz> file on previous versions???! :-)
+- Don't use anymore GetCurrentDirectory for looking for <remote.dll>
+- A little note when launching the first time
+- TimeOut option for Tracer Level2 and 3
+- Fix EP to OEP option when fixing a dump
+- Options are saved in an INI file
+- Maintaining "Shift" key for Tracer Level1 shows the Module name in the MessageBox title
+  instead of "huhu" :-) and moreover it shows VA correctly now.
+- Correct ImageSize in PE Header when adding a new section (Windows 98SE and 2k do it
+  automatically but it is better to do it ourselves though)
+- Added the old good Dennison's uCF logo (i mean the logo, not you Denni! ;-P) in 'About'
+  dialog box
+- Replace all "between" by "by the way" in all txt files... :-x
+- Stastistics are shown regularly (thx to Pal)
+- 'Show Suspect' button (thx to Pal)
+- Fixed a GPF when closing the running target and continuing to rebuild it (thx to Pal)
+- Load & Save Tree in text format. (You can still load old binary ".rec" files)
+  (Pal, you can edit them manually now! :-))
+- Fixed a bug in my module loader when the module image base is different to its pe header
+  one (ie when it has been moved by windows). (BIG THX TO PAL! ;-))
+- Module loading log is more precise now
+- First prebeta version of tracer l3 (still is VERY BUGGY! You are WARNED!)
+
+v1.2b2
+------
+- Argh!!!! Export ordinals were fixed now! Sorry, i have forgotten to add the Base for all
+  ordinals!! Marf! That's why my "Import all by ordinal" option didn't work under
+  NT/2000... It's now reactivated under those systems (even if your exe will not be
+  portable to another system)
+- Fixed a GPF (oops! :-P) when invalidate some particular APIs
+- Load and Save Tree Models
+- Enable and Disable controls (buttons and editboxes) when necessary
+- Tracer level2 is slower (not under Win2000! ;-)) but less buggy than previous version
+- "Cut thunk" action in right click popup menu. Thanks to my best beta tester Thigo
+  (normal, he's alone ;-P) for reporting me tELock tricks. (Greetz to tE! by the way) ;-)
+  (Read Tips.txt for further details)
+- Current directory will be the path of your selected process for browsing files
+- Statistics after clicking on "Get Import" were fixed
+- Readme.txt was updated. :-)
+
+v1.2b1
+------
+- Fixed a lame bug on my original IAT finder (a pb on computing its size... thx Chris ;-))
+- Multiple Tree Selection
+- Right Click on Tree (invalidate functions, delete thunk...)
+- Tracer Level1 (Disasm) was improved (with magic 'Shift" key... look at Tips.txt)
+- *New* Tracer Level2 (Hook) uses ApiHooks.
+  And big thanks to Yoda for advising me it ;-)
+- Import module name is auto updated depending on all its functions
+
+v1.1
+----
+- I have forgotten to considerate the max recursion of the tracer in the options! Now it's
+  fixed. Shame on me, yeah! ;-)
+- Give up the method to the start address (image base) bounds of the target too
+  (not reliable). Unreal Tournament has shown me that ;-)... BY THE WAY, WHAT A GAME! :-D
+- Improved tracer again
+- Improved Original-IAT Auto Finder
+- GUI : Tree view for import
+- Default parameter is 'Add new section'
+
+DLL v1.0
+--------
+- DLL was released for GUW32 (by Christoph/UG2000) with its open source code ;-)
+
+v1.0
+----
+- Give up the method with the limit address of the target (not reliable). Need to reput it
+  in an option
+- "Auto-IAT Search" button added
+- "Ultra Arrange" button added
+- Modify entry point to given OEP into the dump file when fixing it
+
+v0.7
+----
+- Reorganized code to export it in a dll
+
+v0.6a
+-----
+- Show first (or second) invalid element in the 'Imported Function Found' list if it detects
+  a problem in a thunk array
+- You can change the module of any import functions with the Import Editor
+- Disable "Import all by ordinal" under NT/2000... It does definitively not work :-(
+
+v0.6
+----
+- No more leaked memory... I swear! :-)
+- Support NT/2K by fixing all forwarding export functions (thanks to +The Owl+ AGAIN! ;-))
+  (Tested on an ASProtected game with total success under win2000 (i mean portable on
+  another system))
+- Icedump v6.0.2.2 was released!!!
+  ImportREC will be able to rebuild a 100% portable executable (or very close) with it.
+  (ONLY UNDER WIN9x BY THE WAY)
+  Icedump tries to solve 4 main windows dll which have export functions which point to the
+  same address... => Check it out NOW!!!  -> http://icedump.tsx.org
+
+v0.5
+----
+- Added 2 buttons "Previous ????" and "Next ????" for looking at unresolved pointers
+  quickly
+- Improved tracer engine... test it and you will see ;-)
+- Some errors messages are more comprehensible (for Lutin Noir especially ;-D)
+- GUI has changed a little bit
+- 'About' diabogbox finally added
+
+v0.4
+----
+- A memory bug fixed when freeing export infos
+- "Add new section" in the dump file for the new import datas
+
+v0.3a
+-----
+- Bug fixed on hint value which was always set to 0... erm :-)
+- Import ASCII name address is now aligned on WORD and not DWORD (more smaller size again)
+- Little filter on all Editboxes
+- Getting the size of the memory used by the process for memory bounds testing and the
+  tracer
+
+v0.3
+----
+- First public release
+- Tested on win2000 and it can not rebuild correctly because of module <ntdll.dll> which
+  contains some API from kernel32.dll of win95/98! :-(
+  (like RltDeleteCriticalSection, ...). If anyone has a solution, please mail me!!!!!
+- Added a real tracer engine (from Borg disasm of Cronos) but still need to improve its use
+- Added a function editor (for fixing Asprotect 'GetProcAddress'-like redirected function
+                           by yourself for example)
+  ** Double-click on the function in the "Import Functions Found" list and choose the good
+     API.
+- Bug fixed : you can fix a dump which does not have RVA=RAW addresses and sizes
+- Import all by ordinal for smaller import datas
+
+v0.2
+----
+- Not yet tested on NT/2000
+- Fixed a lot of bugs
+- Added a poor tracer for redirected functions
+
+Feb/01/2001
+-----------
+v0.1
+- First release

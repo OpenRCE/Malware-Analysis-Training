@@ -1,0 +1,64 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+Gamehouse OEP finder
+Make Sure You Don't Have OllyDbg Set Up To Break On New Threads
+PEiD Signature:
+[Gamehouse Media Protector Version Unknown]
+signature = 68 ?? ?? ?? ?? 6A 00 FF 15 ?? ?? ?? ?? 50 FF 15 ?? ?? ?? 00 00 00 00 00 00 00 00
+ep_only = true
+*/
+
+var X
+#log
+cmp $VERSION, "0.9"
+jae VERSIONPASSED
+msg "Please Upgrade Your OllyScript Version. Script Exiting..."
+ret
+
+VERSIONPASSED:
+sti
+find eip, #FF15????????50FF15#
+cmp $RESULT, 0
+jne GENERICSIGNATUREPASSED
+msg "Sorry This One Isn't Packed With Gamehouse Packer, Maybe ASProtect?"
+ret
+
+GENERICSIGNATUREPASSED:
+gpa "DialogBoxParamA", "USER32.DLL"
+mov X, $RESULT
+bp X
+msg "Press 'Try Now' Button When The Dialog Appears"
+eob INSIDEUSER32DLL
+run
+
+INSIDEUSER32DLL:
+bc X
+eob BACKFROMUSER32DLL
+rtu
+
+BACKFROMUSER32DLL:
+rtr
+sti
+find eip, #FFD6#
+cmp $RESULT, 0
+je CANNOTCONTINUE
+mov X, $RESULT
+bp X
+eob NEAROEP
+run
+
+NEAROEP:
+bc X
+sti
+msg "OEP Reached"
+ret
+
+CANNOTCONTINUE:
+msg "Script Failed. Script Exiting..."
+ret
+
+
+
+
+
+// [BACK] 

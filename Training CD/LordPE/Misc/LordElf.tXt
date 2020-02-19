@@ -1,0 +1,43 @@
+
+                          --------------------------
+                                  LordElf
+                          --------------------------
+
+version:         1.0
+coder:           yoda
+project start:   21th March 2k2
+coding language: C
+E-mail:          LordPE@gmx.net
+website:         y0da.cjb.net
+
+This is a little dumper for 32bit/LSB ELF formatted files (executables/object/...
+files). I wrote it because one day I suddenly saw ElfCrypt by JunkCode on the web
+and was interested in the ELF stuff.
+
+I didn't tested in on very much files, so maybe there are relatively many bugs in
+it. Would be nice if you send me unsupported files.
+
+Usage: LordElf.exe (file path) (options)
+         /NOLOGO    - suppress program information
+         /ELF       - dump ELF header
+         /PROGHDR   - dump Program Header Table
+         /OBJ       - dump Object Header Table
+         /DYN       - dump Dynamic information
+         /INTERP    - dump Program Interpreter
+         /SYM       - dump Symbol Table
+         /DYNSYM    - dump Dynamic Symbol Table
+         /REL       - dump Relocation information (not ElfXX_Rela items)
+         /NOTE      - dump Note information
+         /HASH      - dump Hash Table
+         /GOT       - dump Global Offset Table
+         /PLT       - dump Procedure Linkage Table
+         /ALL       - dump all elements
+
+History:
+--------
+LordElf 1.0: (23th March 2k2)
+- first release
+
+Please drop me your comments and so force.
+
+yoda

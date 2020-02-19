@@ -1,0 +1,63 @@
+
+                      ----------------------
+                             MetaPuck
+                      ----------------------
+
+version:         1.0
+coder:           yoda
+project start:   5th May 2002
+coding language: entirely coded in C++ :)
+E-mail:          LordPE@gmx.net
+website:         y0da.cjb.net
+
+[Intro]
+MetaPuck is a tool to spy the information, being hidden in the MetaData
+block inside the CLR (Common Language Runtime) Portable Executeable images
+of the .NET framework, and displays it in a well overlookable TreeView.
+This includes:
+      CLR header, MetaData header, Assembly references, module references,
+      class structures, enum types, structs, methods, fields (variables),
+      interfaces, properties, attributes, user strings, events, ....
+
+[Inside MetaPuck]
+Because the raw structures of metadata blocks aren't documented, you
+are forced to use either the unmanaged COM interfaces IMetaDataImport,
+IMetaDataAssemblyImport,... (mscorwks.dll needed) or the Reflection
+API of the .NET CLR.
+
+command line:
+		MetaPuck.exe [input file path]
+		
+MetaPuck supports drag'n'drop, too.
+
+[Disclaimer]
+If your computer explodes due to the usage of MetaPuck, it's not my
+problem.
+
+[Licence]
+As usual the full source code of the project, which was developed in
+VS7, is available. Your are able to use PARTS of this code if you
+don't forget to mention my name and/or website (recommended :) anywhere.
+
+[Acknowledge]
+Thanks to Matt Pietrek for his MetaData article and source code.
+The metainfo programm of the .NET Framework examples helped me a lot,
+too while developing MetaPuck. The signature scanning algorithm to
+receive routine information (return value, argument count/type, calling
+conversion) was nearly completely ripped.
+
+[Todo]
++ Add a MSIL disassembling engine
++ show permissions
++ show custom attributes
++ list ManifestResources
++ list Assembly file list
++ show unresolved externals
+
+[History]
+MetaPuck 1.0 (19th Mai 2k2):
+- virgin release
+
+Please report any kind of comment, bug report or suggestions...
+
+code fun with yoda :)

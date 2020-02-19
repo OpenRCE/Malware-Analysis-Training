@@ -1,0 +1,4 @@
+06.10.2005
+    - Fixed bug in heaps_create_visualization() that was causing the
+      plug-in to hang due to 'filename' variable not being initialized.
+      Thanks to 'TQN' and 'oh me anon' for their QA assistance. 

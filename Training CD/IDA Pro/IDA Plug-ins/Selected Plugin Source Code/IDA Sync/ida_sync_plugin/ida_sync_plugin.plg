@@ -1,0 +1,28 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: ida_sync_plugin - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\pamini\LOCALS~1\Temp\RSP7A.tmp" with contents
+[
+/nologo /Gz /MT /W3 /GX /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "IDA_SYNC_PLUGIN_EXPORTS" /D "__NT__" /D "__IDP__" /Fp"Release/ida_sync_plugin.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"E:\Repositories\ida_sync\ida_sync_plugin\ida_sync.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\pamini\LOCALS~1\Temp\RSP7A.tmp" 
+Creating command line "link.exe kernel32.lib user32.lib gdi32.lib ws2_32.lib ida.lib /nologo /dll /incremental:no /pdb:"Release/ida_sync.pdb" /machine:I386 /out:"Release/ida_sync.plw" /implib:"Release/ida_sync.lib" /EXPORT:PLUGIN  .\Release\ida_sync.obj "
+<h3>Output Window</h3>
+Compiling...
+ida_sync.cpp
+Linking...
+   Creating library Release/ida_sync.lib and object Release/ida_sync.exp
+
+
+
+<h3>Results</h3>
+ida_sync.plw - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

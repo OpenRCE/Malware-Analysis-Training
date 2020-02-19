@@ -1,0 +1,36 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+//////////////////////////////////////////////////
+Author: ~Hellsp@wN~
+Email : alt-fox@mail.ru
+OS : OllyDbg 1.10 with OllyScript plugin v0.7
+Date : 29.06.2004
+
+Support with:
+ASProtect 1.22 - 1.23 Beta 21 (may be some bugs)
+//////////////////////////////////////////////////
+*/
+
+var t
+mov t,esp
+sub t,4
+
+EOE Error
+EOB Break
+bphws t, "w"
+run
+
+Error:
+esti
+bphwc t
+bphws t, "w"
+run
+
+Break:
+bphwc t
+sto
+sto
+cmt eip, "This is the entry point (OEP)"
+ret
+
+// [BACK] 

@@ -1,0 +1,32 @@
+var x
+var y
+run
+eoe sig
+
+sig:
+findop eip,#29c0648f0061870424c3#
+bp $RESULT
+eoe pass
+eob oep
+
+pass:
+esti
+run
+
+oep:
+mov y, eip
+sub y,1
+mov x,[y]
+and x,000000ff
+cmp x,cc
+je pass
+findop eip,#c3#
+bp $RESULT
+eob end
+run
+
+end:
+sti
+cmt eip,"This is the entry point"
+msg " you are at the oep, Thank you for using my script"
+ret

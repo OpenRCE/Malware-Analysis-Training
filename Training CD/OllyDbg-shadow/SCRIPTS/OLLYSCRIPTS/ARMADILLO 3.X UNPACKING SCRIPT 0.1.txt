@@ -1,0 +1,82 @@
+/*
+//////////////////////////////////////////////////
+	Armadillo 3.x Unpacking script(Standard protection) v0.1
+	Author:	loveboom
+	Email : loveboom%163.com
+	OS    : WinXP sp2,Ollydbg 1.1,OllyScript v0.92
+	Date  : 2004-12-20
+        Action: Auto fix IAT,find oep
+	Config: Ignore all exceptions and ingnore exception: 'C000001E (INVALID LOCK SEQUENCE)'
+	Note  : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+
+var addr
+  
+start:
+  msgyn "Setting:Ignore all exceptions and ingnore exception: 'C000001E (INVALID LOCK SEQUENCE)'"
+  cmp $RESULT,1
+  je lbl1
+  ret
+  
+lbl1:
+  gpa "GetModuleHandleA","kernel32.dll"
+  bphws $RESULT,"x"
+  esto
+  
+lbl2:
+  mov addr,esp
+  add addr,4
+  mov addr,[addr]
+  mov addr,[addr]
+  cmp addr,4256534D				//'MSVMVB60.dll'
+  je lbl3
+  esto
+  jmp lbl2
+  
+lbl3:
+  esto
+
+lbl4:
+  mov addr,esp
+  add addr,4
+  mov addr,[addr]
+  mov addr,[addr]
+  cmp addr,61766461				//'ADVAPI32.DLL'
+  je lbl5
+  esto
+  jmp lbl4
+
+lbl5:
+  esto
+  bphwc $RESULT
+  rtu
+
+lblfs:
+  find eip,#8338000F84#				//Find command 'CMP [EAX],0'
+  cmp $RESULT,0
+  je lblabort
+  bp $RESULT
+  esto
+  bc $RESULT
+  mov [eax],0					//clear [eax]
+  find eip,#2BF9FFD7#				//find commands 'SUB EDI,ECX;call edi'
+  cmp $RESULT,0
+  je lblabort
+  bp $RESULT
+  esto
+
+lblfinished:
+  bc $RESULT
+  sto
+  sti
+  
+lbloep:
+  cmt eip,"oep"
+  msg "Script by loveboom[DFCG[FCG][US],Thank you for using my script!"
+  ret
+  
+lblabort:
+  msg "Script abort!Maybe target is not protect by Armadillo Standard protection."
+  ret
+

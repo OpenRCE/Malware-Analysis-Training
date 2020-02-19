@@ -1,0 +1,85 @@
+/*
+.:TEAM RESURRECTiON:.
+Armadillo Standard Script by AvAtAr//stephenteh
+Tested on WinXP Pro SP2, OllyDbg v1.10, OllyScript v0.92
+NOTES:
+- Remove all hardware breakpoints before run the script.
+- Add the following custom exceptions on OllyDbg:
+C0000005(ACCESS VIOLATION), C000001D(ILLEGAL INSTRUCTION)
+C000001E(INVALID LOCK SEQUENCE), C0000096(PRIVILEGED INSTRUCTION)
+*/
+
+var OpenMutexA
+var CreateMutexA
+var GetModuleHandleA
+var VirtualAlloc
+var CreateThread
+var JumpLocation
+var JumpLength
+var OEP
+
+gpa "OpenMutexA", "kernel32.dll"
+mov OpenMutexA, $RESULT
+gpa "CreateMutexA", "kernel32.dll"
+mov CreateMutexA, $RESULT
+gpa "GetModuleHandleA", "kernel32.dll"
+mov GetModuleHandleA, $RESULT
+gpa "VirtualAlloc", "kernel32.dll"
+mov VirtualAlloc, $RESULT
+gpa "CreateThread", "kernel32.dll"
+mov CreateThread, $RESULT
+
+bp OpenMutexA
+esto
+exec
+PUSHAD
+PUSHFD
+PUSH EDX
+XOR EAX,EAX
+PUSH EAX
+PUSH EAX
+CALL CreateMutexA
+POPFD
+POPAD
+JMP OpenMutexA
+ende
+bc OpenMutexA
+
+bphws GetModuleHandleA, "x"
+label1:
+esto
+cmp eax,VirtualAlloc
+jne label1
+esto
+bphwc GetModuleHandleA
+rtu
+
+find eip, #0F84????????#
+mov JumpLocation, $RESULT
+mov JumpLength, JumpLocation
+add JumpLength, 2
+mov JumpLength, [JumpLength]
+inc JumpLength
+mov [JumpLocation], 0E9
+inc JumpLocation
+mov [JumpLocation], JumpLength
+
+bp CreateThread
+run
+cob
+bc CreateThread
+rtu
+rtr
+sti
+
+find eip, #2B??FF??8?#
+mov OEP, $RESULT
+add OEP, 2
+bp OEP
+run
+bc OEP
+sti
+cmt eip, "<- OEP"
+msg "You're at the OEP, now dump with LordPE and fix the IAT with ImpRec. =)"
+ret
+

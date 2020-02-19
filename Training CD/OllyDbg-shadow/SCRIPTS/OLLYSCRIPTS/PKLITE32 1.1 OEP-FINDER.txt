@@ -1,0 +1,13 @@
+// PKLITE32 1.1 eop finder 
+// By R@dier 2004
+// 
+var a
+findop eip, #E955#
+bphws $RESULT, "x"
+mov a,$RESULT
+run
+bphwc a
+sti
+cmt eip, "This is the entry point"
+msg "Arrived at entry point dump anytime"
+ret

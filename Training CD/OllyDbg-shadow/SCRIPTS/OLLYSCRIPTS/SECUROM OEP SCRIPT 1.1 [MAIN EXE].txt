@@ -1,0 +1,52 @@
+/*
+ SECUROM OEP SCRIPT Version 1.1
+ By Nukacola
+
+ This script is using the CreateEventA method to get the OEP of a Securom wrapped file
+ it should only work with the main executable. For the other executables maybe protected
+ with Securom use my other script.
+ You have to run your securom protected file one time in olly before using this script or it
+ won't work correctly. If you have the plugin installed, which deleted the udd files from olly directory you
+ have to run it each time before you want to use this script.
+ I guess it's working with Securom from ??? up to 4.84.75
+
+Exceptions: Check all Exceptions but not "Memory Access Violation" and add
+80000004 (SINGLE STEP),
+C0000005 (ACCESS VIOLATION
+C000008F (FLOAT INEXACT RESULT)
+C0000094 (INTEGER DIVIDE BY ZERO). 
+*/
+
+
+gpa "CreateEventA", "kernel32.dll"
+bp $RESULT
+run // start
+
+run // bp 1
+
+run // bp 2
+
+bc $RESULT
+
+rtr
+sti
+
+findop eip,#E9????????#
+bp $RESULT
+run
+sto
+findop eip,#E9??????FF#
+bp $RESULT
+run
+sti
+sti
+sti
+sti
+cmt eip, "<- SECUROM OEP ->"
+Msg "Welcome to the SECUROM OEP >---< Set new origin here make a dump and don't forget to fix the imports"
+ret
+
+
+
+
+

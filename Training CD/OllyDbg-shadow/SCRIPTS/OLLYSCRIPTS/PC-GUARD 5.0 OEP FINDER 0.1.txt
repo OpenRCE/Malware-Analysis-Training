@@ -1,0 +1,64 @@
+/*
+//////////////////////////////////////////////////
+	PC-Guard v5.0 OEP Finder v0.1
+	Author:	loveboom
+	Email : bmd2chen@tom.com
+	OS    : Win2kADV sp2,OllyDbg 1.1b,OllyScript v0.7
+	Date  : 2004-4-15
+	Config: Ignore all Exceptions,hide your OllyDbg.
+        Action: Fix import function,found target's OEP
+	Note  : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+
+var espval     //esp value
+var cbase
+var csize
+var addr
+
+mov espval,esp
+sub espval,4
+gmi eip,CODEBASE        
+mov cbase,$RESULT
+gmi eip,CODESIZE
+mov csize,$RESULT
+start:
+  gpa "LoadLibraryA","Kernel32.dll"
+  bp $RESULT
+  run
+
+lbl1:
+  bc $RESULT
+  rtu
+  rtu
+  find eip,#8918#
+  cmp $RESULT,0
+  je lblabort
+  mov addr,$RESULT
+  mov [addr],#9090#
+  eob lbl2  
+  go addr
+
+lbl2:
+  bphws espval,"r"
+  eob lbl3
+  run
+
+lbl3:
+  bphwc espval
+  eob lbl4
+  eoe lbl4
+  bprm cbase,csize
+  run
+
+lbl4:
+  bpmc
+
+lblend:
+  cmt eip,"OEP found,please dumped it and then use importrec Get import functions,cut a invliad function."
+  msg "Script by loveboom[DFCG][FCG],Thank you for using my script!"
+  ret
+
+lblabort:
+  msg "Error,Script abort!Maybe target is not protect by PC-Guard v5.0.:("
+  ret

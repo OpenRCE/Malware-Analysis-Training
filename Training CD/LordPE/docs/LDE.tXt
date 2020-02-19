@@ -1,0 +1,66 @@
+              
+              ----------------------------------------------------
+                     Developing a LordPE Dumper Engine (LDE)
+              ----------------------------------------------------
+              
+Prolog
+------
+Since LordPE Deluxe coders are able to develop their own process dump engines. That means
+LordPE doesn't handle anymore the job to grab the bytes from the target process memory -
+your code does it.
+Using a user defined LDE affects the following LordPE features:
+	- full module dump
+	- partial module dump
+	- dumping a process memory region
+	- LordPE Dumper Server
+
+This could be useful to handle special processes which LordPE originally could not dump.
+E.g.: .NET CLR process modules (have a look at the IntelliDump source code).
+
+You can select the currently active LDE engine in the popup menu of the process or
+module list of the main dialog.
+
+The interface system
+--------------------
+LDEs reside in DLL files and have to be saved in <LordPE_base_dir>\LDE\. These DLLs have
+to have the .lde extension. The number of LDEs is limited to 50. They must export the
+following 3 routines (all in STDCALL calling convention!):
+
+PSTR STDCALL GetLDEName();
+	
+	Remarks:
+	This function is called by LordPE to find out the name of the LDE and pastes it into
+	its popup menus. GetLDEName() should return a pointer to a NUL terminated ANSI string.
+
+BOOL STDCALL DumpProcessRange(
+	IN  DWORD dwProcessId,
+	IN  void* pStartAddr,
+	IN  DWORD dwcBytes,
+	OUT void* pDumpedBytes,
+	OUT char* szErrorStr
+);
+
+	Remarks:
+	This function is the workhorse of each LDE. The argument list should be self
+	explaining. If you return FALSE as result, LordPE will show the error string
+	being saved to the 'szErrorStr' buffer to the user. This buffer is limited
+	to 1024 characters (including the terminating NUL).
+
+void STDCALL ShowLDEInfo(
+	IN HWND hwndParent
+);
+
+	Remarks:
+	This method just exists to show an about box, explain something, greet someone
+	or something like that.
+
+Each time LordPE fires up it creates a log file (LDELoad.log) in \LDE\ with information
+according to the LDE load procedure.
+
+Near the EOF
+------------
+It would be nice to see some LDEs :D
+If you can say of yourself that you did so, then please send your plugin to LordPE@gmx.net.
+
+yoda (12th August 2k2)
+

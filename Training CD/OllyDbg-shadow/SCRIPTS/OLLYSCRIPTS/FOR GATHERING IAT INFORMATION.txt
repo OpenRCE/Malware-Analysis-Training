@@ -1,0 +1,172 @@
+// For Gathering IAT infomation
+// Start This at App.OEP
+// Made By OrionOnion
+//
+// OllyDBG LogData Window Open
+// Set LogToFile and Run Script
+// 0x401000 is Code Image Base
+//
+// In my case, Virtual IAT address started at 0x003D????
+
+
+var mem0
+var mem1
+var mem2
+var mem3
+var s_addr
+var s_par
+
+dbh
+
+log "CALL ds:[0x003d????]"
+mov s_addr,401000
+
+l_call_begin:
+findop s_addr, #FF15????3D00#
+mov mem0,$RESULT
+cmp mem0,0
+jE l_call_end
+mov s_addr,mem0
+inc s_addr
+mov mem1,mem0
+ADD mem1,2
+log mem1
+mov mem2,[mem1]
+log mem2
+log [mem2]
+jmp l_call_begin
+
+l_call_end:
+
+log "JMP [0x003d????]"
+mov s_addr,401000
+
+l_jmp:
+findop s_addr, #FF25????3D00#
+mov mem0,$RESULT
+cmp mem0,0
+je l_jmp_end
+
+mov s_addr,mem0
+inc s_addr
+log mem0
+mov mem1,mem0
+ADD mem1,2
+log mem1
+log [mem1]
+jmp l_jmp
+
+l_jmp_end:
+
+log " MOV R32,[0x003D????]"
+mov s_par,0
+
+l_mov_begin:
+mov s_addr,401000
+
+cmp s_par,0
+JNE l_mov_ebx
+//log "MOV EAX,[0x003D????]"
+l_mov_eax_begin:
+findop s_addr,#A1????3D00#
+mov mem0,$RESULT
+jmp find_main
+
+l_mov_ebx:
+cmp s_par,1
+jne l_mov_ecx
+//log "MOV EBX,[0x003D????]"
+l_mov_ebx_begin:
+findop s_addr,#8B1D????3D00#
+mov mem0,$RESULT
+jmp find_main
+
+l_mov_ecx:
+cmp s_par,2
+jne l_mov_edx
+//log "MOV ECX,[0x003D????]"
+l_mov_ecx_begin:
+findop s_addr,#8B0D????3D00#
+mov mem0,$RESULT
+jmp find_main
+
+l_mov_edx:
+cmp s_par,3
+jne l_mov_esi
+//log "MOV EDX,[0x003D????]"
+l_mov_edx_begin:
+findop s_addr,#8B15????3D00#
+mov mem0,$RESULT
+jmp find_main
+
+l_mov_esi:
+cmp s_par,4
+jne l_mov_edi
+//log "MOV ESI,[0x003D????]"
+l_mov_esi_begin:
+findop s_addr,#8B35????3D00#
+mov mem0,$RESULT
+jmp find_main
+
+l_mov_edi:
+cmp s_par,5
+jne l_mov_ebp
+//log "MOV EDI,[0x003D????]"
+l_mov_edi_begin:
+findop s_addr,#8B3D????3D00#
+mov mem0,$RESULT
+jmp find_main
+
+l_mov_ebp:
+cmp s_par,6
+jne l_mov_end
+//log "MOV EBP,[0x003D????]"
+l_mov_ebp_begin:
+findop s_addr,#8B2D????3D00#
+mov mem0,$RESULT
+jmp find_main
+
+
+find_main:
+cmp mem0,0
+je l_find_end
+
+mov s_addr,mem0
+inc s_addr
+mov mem1,mem0
+cmp s_par,0
+je l_main2
+
+INC mem1
+
+l_main2:
+INC mem1
+log mem1
+mov mem2,[mem1]
+log mem2
+log [mem2]
+
+cmp s_par,0
+JE l_mov_eax_begin
+cmp s_par,1
+JE l_mov_ebx_begin
+cmp s_par,2
+JE l_mov_ecx_begin
+cmp s_par,3
+JE l_mov_edx_begin
+cmp s_par,4
+JE l_mov_esi_begin
+cmp s_par,5
+JE l_mov_edi_begin
+cmp s_par,6
+JE l_mov_ebp_begin
+
+l_find_end:
+inc s_par
+jmp l_mov_begin
+
+
+l_mov_end:
+
+MSG "Gathering Done!"
+ret

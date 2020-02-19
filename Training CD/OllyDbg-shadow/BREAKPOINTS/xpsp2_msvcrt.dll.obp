@@ -1,0 +1,15 @@
+# Olly BP Manager - Example Breakpoint List
+# Pedram Amini
+
+msvcrt:0000bb4e:Q:isupper
+msvcrt:0000bc63:Q:isspace
+msvcrt:0000bd34:Q:isprint
+msvcrt:0002f931:Q:sprintf
+msvcrt:00036030:Q:strcpy
+msvcrt:00036040:Q:strcat
+msvcrt:00037660:Q:strchr
+msvcrt:00037730:Q:strcmp
+msvcrt:00037920:Q:strncat
+msvcrt:00037a50:Q:strncmp
+msvcrt:00037a90:Q:strncpy
+msvcrt:00037c60:Q:strstr

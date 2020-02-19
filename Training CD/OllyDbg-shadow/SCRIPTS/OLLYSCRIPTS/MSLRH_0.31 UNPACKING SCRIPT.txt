@@ -1,0 +1,219 @@
+// MSLRH_031_unpacking_v6.txt
+// author: arnix (arnix@freenet.am)
+// ================================
+
+var start
+var t
+var t2
+
+mov start, eip
+mov t2, start
+
+rdtsc_label:
+find t2, #761BEB01#
+cmp $RESULT, 0
+je rdtsc_next
+mov t, $RESULT
+mov [t], #EB1BEB01#
+mov t2, t
+add t2, 10
+jmp rdtsc_label
+
+rdtsc_next:
+
+mov t2, start
+rdtsc_label2:
+find t2, #3D7856341276#
+cmp $RESULT, 0
+je rdtsc_next2
+mov t, $RESULT
+mov [t], #3D78563412EB#
+mov t2, t
+add t2, 10
+jmp rdtsc_label2
+
+rdtsc_next2:
+
+eoe exception1
+run
+
+exception1:
+eob bp1
+bphws 409593, "w"
+esto
+
+bp1:
+bphwc 409593
+bphws 408BCB, "x"
+eob bp2
+run
+
+bp2:
+bphwc 408BCB
+
+
+mov t2, start
+
+rdtsc_label3:
+find t2, #761BEB01#
+cmp $RESULT, 0
+je rdtsc_next3
+mov t, $RESULT
+mov [t], #EB1BEB01#
+mov t2, t
+add t2, 10
+jmp rdtsc_label3
+
+rdtsc_next3:
+
+mov t2, start
+rdtsc_label4:
+find t2, #3D7856341276#
+cmp $RESULT, 0
+je rdtsc_next4
+mov t, $RESULT
+mov [t], #3D78563412EB#
+mov t2, t
+add t2, 10
+jmp rdtsc_label4
+
+rdtsc_next4:
+
+bphws 40AB7C, "w"
+eob bp3
+run
+
+bp3:
+bphwc 40AB7C
+bphws 40A1D5, "x"
+eob bp4
+run
+
+bp4:
+bphwc 40A1D5
+
+mov t2, start
+
+rdtsc_label5:
+find t2, #761BEB01#
+cmp $RESULT, 0
+je rdtsc_next5
+mov t, $RESULT
+mov [t], #EB1BEB01#
+mov t2, t
+add t2, 10
+jmp rdtsc_label5
+
+rdtsc_next5:
+
+mov t2, start
+rdtsc_label6:
+find t2, #3D7856341276#
+cmp $RESULT, 0
+je rdtsc_next6
+mov t, $RESULT
+mov [t], #3D78563412EB#
+mov t2, t
+add t2, 10
+jmp rdtsc_label6
+
+rdtsc_next6:
+
+mov [40D3DA], #90909090909090909090909090#
+mov [40DDA7], #90909090909090909090909090909090909090#
+mov [40E76A], #909090909090909090909090909090909090909090909090909090909090909090#
+
+eoe exception2
+run
+
+exception2:
+
+bphws 410F4C, "x"
+eob bp5
+esto
+
+bp5:
+bphwc 410F4C
+
+mov t2,start
+rdtsc_back_label:
+find t2, #EB1BEB01#
+cmp $RESULT, 0
+je rdtsc_back_next
+mov t, $RESULT
+mov [t], #761BEB01#
+mov t2, t
+add t2, 10
+jmp rdtsc_back_label
+
+rdtsc_back_next:
+
+mov [40D3DA], #E8050000002573257300FF5614#
+mov [40DDA7], #6A006A006A036A006A00680000008050FF561C#
+mov [40E76A], #506A006800040000FF56288BDC83EB046A006A006A04536A0750FF56405888460E#
+
+bphws 410FC9, "x"
+eob bp6
+run
+
+bp6:
+bphwc 410FC9
+
+mov t2, start
+
+rdtsc_label7:
+find t2, #761BEB01#
+cmp $RESULT, 0
+je rdtsc_next7
+mov t, $RESULT
+mov [t], #EB1BEB01#
+mov t2, t
+add t2, 10
+jmp rdtsc_label7
+
+rdtsc_next7:
+
+mov t2, start
+rdtsc_label8:
+find t2, #3D7856341276#
+cmp $RESULT, 0
+je rdtsc_next8
+mov t, $RESULT
+mov [t], #3D78563412EB#
+mov t2, t
+add t2, 10
+jmp rdtsc_label8
+
+rdtsc_next8:
+
+mov t2, start
+
+obf1:
+find t2, #E80A000000E8EB0C0000#
+cmp $RESULT, 0
+je obf_next1
+mov t, $RESULT
+mov [t], #83EC08909090#
+mov t2, t
+add t2, 10
+jmp obf1
+
+obf_next1:
+mov t2, start
+
+obf2:
+find t2, #EB01#
+cmp $RESULT, 0
+je obf_next2
+mov t, $RESULT
+mov [t], #909090#
+mov t2, t
+add t2, 3
+jmp obf2
+
+obf_next2:
+
+exit:
+ret
+
+// end

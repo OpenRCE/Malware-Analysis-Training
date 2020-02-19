@@ -1,0 +1,15 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+find eip, #68000000#
+go $RESULT
+sti
+sti
+cmt eip,"You're at OEP"
+msgyn "Do you want to analyze now ?"
+cmp $RESULT,0
+je cancel
+an eip
+
+cancel:
+ret
+
+// [BACK] 

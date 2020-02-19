@@ -1,0 +1,24 @@
+/*
+//////////////////////////////////////////////////////////////
+// PEBundle 2.0x - 2.4x OEP finder      
+// Author: hacnho/VCT2k4                                 
+// Email : hacnho@hotmail.com   
+// Website: http://nhandan.info/hacnho                       
+// OS : WinXP Pro, OllyDbg 1.10 Final, OllyScript v0.85 
+/////////////////////////////////////////////////////////
+*/
+sti
+sti
+eob Break
+findop eip, #9D68#
+bphws esp,"r"
+run
+Break:
+sto
+sto
+sto
+an eip
+log eip
+cmt eip, "This is the OEP! Found by hacnho/VCT2k4"
+MSG "Dumped and fix IAT now! Thanx for using my Script...!"
+ret

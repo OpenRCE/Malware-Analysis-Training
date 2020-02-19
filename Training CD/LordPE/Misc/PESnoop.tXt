@@ -1,0 +1,82 @@
+
+-------------------------------------------------------------------------------
+ PESnoop 2.0 - Advanced PE32/PE32+/COFF OBJ,LIB command line dumper by yoda
+------------------------------------------------------------------------------- 
+
+version:         2.0
+coder:           yoda
+project start:   27th March 2002
+coding language: C
+E-mail:          LordPE@gmx.net
+website:         y0da.cjb.net
+
+Prolog:
+~~~~~~~
+Basically I only wanted to code a structure lister for LordPE, like the one of PEBrowse, but
+because I was currently interested in the changes made to the PE format while porting it to
+64bit architectures and a core GUI structure lister isn't really code I can reuse, I developed
+a full PE32/PE32+ command line dumper with support for related file types (OBJ, LIB).
+My development environment was this time VS .NET...got to like it quickly.
+Matt Pietrek's new PE article gave me fine input about the new PE format.
+I just played some PE32+ files during development of this utility, so I couldn't test all PE
+element dumpers on them.
+Please send incompatible/wrong dumped files to me.
+
+Usage: PESnoop.EXE (file path) (options)
+  /NOLOGO    - skip title, input file path, modus
+  /PE_DH     - dump DOS Header
+  /PE_NH     - dump NT Headers
+  /PE_SHT    - dump SectionHeaderTable
+  /PE_ET     - dump ExportTable
+  /PE_IT     - dump ImportTable
+  /PE_RT     - simple ResourceTree dump
+  /PE_RT+    - advanced ResourceTree dump
+  /PE_ED     - dump ExceptionDirectory
+  /PE_RD     - dump Relocation blocks
+  /PE_DD     - dump DebugDirectory
+  /PE_AD     - dump ArchitectureDirectory
+  /PE_TT     - dump TLSTable
+  /PE_LCD    - dump LoadConfigDirectory
+  /PE_BI     - dump BoundImports
+  /PE_DI     - dump DelayImports
+  /PE_CD     - dump COMDirectory
+  /PE_P      - hex dump image partitions
+  /PE_ALL    - dump everything
+  /OBJ_FH    - dump FileHeader
+  /OBJ_OH    - dump OptionalHeader
+  /OBJ_SHT   - dump SectionHeaderTable
+  /OBJ_ST    - dump SymbolTable
+  /OBJ_S     - show Object Module summary
+  /OBJ_ALL   - dump everything
+  /LIB_AMH   - dump ArchiveMemberHeaders
+  /LIB_ILR   - dump ImportLibraryRecords
+  /LIB_LM    - dump LinkerMembers
+  /LIB_LNM   - dump LongNamesMembers
+  /LIB_OBJ_* - dump structures from Object Module Image Parts
+  /LIB_S     - show Library summary
+  /LIB_ALL   - dump everything
+
+Option flags are handled case insensitive.
+
+ToDo:
+~~~~~
+- possibility dump OMF OBJ/LIB images
+
+History:
+~~~~~~~~
+PESnoop 2.0: (6th Mar 2k2)
+- ability to dump COFF Object Modules and COFF Libraries
+- bugfix: - in 'PESnoop.HexDump'
+          - in 'PESnoop.PE_DumpOptionalHeader'
+
+PESnoop 1.0a: (1st Mar 2k2)
+- changed executable icon
+- corrected a typo
+- tested successfully some other 64bit PEs
+
+PESnoop 1.0: (31th Mar 2k2)
+- first release
+
+Please drop me your comments and so force.
+
+yoda

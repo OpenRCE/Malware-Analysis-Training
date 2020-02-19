@@ -1,0 +1,38 @@
+// PeX 0.99 OEP Finder
+// by FEUERRADER [AHTeam]
+// http://ahteam.org
+
+/*
+    IMPORTANT NOTE: before using this script, CHECK following option -
+     Menu -> Options -> Debugging options -> Exceptions -> INT3 breaks   
+    Script willnot work if u do not do that!!!!
+*/
+
+var s
+
+eob Break 
+eoe exp1
+mov s, eip
+add s, 01
+bphws s, "x"
+run
+
+exp1:
+esto
+
+Break:
+eob Break2 
+bphwc s
+findop eip, #EB01#
+bphws $RESULT, "x"
+run
+
+Break2:
+bphwc $RESULT
+sto
+sto
+sto
+sto
+sto
+cmt eip, "OEP"
+ret

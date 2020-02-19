@@ -1,0 +1,65 @@
+/*
+Armadillo script - detach parent from client - by hipu
+tnx to Ricardo for his complete instructions (im just emulating what the man says...)
+
+MAKE SURE ALL BREAKPOINTS ARE DELETED BEFORE EXECUTING THE SCRIPT!!! 
+
+ALSO: since im using the IsDebuggerPresent plugin, i didnt do IsDebuggerPresent patch.
+do whatever is needed if u dont use the plugin...
+
+*/
+
+var WaitForDebugEvent
+var WriteProcessMemory
+var pDebugEvent
+var pBuffer
+var child_ProcID
+
+//eob found_WaitForDebugEvent
+gpa "WaitForDebugEvent", "kernel32.dll" 
+mov WaitForDebugEvent, $RESULT
+gpa "WriteProcessMemory", "kernel32.dll" 
+mov WriteProcessMemory, $RESULT
+
+bp WriteProcessMemory
+run
+
+//stopped here cause of breakpoint
+run
+
+//stopped here cause of breakpoint (2nd time)
+bc WriteProcessMemory
+mov pBuffer, esp
+add pBuffer, 0c
+mov pBuffer, [pBuffer]
+log "*** original OEP bytes :"
+log [pBuffer]
+mov [pBuffer], #EBFE#
+log "*** changed OEP bytes :"
+log [pBuffer]
+
+bp WaitForDebugEvent
+run
+run
+run
+bc WaitForDebugEvent
+
+mov pDebugEvent, esp
+add pDebugEvent, 04
+mov pDebugEvent, [pDebugEvent]
+log pDebugEvent
+mov child_ProcID, pDebugEvent
+add child_ProcID, 4
+mov child_ProcID, [child_ProcID]
+log child_ProcID
+
+rtr	//ctrl-f9
+sto	//f8
+mov eax, child_ProcID
+asm eip, "push eax"
+sto	//f8
+asm eip, "call DebugActiveProcessStop"
+sto	//f8
+asm eip, "nop"
+sto	//f8
+ret

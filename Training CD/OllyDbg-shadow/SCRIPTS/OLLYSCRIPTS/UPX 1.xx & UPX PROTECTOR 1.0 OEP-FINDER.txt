@@ -1,0 +1,31 @@
+// UPX 1.xx and UPX Protector 1.0 OEP Finder v0.1
+// by FEUERRADER [AHTeam]
+// http://ahteam.org
+
+eob Break 
+findop eip, #61E9#
+cmp $RESULT, 0
+je upxprot
+bphws $RESULT, "x"
+run
+
+Break:
+sto 
+sto
+bphwc $RESULT
+cmt eip, "OEP"
+ret
+
+upxprot:
+eob Break2
+findop eip, #61EB#
+bphws $RESULT, "x"
+run
+
+Break2:
+sto 
+sto
+sto
+bphwc $RESULT
+cmt eip, "OEP"
+ret

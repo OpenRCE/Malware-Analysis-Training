@@ -1,0 +1,38 @@
+1. About the plug-in
+2. Usage
+3. Known Issues
+4. Compilation
+5. Reporting Bugs
+6. FuncX
+
+
+1. About the Plug-in:
+	This plug-in uses the Function Analyzer Class (function_analyzer) developed and written by Pedram Amini (http://labs.idefense.com) as the base class upon which to build from. The Loop Detection (loop_detection) class uses inheritance, to glean its attributes from Function Analyzer. The reason inheritance is used, is for ease of development, inheritance is also used so that instead of having to re-add functions to new version of Function Analyzer, a person only has to replace the old file. The final reason inheritance is used is for code conformity, by creating virtual functions the user can use the same function names as function analyzer. This means if a user understands the structure of function analyzer they will not have a hard time understanding loop detections structure.
+
+2. Plug-in Usage:
+
+The author is going to talk briefly about each option so that the user can use the plug-in to the best of your advantage.
+
+Graph Loop:	This feature will visualize the loops, marking the entry of a loop with green border, the exit of a loop with a red border and a loop node with a yellow border.
+Highlight Function Calls: This option allows the user to highlight the background of any function call made within the loop. The highlighting is done within IDA View.
+Output Stack Information: This is just a neat little feature that is only enabled with graph loop option. When this option is enabled the graph will contain information about the stack of the function including  the variables name, whether or not it is an argument, and the size of the variable, this option is a great feature for static auditing.
+Highlight Code: This option is very similar to Highlight Function except instead of just highlighting function calls within loops it will highlight all the code that is executed within the loops.  This makes it easier to read the loops in IDA View 
+Verbose Output: This feature allows the user to see how the program is working and will give more information about what the plug-in is doing. 
+Auto Commenting: This option when enabled adds comments to loops nodes, such as where the loop begins, where it exits and other useful information so that the user doesn’t have to continually look at the graph.
+All Loops Highlighting of Functions: This feature when enabled will find every loop within the IDA database. It will then highlight any call to any function within a loop. The highlighting is done within the IDA View making navigation of code easier.
+All Loops Highlighting of Code: This option will find every loop within the database. It will then highlight all segments of code involved in a loop.  The highlighting of code will allow for easier navigation of code within the IDA View.
+Natural Loops: This detection feature allows the user to only see natural loops. It may not pick up all loops but is an educational implementation of the previously talked about algorithm.
+Recursive Function Calls: This detection option will allow the user to see where recursive function calls are located.
+
+3. Known Issues:
+	There a couple known issues with this plug-in. It does not deal with rep* instructions nor does it deal with mov** instructions that might result in copied buffers. Future versions will also deal with these instructions but since it is open-sourced the user can make those changes. The auto-commenting feature has some minor flaws that will be fixed in the future. Another issue is that of “no-interest”. I am talking about detecting loops that aren’t of interest or don’t pose a security risk. These loops for example may be just counting loops that don’t write memory. Halvar Flake describes this topics in his talk given at Blackhat Windows 2004 . Feel free to read his paper and make changes accordingly. The author will also update the plug-in with these options at a later date.  
+
+4. Compilation:
+	This project was compiled with Visual Studio 6. The project settings that point to the idasdk include directory need to updated to reflect your system settings. 
+	
+
+5. Reporting Buts
+	To report a bug please e-mail me peter.silberman@gmail.com.
+	
+6. FuncX
+FuncX is a class that the author wrote a while ago and has since used in many projects. FuncX is essientialy a wrapper of func.hpp provided by IDA. FuncX also extends the func.hpp functions offering the user other functions that might be of use when auditing a binary. Updates and bug fixes are comming in future versions for both loop detection and FuncX.

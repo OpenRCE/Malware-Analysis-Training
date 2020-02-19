@@ -1,0 +1,87 @@
+
+start:
+  ask "Enter junk start code:"
+  cmp $RESULT,e803
+  je lble803
+  cmp $RESULT,31f0
+  je lbl31f0
+  cmp $RESULT, b904 
+  JE lblb904
+  cmp $RESULT,E816
+  je lble816
+  cmp $RESULT,e810
+  je lble810
+  cmp $RESULT,e805
+  je lble805
+  cmp $RESULT,e808
+  je lble808
+  cmp $RESULT,e807
+  je lble807
+  cmp $RESULT,87ED
+  je lbl87ed
+  ret
+  
+lble803:
+  find eip,#E803000000C7840058EB01E983C00750C3#
+  cmp $RESULT,0
+  je lblend
+  fill $RESULT,13,90
+  jmp lblend
+  
+lbl31f0:
+  find eip,#EB010F31F0EB0C33C8EB03EB090F59740575F851EBF1#
+  cmp $RESULT,0
+  je lblend
+  fill $RESULT,16,90
+  jmp lblend
+  
+lblb904:
+  find eip,#B904000000E81F000000EBFAE816000000E9EBF8000058EB090F25E8F2FFFFFF0FB94975F1EB05EBF9EBF0D6#
+  cmp $RESULT,0
+  je lblend
+  fill $RESULT,2c,90
+  jmp lblend
+  
+lble816:
+  find eip,#E8160000008B5C240C8BA3C4000000648F050000000083C404EB1464FF35000000006489250000000033C999F7F1#
+  cmp $RESULT,0
+  je lblend
+  fill $RESULT,2F,90
+  ret
+
+lble810:
+  find eip,#E8100000008B642408648F050000000058EB13C78364FF350000000064892500000000ADCD20#
+  cmp $RESULT,0
+  je lblend
+  fill $RESULT,26,90
+  ret
+lble805:
+  find eip,#E8050000000F01EB05E8EBFB000083C404#
+  cmp $RESULT,0
+  je lblend
+  fill $RESULT,11,90
+  ret
+lble808:
+  find eip,#E8080000000F0183C00F50C3FF5883C002FFE0#
+  cmp $RESULT,0
+  je lblend
+  fill $RESULT,16,90
+  ret
+  
+lble807:
+  find eip,#E807000000C78383C013EB0B58EB02CD2083C002EB01E950C3#
+  cmp $RESULT,0
+  je lblend
+  fill $RESULT,1a,90
+  ret
+  
+lbl87ed:
+  find eip,#87ED770487DB740070089071057700EBEF86EB078BDB7006907103EBF7#
+  cmp $RESULT,0
+  je lblend
+  fill $RESULT,1e,90
+  ret  
+  
+lblend:
+  ret
+

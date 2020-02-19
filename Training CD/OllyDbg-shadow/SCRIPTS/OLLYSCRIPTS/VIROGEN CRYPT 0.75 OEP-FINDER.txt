@@ -1,0 +1,31 @@
+/*
+////////////////////////////////////////////////////
+// Virogen Crypt v0.75 OEP finder
+// Author: hacnho/VCT2k4
+// Email : hacnho@hotmail.com
+// Website: http://nhandan.info/hacnho
+// OS : WinXP Pro, OllyDbg 1.10 Final, OllyScript v0.85
+////////////////////////////////////////////////////
+*/
+
+sti
+eob Break
+findop eip, #61#
+bphws esp,"r"
+run
+
+Break:
+sto
+sto
+sto
+sto
+sto
+sti
+sti
+sti
+an eip
+log eip
+cmt eip, "This is the OEP!!!"
+MSG "Dumped and fix IAT now! Thanx for using my Script...!"
+bphwc 408001
+ret

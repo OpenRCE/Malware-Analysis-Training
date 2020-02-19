@@ -1,0 +1,141 @@
+/* 
+//////////////////////////////////////////////////// 
+// ASProtect 1.30b import recovery & OEP / tempOEP finder (only Delphi & Imagebase = 400000) 
+// Author: Mario555 
+// Email : Mario555@pisem.net 
+// OS : WinXP SP1, OllyDbg 1.10b,OllyScript v0.7 
+// Note : Olly must be hide (IsDebuggerPresent) 
+//////////////////////////////////////////////////// 
+*/ 
+
+
+var cbase 
+gmi eip, CODEBASE 
+mov cbase, $RESULT 
+log cbase 
+var csize 
+gmi eip, CODESIZE 
+mov csize, $RESULT 
+log csize 
+
+var k 
+var l 
+var c 
+var function 
+var first 
+var a1 
+var a2 
+var a3 
+var iat_addr 
+var wr_addr 
+var mhandle 
+var mhandle_old 
+var iat_addr_old 
+
+mov c,0 
+mov mhandle_old,0 
+mov first,0 
+mov iat_addr, 400000 
+cmp [4002d0],0 
+jne loc_section_change 
+add iat_addr, [4002cc] 
+loc: 
+log iat_addr 
+eoe lab1 
+eob lab1 
+run 
+
+
+lab1: 
+cmp c,7 
+je lab_Breaks 
+add c,1 
+mov k,esp 
+add k,40 
+mov l,[k] 
+cmp l,400000 
+je lab_last 
+esto 
+
+lab_Breaks: 
+add c,1 
+var addr 
+var temp 
+mov addr,eip 
+shr addr, 10 
+shl addr, 10 
+mov temp, addr 
+add temp, 776d 
+mov a1,temp 
+bp temp 
+add temp, 159 
+mov a2,temp 
+bp temp 
+add temp, 6d 
+mov a3,temp 
+bp temp 
+eob lab2 
+eoe lab2 
+esto 
+
+lab2: 
+cmp eip, a1 
+je loc_imp 
+cmp eip, a2 
+je loc_imp 
+cmp eip, a3 
+je loc_imp 
+jmp lab1 
+
+loc_imp: 
+mov k, esp 
+add k, 30 
+mov mhandle, [k] 
+cmp mhandle, mhandle_old 
+je loc1 
+mov mhandle_old, mhandle 
+add iat_addr, 4 
+
+loc1: 
+cmp first,0 
+mov first,1 
+je loc3 
+
+loc2: 
+sub wr_addr,1 
+mov [wr_addr], #25# 
+add wr_addr,1 
+mov [wr_addr], iat_addr_old 
+mov [iat_addr_old], function 
+
+loc3: 
+mov wr_addr, ebx 
+mov function, eax 
+mov iat_addr_old, iat_addr 
+add iat_addr, 4 
+esto 
+
+
+lab_last: 
+bprm cbase, csize 
+eob end 
+eoe end 
+esto 
+
+end: 
+sub wr_addr,1 
+mov [wr_addr], #25# 
+add wr_addr,1 
+mov [wr_addr], iat_addr_old 
+mov [iat_addr_old], function 
+cmt eip,"!!!!!!!!!!!!!!!!!!" 
+bpmc 
+bc a1 
+bc a2 
+bc a3 
+bc a4 
+ret 
+
+loc_section_change: 
+add iat_addr, [4002a4] 
+jmp loc

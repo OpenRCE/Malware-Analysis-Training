@@ -1,0 +1,27 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+//  FileName    :   ASPack V2.12.oms
+//  Author      :   fly
+//  Date        :   2004-11-23 21:00
+//  Comment     :   Search "Popad,Jnz" to get the OEP
+//
+///////////////////////////////////////////////////////////////////////////////
+
+EOB Break1
+invoke msg, " Debug Environment:\n ¡î  WinXP,Ollydbg V1.10,OllyMachine V0.13 ¡î  "
+
+invoke Find, eip, "617508"
+mov reg01, reg00
+invoke bp, reg01
+
+run
+halt
+
+Break1:
+
+invoke bc, reg01
+stepover
+stepover
+stepover
+stepover
+invoke msg, "      Just : OEP £¡\n  Dump and Fix IAT  now\n   ¡î  Good Lucky£¡ ¡î  "

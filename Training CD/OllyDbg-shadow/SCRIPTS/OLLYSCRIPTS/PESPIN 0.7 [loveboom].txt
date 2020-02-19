@@ -1,0 +1,221 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+//////////////////////////////////////////////////
+PESpin v0.7 Stolen Code Finder v0.1
+Author: loveboom
+Email : bmd2chen@tom.com
+OS : WinXP sp1,Ollydbg 1.1,OllyScript v0.85
+Date : 2004-7-10
+Action: Auto fix IAT,Removed Junkcode,fix oep code(if target is vb's program)
+Config: Ignore other exceptions except 'Invalid or privileged instruction'
+Note : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+
+var addr
+var isvbapp //target is a vb application??
+var espval //esp value
+var iatstart //iat start address
+var cbase
+var csize
+var isasm
+var isvc
+
+gmi eip,CODEBASE
+mov cbase,$RESULT
+gmi eip,CODESIZE
+mov csize,$RESULT
+
+start:
+msgyn "Setting:Ignore other exceptions except 'Invalid or privileged instruction',Continue?"
+cmp $RESULT,0
+je lblret
+
+
+lbl1:
+dbh //Hide your debugger
+run
+esto
+esto
+
+lbl2:
+gpa "LoadLibraryA","kernel32.dll" //GetProcess
+mov addr,$RESULT
+bp addr
+esto
+
+lbl3:
+bc addr
+rtu
+cmp eip,70000000 //System is wixp and target is a Vb program ?
+jb lblnext
+sto
+rtu
+
+lblnext:
+mov isvbapp,[ebx]
+findop eip,#830A00# //find 'OR [EDX],0'
+cmp $RESULT,0
+je lblabort
+mov addr,$RESULT
+go addr
+mov iatstart,edx
+rtr
+sto
+
+checkvb:
+mov espval,esp
+add espval,4
+cmp isvbapp,4256534D //is that a vb application??
+jne lbl4
+msgyn "Target like a vb program,go vb module??"
+cmp $RESULT,0
+je lbl4
+mov isvbapp,1
+jmp lblbpesp
+
+lbl4:
+find eip,#8944241C61# //found 'mov ss:[esp+1c],eax'
+cmp $RESULT,0
+je lblabort
+mov addr,$RESULT
+mov [addr],#36890290# //Replace to 'mov ss:[edx],eax'
+find eip,#8902EB# //found 'mov ds:[edx],eax'
+cmp $RESULT,0
+je lblabort
+mov addr,$RESULT
+fill addr,2,90 //Replace to 'NOP'
+findop eip,#7635# //found 'JBE SHORT Address'
+cmp $RESULT,0
+je lblabort
+mov addr,$RESULT
+mov [addr],#EB# //Replace 'JMP SHORT Address'
+find eip,#83C704# //Target is a MASM program?
+cmp $RESULT,0
+je lblabort
+mov isasm,$RESULT
+bp isasm
+find eip,#EB06??8907# //Target is a VC/Delphi program?
+cmp $RESULT,0
+je lblabort
+mov addr,$RESULT
+add addr,3
+mov isvc,addr
+bp isvc
+run
+
+lbleob:
+cmp eip,isasm //If target is a vc/delphi program then goto vc/delphi module
+jne lblvc
+bc isasm
+mov [isasm],#66C747FFFF25#
+add isasm,6
+mov [isasm],#895701EB05#
+
+lblbpesp:
+bphws espval,"r" //set a hardware breakpoint esp+4
+cmp isvbapp,1
+je lblvb
+run
+
+lbl5:
+bphwc espval
+cmp isvc,1 //if Target is a VC/Delphi program then clear code
+jne lblnext1
+fill filladdr,30,00
+
+lblnext1:
+repl eip,#EB01??#,#909090#,FF
+msg "Junk Code has been Removed!"
+cmt eip,"Stolen code,"
+
+lblend:
+msg "Script by loveboom[DFCG][FCG],Thank you for using my script!"
+
+lblret:
+ret
+
+lblabort: //if error then abort script
+msg "Error,Script aborted!Maybe target is not protect by PESPIN v0.7 or your config error!"
+ret
+
+//////////////////////////////////////
+//
+// Vb module
+/////////////////////////////////////
+
+lblvb:
+run
+lblvb1:
+bphwc espval
+bprm cbase,csize
+run
+
+lblvb2:
+bpmc
+
+lblvbfixoep:
+mov addr,eip
+add addr,6
+//eval "OEP is: {addr}"
+//cmt addr,$RESULT
+mov [addr],68
+add addr,1
+mov espval,esp
+add espval,4
+mov [addr],[espval]
+add addr,4
+mov [addr],#E8F0FFFFFF#
+add addr,5
+//eval "Target's IAT start address is {iatstart}"
+//cmt addr,$RESULT
+jmp lblend
+
+////////////////////////////
+//
+// VC/Delphi module
+//
+///////////////////////////
+
+lblvc:
+var addr1
+var addr2
+var addrval
+var filladdr
+
+bc isvc //Clear Break point
+mov addr1,isvc
+mov [addr1],#E9#
+mov addr2,cbase
+add addr2,csize
+sub addr2,2c
+add addr1,1
+mov addrval,addr2
+sub addrval,addr1
+sub addrval,4
+mov [addr1],addrval
+mov filladdr,addr2
+mov [addr2],#609CBB#
+add addr2,3
+mov [addr2],cbase
+add addr2,4
+mov [addr2],#B9#
+add addr2,1
+mov [addr2],csize
+add addr2,4
+mov [addr2],#8B133BD7750C#
+add addr2,6
+mov [addr2],#8B17891383C3#
+add addr2,6
+mov [addr2],#0483E903EB03#
+add addr2,6
+mov [addr2],#83C301E2E99D61E9#
+add addr2,C
+add isvc,5
+sub isvc,addr2
+sub addr2,4
+mov [addr2],isvc
+mov isvc,1
+jmp lblbpesp
+
+// [BACK] 

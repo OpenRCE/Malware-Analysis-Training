@@ -1,0 +1,96 @@
+/* 
+////////////////////////////////////////////////// 
+PESpin 0.3x - 0.4x -> cyberbob Unpack Script v0.1(only for vb) 
+Author: loveboom 
+Email : bmd2chen@tom.com 
+OS : WinXP sp1,Ollydbg 1.1,OllyScript v0.85 
+Date : 02:06 2004-07-05 
+Config: Ignore other exceptions except 'Invalid or privileged instruction' 
+Note : If you have one or more question, email me please,thank you! 
+////////////////////////////////////////////////// 
+*/ 
+
+code: 
+msgyn "Setting:Ignore other exceptions except 'Invalid or privileged instruction',Continue?" 
+cmp $RESULT,0 
+je lblret 
+
+var addr 
+var espval //esp value 
+var iatstart //iat start address 
+
+var cbase 
+var csize 
+gmi eip,CODEBASE 
+mov cbase,$RESULT 
+gmi eip,CODESIZE 
+mov csize,$RESULT 
+
+start: 
+dbh 
+run 
+esto 
+esto 
+
+lbl1: 
+gpa "LoadLibraryA","kernel32.dll" 
+bp $RESULT 
+esto 
+
+lbl2: 
+bc $RESULT 
+rtu 
+cmp eip,70000000 
+jb lbl3 
+sto 
+rtu 
+
+lbl3: 
+findop eip,#830A00# 
+cmp $RESULT,0 
+je lblabort 
+go $RESULT 
+mov iatstart,edx 
+rtr 
+sto 
+
+lbl4: 
+mov espval,esp //esp value 
+add espval,4 //esp+4 
+bphws espval,"r" 
+run 
+
+lbl5: 
+bphwc espval 
+bprm cbase,csize 
+run 
+
+lbl6: 
+bpmc 
+
+lblfixoep: 
+mov addr,eip 
+add addr,6 
+log "OEP is:" 
+log addr 
+mov [addr],68 
+add addr,1 
+mov espval,esp 
+add espval,4 
+mov [addr],[espval] 
+add addr,4 
+mov [addr],#E8F0FFFFFF# 
+add addr,5 
+log "IAT start address is:" 
+log iatstart 
+cmt addr,"Please Open log window,you will see iat start address." 
+
+lblend: 
+msg "Script by loveboom[DFCG][FCG],Thank you for using my script!" 
+
+lblret: 
+ret 
+
+lblabort: 
+msg "Error,Script aborted!,Maybetaget is not protect by PESpin 0.3x - 0.4x -> cyberbob" 
+ret

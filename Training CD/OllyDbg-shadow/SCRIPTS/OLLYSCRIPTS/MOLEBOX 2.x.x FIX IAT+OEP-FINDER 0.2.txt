@@ -1,0 +1,56 @@
+/*
+//////////////////////////////////////////////////
+	MoleBox 2.x.x  fix IAT+OEP Finder v0.2
+	Author:	loveboom
+	Email : bmd2chen@tom.com
+	OS    : Win2kADV sp2,OllyDbg 1.1b,OllyScript v0.7
+	Date  : 2004-3-29
+	Config: N/A
+	Note  : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+var addr
+
+start:
+  gpa "LoadLibraryA","kernel32.dll"
+  bp $RESULT
+  cmp $RESULT,0
+  je lblabort
+  run
+
+lbl1:
+  bc $RESULT
+  rtu
+  rtu
+  rtu
+
+lbl2:
+  find eip,#05000083C408E9#
+  cmp $RESULT,0
+  je lblabort
+  mov addr,$RESULT
+  sub addr,2
+  go addr
+  eob lbl3
+  sti
+
+lbl3:
+  asm eip,"ret"
+  find eip,#FFE0#
+  cmp $RESULT,0
+  je lblabort
+  eob lbl4
+  bp $RESULT
+  run
+
+lbl4:
+  sto
+
+lblend:
+  cmt eip,"OEP found!please dumped it!"
+  msg "Script by loveboom[DFCG][FCG],Thank you for using my script!"
+  ret
+
+lblabort:
+  msg "Error,Script abort!maybe target is not packed by MoleBox 2.x.x."
+  ret

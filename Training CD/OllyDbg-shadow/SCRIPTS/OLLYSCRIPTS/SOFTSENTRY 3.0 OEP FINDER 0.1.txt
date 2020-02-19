@@ -1,0 +1,43 @@
+/*
+//////////////////////////////////////////////////
+	SoftSentry 3.0 OEP Finder v0.1
+	Author:	loveboom
+	Email : bmd2chen@tom.com
+	OS    : Win2kADV sp2,OllyDbg 1.1b,OllyScript v0.7
+	Date  : 2004-4-21
+	Config: Ingnore all Exceptions
+	Note  : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+
+var cbase
+var csize
+gmi eip,CODEBASE
+mov cbase,$RESULT
+gmi eip,CODESIZE
+mov csize,$RESULT
+
+start:
+  bprm cbase,csize
+  run
+
+lbl1:
+  bpmc
+  findop eip,#FFD6#
+  cmp $RESULT,0
+  je lblabort
+  bp $RESULT
+  esto
+
+lbl2:
+  bc $RESULT
+  sti
+
+lblend:
+  cmt eip,"OEP found,please dumped it!"
+  msg "Script by loveboom[DFCG][FCG],Thank you for using my script!"
+  ret
+
+lblabort:
+  msg "Error,Script abort!Maybe target is not protect by SoftSentry v3.0,More information emailto:bmd2chen@tom.com.Thank you!"
+  ret

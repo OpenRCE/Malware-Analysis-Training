@@ -1,0 +1,28 @@
+// Mr.David PECompact 2.x OEP finder v0.1
+// This script will quickly put you at the OEP of an PECompact 2.x EXE.
+// Just run it!
+
+msg "请设置OD异常设置忽略了内存异常，然后从菜单处继续运行脚本"
+pause
+
+var addr
+
+gpa "VirtualFree","kernel32.dll"
+mov addr,$RESULT                    //捷径 API断点VirtualFree
+bp addr
+run
+
+bc addr     //Clear break point  //取消断点
+rtu        //Alt+F9
+rtr       //Ctrl+F9
+sto      //单步
+
+findop eip,#FFE0#    //特征指令
+mov addr,$RESULT 
+bp addr            //下断
+run               //运行
+bc addr          //清断
+sto             //单步
+           
+cmt eip,"OEP Or Next Shell To Get,Please dumped it,Enjoy!"
+

@@ -1,0 +1,37 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+//////////////////////////////////////////////////////////////
+// yoda's Crypter 1.3 OEP finder
+// Author: hacnho/VCT2k4
+// Email : hacnho@hotmail.com
+// Website: http://nhandan.info/hacnho
+// OS : WinXP Pro, OllyDbg 1.10 Final, OllyScript v0.85
+////////////////////////////////////////////////////////////
+*/
+
+sti
+sto
+sto
+sto
+sto
+sto
+eob Break
+findop eip, #60E8#
+bphws esp,"r"
+run
+
+Break:
+sto
+sto
+sto
+sto
+sto
+sto
+esto
+log eip
+cmt eip, "This is the OEP! Found by hacnho/VCT2k4"
+MSG "Dumped and fix IAT now! Thanx for using my Script...!"
+
+ret
+
+// [BACK] 

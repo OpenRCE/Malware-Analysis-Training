@@ -1,0 +1,94 @@
+                                     =~=~=~=~=~=~=~=~=~
+                                     ~ NOTES AND TIPS =
+                                     =~=~=~=~=~=~=~=~=~
+
+- "Control+F12" WILL STOP ANY TRACERS AT ANY TIME (except plugin tracer if it was not
+  managed).
+
+- Maintain CONTROL or SHIFT for selecting several nodes in the tree. (like you select
+  several files in Windows...)
+
+- When you use the tracer level1 (Disasm), you can press and maintain "Shift" key for
+  seeing all API calls in the redirected function. Just release it for getting the one
+  which is currently shown in the MessageBox.
+
+- Always try the tracer level1 before the other ones because it is "just" a disassembler.
+  But it does not emulate instruction so do not expect to get a "jmp [eax*0x123456+0x654]"
+  which will jump to GetModuleHandleA for example.
+
+- Try the tracer level2 in the last resort and please try to close all your other running
+  applications (like your favorite mp3 player for example...)
+
+- 'AutoTrace' is just there to show how to rebuild <Notepad_asp.exe>. Always prefer manual
+  trace
+
+- If you are under Win9X/ME, do not forget to renormalize exports (only once in a windows
+  session is enough) BEFORE launching your target.
+
+- Do not forget you can "stick" several IAT intervals in your current imports. It means
+  each time you click on <Get Imports> with different IAT infos, your current imports will
+  not be removed.
+
+- For invalid slots left which can't be resolved, try to use the loader (by applying
+  *Switch Loader* on all invalid entries)
+
+- You do not need to turn on all sections when using the 'Full Dump' button (Sorry, i
+  admit this button is not well placed... but 'Full Dump' means dump *ALL*)
+
+
+
+
+                                   =~=~=~=~=~=~=~=~=~=~=~
+                                   ~ HOW TO REBUILD XXX =
+                                   =~=~=~=~=~=~=~=~=~=~=~
+
+Safecast/Safedisc 2:
+--------------------
+Enable "Exact Call" in Options and use the Tracer Level3.
+
+If the tracer failed on a slot, you will notice your target will be freezed. Unfortunately
+it's not possible to recover it. Maintain CONTROL+F12 to stop the tracer and return to
+ImportREC. Remember the last resolved function by the tracer and save your tree (all
+resolved 'Exact Calls' will be saved so you will be able to continue where you were, later).
+Kill the process of your target. Relaunch it, select it again in ImportREC and reload your
+tree and continue to trace from the last resolved function (Invalidate it and retrace or
+turn on 'Skip Main Slot' in Options to trace only on its Exact Calls).
+
+
+ASProtect:
+----------
+The best way to rebuild it, is to trace with the Tracer Level1 all invalid entries.
+Select all imports of Kernel32.dll, invalidate them and trace with the Plugin Tracer for
+ASProtect. Finally for all invalid entries left, retrace with the Tracer Level1.
+
+(If there are still some invalid entries, right click on them, do *Switch Loader* and let
+all parameters to default when fixing your dump)
+
+
+tELock:
+-------
+The Tracer Level3 will work. You will have to do "Show Invalid" and "Cut Thunk(s)" to
+remove all false entries which are in fact the NULL DWORD of the IAT structure (it is the
+separator between each different module which is easy to locate by looking at the module
+names of the previous and next slots).
+
+
+VBOX:
+-----
+The Tracer Level3 should work. If the tracer returns a code of 313 (which means TimeOut),
+you will have to increase the TimeOut in Options because it is slow (11 seconds about for
+the slowest api slot on my 1700 XP).
+
+Under Win9x, you could get a GPF of the module <vboxta.dll> when tracing. To avoid it,
+'block' your target (with a 'jmp eip' at the OEP for example) before tracing into it
+(Thanks to ZigD for this 'trick').
+
+Anyway that GPF does not happen if you are under NT, 2k and XP.
+
+
+PeX:
+----
+Increase the <Max Recursion> (to 10h for example) in Options and use the Tracer Level1.
+You will have to do "Show Invalid" and "Cut Thunk(s)" to remove all faked entries left
+(They are only stuck at the begining and/or the end of the real IAT and have almost the
+same pointer).

@@ -1,0 +1,23 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+// Please paste your script here...
+// PEcompact 2.00-2.38 OEP Finder
+// by fpx
+// http://fpx.yeah.net
+// Note: ignore all exceptions
+
+var a
+sto
+sto
+bphws esp,"r"
+mov a,esp
+run
+run
+run
+run
+sto
+bphwc a
+an eip
+log eip
+cmt eip, "OEP! Found by fpx"
+MSG "Dumped and fix IAT now! Thanks for using my Script...!"
+ret

@@ -1,0 +1,54 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+//////////////////////////////////////////////////
+Author: ~Hellsp@wN~
+Email : alt-fox@mail.ru
+OS : OllyDbg 1.10 with OllyScript plugin v0.7
+Date : 24.07.2004
+
+Support with:
+ASProtect 1.2/1.2c
+//////////////////////////////////////////////////
+*/
+
+var op
+mov op,esp
+sub op,4
+
+var k
+var l
+
+eoe lab1
+eob lab1
+run
+
+lab1:
+mov k,esp
+add k,2C
+mov l,[k]
+cmp l,400000
+je lab2
+esto
+
+lab2:
+eob lab3
+mov k,eip
+add k,4
+bp k
+esto
+
+lab3:
+bc k
+eob lab4
+eoe lab4
+bphws op,"r"
+esto
+
+lab4:
+bphwc op
+sto
+sto
+cmt eip, "This is the entry point (OEP)"
+ret
+
+// [BACK] 

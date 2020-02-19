@@ -1,0 +1,56 @@
+/*
+//////////////////////////////////////////////////
+	FSG 1.33 OEP Finder v0.2
+	Author:	loveboom
+	Email : bmd2chen@tom.com
+	OS    : Win2kADV sp2,OllyDbg 1.1b,OllyScript v0.62
+	Date  : 2004-4-2
+	Config: N/A
+	Note  :If you have one or more question 
+		email me please,thank you!
+//////////////////////////////////////////////////
+*/
+
+var addr
+var addr1
+
+gpa \"LoadLibraryA\",\"kernel32.dll\"
+bp $RESULT
+run
+
+lbl1:
+  bc $RESULT
+  rtu
+  gpa \"GetProcAddress\",\"kernel32.dll\"
+  bp $RESULT
+  eob lbl2
+  run
+
+lbl2:
+  bc $RESULT
+  eob lbl3
+  rtu
+
+lbl3:
+  mov addr,eip
+  sub addr,B
+  bp addr
+  eob lbl4
+  run
+
+lbl4:
+  sto
+  mov addr1,eip
+  sub addr1,6
+  cmp addr1,addr
+  jne lblend
+
+loop:
+  run
+  jmp lbl4
+
+lblend:
+  bc addr
+  cmt eip,\"OEP Found,please dumped it!\"
+  msg \"Script by loveboom[DFCG],Thank you for using my Script!\"
+  ret 

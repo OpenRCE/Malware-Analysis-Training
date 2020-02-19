@@ -1,0 +1,39 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+// yoda's Protector v1.0b goto oep script by sonkite
+// OllyDbg v1.10/XP, OllyScript v0.92, turn off all exceptions
+
+var bpx1
+var bpx2
+var bpx3
+var oep
+mov bpx1,eip
+mov bpx2,eip
+mov bpx3,eip
+add bpx1,4c4
+add bpx2,0dc8
+add bpx3,11e1
+dbh
+
+bphws bpx1, "x"
+run
+mov !zf,1
+run
+mov !zf,1
+bphwc bpx1
+
+bphws bpx2, "x"
+run
+mov !zf,1
+bphwc bpx2
+
+bphws bpx3, "x"
+run
+bphwc bpx3
+
+mov oep,edi
+bp oep
+run
+bc oep
+cmt oep, "This is the original entry point"
+
+// [BACK] 

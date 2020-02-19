@@ -1,0 +1,14 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+var x
+findop eip, #FE0F#
+mov x,$RESULT
+add x,10
+go x
+Bpcnd x,"BYTE PTR DS:[EDI]==0"
+cmt eip,"Jmp to OEP"
+run
+sto
+an eip
+ret
+
+// [BACK] 

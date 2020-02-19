@@ -1,0 +1,29 @@
+/*
+//////////////////////////////////////////////////////////////
+// Morphine v1.3 OEP finder      
+// Author: hacnho/VCT2k4                                 
+// Email : hacnho@hotmail.com   
+// Website: http://nhandan.info/hacnho                       
+// OS : WinXP Pro, OllyDbg 1.10 Final, OllyScript v0.85 
+////////////////////////////////////////////////////////////////
+*/
+
+eob Still1
+gpa "GetProcAddress","kernel32.dll"
+bp $RESULT
+run
+
+Still1:
+eob Still2
+bc $RESULT
+rtu
+findop eip,#FFD7#
+bphws $RESULT,"x"
+run
+
+Still2:
+bphwc $RESULT
+sti
+cmt eip, "This is the OEP! Found by hacnho/VCT2k4"
+MSG "Dumped and fix IAT now! Thanx for using my Script...!"
+ret

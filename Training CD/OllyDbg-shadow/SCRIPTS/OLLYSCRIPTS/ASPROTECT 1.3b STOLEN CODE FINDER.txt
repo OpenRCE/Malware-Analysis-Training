@@ -1,0 +1,104 @@
+/* 
+////////////////////////////////////////////////// 
+ASProtect 1.3B Stolen code Finder v0.1 
+Author: loveboom 
+Email : bmd2chen@tom.com 
+OS : Win2kADV sp2,OllyDbg 1.1b,OllyScript v0.62 
+Date : 2004-4-6 
+Config: Ignore all Exceptions except "Memory access violation",Hide Ollydbg. 
+Note : If you have one or more question, email me please,thank you! 
+////////////////////////////////////////////////// 
+*/ 
+
+var eval //esp value 
+var eaddr //eip address 
+var faddr //Findop return address 
+var evalue //eip value 
+var pvalue //ebp value 
+var ismodt //mode 2 
+
+start: 
+findop eip,#EB01# 
+mov eaddr,$RESULT 
+sub eaddr,eip 
+sub eaddr,2 
+cmp eaddr,0 
+jne mod1 
+mov ismodt,1 
+
+mod2: 
+jmp lbl1 
+
+mod1: 
+mov ismodt,0 
+mov eval,esp 
+sub eval,4 
+run 
+
+lbl1: 
+eoe lbl2 
+esto 
+
+
+lbl2: 
+mov eaddr,eip 
+mov evalue,[eaddr] 
+sub evalue,8F640031 
+cmp evalue,0F640032 
+je lbl3 
+jmp lbl1 
+
+lbl3: 
+findop eip,#C3# 
+cmp $RESULT,0 
+je lbl1 
+mov faddr,$RESULT 
+sub faddr,eip 
+sub faddr,3D 
+cmp faddr,0 
+je lbl4 
+jmp lbl1 
+
+lbl4: 
+cmp ismodt,0 
+jne jmod2 
+mov faddr,$RESULT 
+eob lbl5 
+bp faddr 
+esto 
+
+lbl5: 
+bc faddr 
+mov pvalue,ebp 
+bphws pvalue,"r" 
+run 
+
+lbl6: 
+bphwc pvalue 
+findop eip,#C20800# 
+bp $RESULT 
+eob lbl7 
+run 
+
+lbl7: 
+bc $RESULT 
+
+lbl8: 
+eob lbl9 
+sti 
+
+lbl9: 
+mov pvalue,ebp 
+sub pvalue,eval 
+cmp pvalue,0 
+je lblend 
+jmp lbl8 
+
+lblend: 
+cmt eip,"Now please fix stolen code,and then dumped it!" 
+msg "Script by loveboom[DFCG],Thank you for using my script!" 
+ret 
+
+jmod2: 
+eob mod1 
+esto

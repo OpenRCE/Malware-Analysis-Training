@@ -1,0 +1,55 @@
+// ASProtect 1.22 - 1.23 Beta 21-Rc1 Oep Find v0.1b
+// This script will quickly put you at the OEP of an ASProtect 1.22 - 1.23 Beta 21 -Rc1 EXE.
+// Just run it!
+//SDK程序无法运用
+
+msg "请设置OD异常设置除了内存异常外全部忽略，然后从菜单处继续运行脚本"
+pause
+
+var cbase
+
+gmi eip, CODEBASE
+mov cbase, $RESULT    
+log cbase            //将源操作数输出到OllyDbg的记录窗口[log window]中,调试用
+
+var csize           //获得指定地址所在模块的相关信息,内存镜像断点
+
+gmi eip, CODESIZE
+mov csize, $RESULT
+log csize
+
+run
+
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+esto
+
+bprm cbase, csize //内存镜像断点
+
+esto
+
+bpmc
+
+cmt eip,"OEP Or Next Shell To Get,Please dumped it,Enjoy!" 

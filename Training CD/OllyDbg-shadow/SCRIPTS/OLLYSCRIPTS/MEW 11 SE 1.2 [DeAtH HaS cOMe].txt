@@ -1,0 +1,29 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+Find target's OEP [ MEW11 SE v1.2 ] v0.1
+---------------------------------------
+Author: DeAtH HaS cOMe #eCh!2004 .:[ CracksLatinos ]:.
+Email : death_ech@phreaker.net
+OS : Win XP SP1,OllyDbg 1.10,OllyScript v0.91
+Date : 09.26.2004
+Config: -
+Note : Any bug or comments, please report at death_ech@phreaker.net
+That's all folks!
+Un saludo para todo CracksLatinoS, maravillosos listeros, y para mi enana Aurënya :P
+*/
+
+sto
+findop eip, #C3#
+go $RESULT
+
+sto
+log "El OEP del programa es:"
+log eip
+log "Dumpealo ahora y repara la IAT automaticamente con el IREC"
+log "Script CracksLatinos by DeAtH #eCh!2004"
+log "@: death_ech@phreaker.net WWW: http://www.ech2004.tk"
+msg "Script finalizado correctamente. Ahora esta parado en el OEP, dumpealo y arregla la IAT :D"
+
+ret
+
+// [BACK] 

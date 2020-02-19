@@ -1,0 +1,36 @@
+// Script for OllyScript plugin by SHaG - http://ollyscript.apsvans.com
+/*
+//////////////////////////////////////////////////
+JDPack/JDprotect OEP Finder v0.1
+Author: loveboom
+Email : bmd2chen@tom.com
+OS : Win2kADV sp2,OllyDbg 1.1b,OllyScript v0.7
+Date : 2004-7-2
+Config: Ingnore all Exceptions
+Note : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+
+var addr
+
+start:
+sto
+sti
+mov addr,esp
+add addr,4
+bphws addr,"r"
+eob lbl1
+run
+
+lbl1:
+bphwc addr
+sto
+sto
+
+lblend:
+cmt eip,"OEP:-)!"
+msg "OEP,Script by loveboom[DFCG][FCG],Thank you for using my script!"
+ret
+
+
+// [BACK] 

@@ -1,0 +1,103 @@
+/* 
+////////////////////////////////////////////////////////////////////// //// 
+| Obsidium1.061 OEP Founder v0.1(for VB only) | 
+| Author: loveboom | 
+| Email : bmd2chen@tom.com | 
+| Date : 2004-2-17 | 
+| Note : If you have one or more question | 
+| email to bmd2chen@tom.com(china) thank you! | 
+| this script can help you: 
+| * Find oep |
+| * Fix Import |
+| * Patch OEP code. | 
+| Setting: ALT+O open option window,Exceptions->uncheck . | 
+| all Exception OPT! | 
+////////////////////////////////////////////////////////////////////// //// 
+*/ 
+
+var cbase 
+var csize 
+var count 
+var patchaddr 
+var patchcode 
+
+gmi eip,CODEBASE 
+mov cbase,$RESULT 
+gmi eip,CODESIZE 
+mov csize,$RESULT 
+
+mov count,11 
+eoe lbl1 
+eob lbl1 
+run 
+
+lbl1: 
+cmp count,0 
+je lbl2 
+sub count,1 
+esto 
+jmp lbl1 
+
+lbl2: 
+eob lbl3 
+gpa "LoadLibraryExA","kernel32.dll" 
+bp $RESULT 
+esto 
+
+lbl3: 
+eob lbl4 
+bc $RESULT 
+rtu 
+
+lbl4: 
+eob lbl5 
+findop eip,#66F7062000# 
+bphws $RESULT,"x" 
+run 
+
+lbl5: 
+eoe lbl6 
+bphwc $RESULT 
+asm eip,"TEST WORD PTR [ESI],8" 
+sto 
+mov count,eip 
+mov [count],#7546# 
+findop eip,#7439# 
+mov count,$RESULT 
+mov [count],#7424# 
+findop eip,#7417# 
+mov count,$RESULT 
+mov [count],#7402# 
+mov count,3 
+run 
+
+lbl6: 
+cmp count,0 
+je lbl7 
+sub count,1 
+esto 
+jmp lbl6 
+
+lbl7: 
+eob lbl8 
+findop eip,#EB03# 
+bp $RESULT 
+esto 
+
+lbl8: 
+eoe lbl9 
+log $RESULT 
+bc $RESULT 
+bprm cbase,csize 
+run 
+
+lbl9: 
+bpmc 
+mov patchaddr,eip 
+sub patchaddr,4 
+mov [patchaddr],[esp] 
+sub patchaddr,1 
+mov [patchaddr],#68# 
+cmt patchaddr,"OEP!,patch oep pass.please dump->fixdump." 
+msg "Thank you for using my script!Note:if imprec found Invalid API then Cut it!" 
+ret

@@ -1,0 +1,113 @@
+/*
+//////////////////////////////////////////////////
+	Script for Asprotect v2.0 
+	Author:	loveboom
+	Email : bmd2chen@tom.com
+	OS    : WinXP sp2,Ollydbg 1.1,OllyScript v0.92
+	Date  : 2004-11-15
+        Action: Stop stolen code 
+	Config: Ignore all exceptions except 'INT 3 breaks'
+	Note  : If you have one or more question, email me please,thank you!
+//////////////////////////////////////////////////
+*/
+
+var addr
+
+lblask:
+  ask "Press 1 clear junkcode,press other key run script."
+  cmp $RESULT,1
+  je lblcCode
+
+lblsetting:
+  msgyn "Setting:Ignore all exceptions except 'INT 3 breaks',Continue?"
+  cmp $RESULT,1
+  je  lblbp1					//这里修改一下
+  ret
+
+//这里开始改变一下
+lblbp1:
+  gpa "LoadLibraryA","kernel32.dll"		//获取LOADlibraryA的地址
+  mov addr,$RESULT
+  add addr,B					//bp LoadLibraryA+0B
+  bp addr
+  run
+
+lblbc1:
+  bc addr
+  rtu						//返回用户代码
+  rtr						//执行到return处
+  sto
+  find eip,#E8#					//查找CALL
+  go $RESULT
+  sti						//跟进
+  find eip,#8B550C8B128902#			//找处理IAT代码
+  mov addr,$RESULT
+  add addr,5
+  mov [addr],#891A#
+
+
+//下面调用原来的代码
+start:
+  dbh
+  run
+lbl1:
+  find eip,#5B5A59C3#		//Found commands 'pop ebx, pop edx, pop ecx, retn'
+  cmp $RESULT,0
+  je lblerr
+  mov addr,$RESULT
+  add addr,3
+  bp addr
+
+
+lbl2:
+  esto
+
+
+lbl3:
+  cmp eip,addr
+  jne lbl2
+  bc addr
+
+lbl4:
+  find eip,#FF35????????C3#
+  cmp $RESULT,0
+  je lblerr
+  mov addr,$RESULT
+  add addr,2
+  mov addr,[addr]			//Get push address
+  mov addr,[addr]			//Get push value(address)
+  bp addr
+  run
+
+lbl5:
+  cmp eip,addr
+  jne lblerr
+  bc addr
+
+lbl7:
+  cmt eip,"Stolen code."			
+  msgyn "Clear Junkcode?"		//CLEAR JUNKCODE?
+  cmp $RESULT,0
+  je lblend
+
+lblcCode:
+ //jmp 01
+  repl eip,#2EEB01??#,#90909090#,1000
+  repl eip,#65EB01??#,#90909090#,1000
+  repl eip,#F2EB01??#,#90909090#,1000
+  repl eip,#F3EB01??#,#90909090#,1000
+  repl eip,#F3EB01??#,#90909090#,1000
+  repl eip,#EB01??#,#909090#,1000
+  //jmp 02
+  repl eip,#26EB02????#,#9090909090#,1000
+  repl eip,#3EEB02????#,#9090909090#,1000
+  repl eip,#F3EB02????#,#9090909090#,1000
+  repl eip,#EB02????#,#90909090#,1000
+
+lblend:
+  msg "Script by loveboom[DFCG][FCG][US],Thank you for using my Scripts!"
+  ret
+  
+lblerr:
+  msg "Error!Script aborted.Maybe target is not protect by asprotect 2.0 or your forgot Ignore all exceptions except 'INT 3 breaks'."
+  ret

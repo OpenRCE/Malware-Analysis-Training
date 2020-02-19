@@ -1,0 +1,32 @@
+/* 
+EOP finder for upxshit 0.6 (snaker) & UPX 
+It also works for a "standalone" UPX packed program 
+
+Author : mimas 
+*/ 
+
+var x 
+
+loop: 
+findop eip, #E9??# // find jump to next loop 
+mov x, $RESULT 
+sub x, eip 
+cmp x, 10 // (@jmp - eip) use to be 10, 
+// we can handle different loop size this way 
+ja stub 
+go $RESULT 
+sto 
+jmp loop 
+
+stub: 
+// the terrific UPX OEP finder 
+eob end 
+sto 
+mov x, esp 
+bphws x, "r" 
+run 
+
+end: 
+bphwc x 
+sto 
+ret

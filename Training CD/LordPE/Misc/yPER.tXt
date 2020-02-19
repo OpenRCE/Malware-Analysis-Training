@@ -1,0 +1,20 @@
+yoda's PERealigner 2.0
+----------------------
+
+This is a wrapper around the realign.dll functions.
+It's able to realign a PE file, wipe the relocation and
+validate it.
+
+Commandline:
+ yPER.exe [filename] [OPTIONS]
+ Options:
+ /REALIGN_NORMAL
+ /REALIGN_NICE
+ /REALIGN_HARDCORE
+ /WIPERELOC
+ /VALIDATE
+
+HaVe PhUn !
+yoda
+
+Visit: y0da.cjb.net
